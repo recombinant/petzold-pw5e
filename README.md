@@ -6,6 +6,13 @@ The 5th edition Programming Windows was published in 1998 in the era of Windows 
  later Windows technologies - the 5th edition was the last to deal with purely C
  programming. Many programmers learnt (and are still learning) Windows Programming
  from this huge tome and its various editions. An excellent work.
+ 
+Purpose of this repository
+--------------------------
+
+This repository was created to give the author working code to transliterate into
+ the rust language - the rusty fruit of this exercise being placed in the 
+ petzold-pw5e-rs repository.
 
 Contents of this repository
 ---------------------------
