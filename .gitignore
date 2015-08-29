@@ -34,7 +34,9 @@
 # Unwanted folders
 Debug
 Release
+x64
 Programming Windows
-*.vcxproj
-*.vcxproj.filters
+*.sdf
+*.opensdf
+*.props
 *.vcxproj.user
