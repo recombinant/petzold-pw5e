@@ -30,3 +30,11 @@
 
 # Debug files
 *.dSYM/
+
+# Unwanted folders
+Debug
+Release
+Programming Windows
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
