@@ -4,15 +4,17 @@
   --------------------------------------------------------------*/
 
 #include <windows.h>
+#include <tchar.h>
 
-int CALLBACK WinMain(
+int WINAPI _tWinMain(
 	_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPSTR lpCmdLine,
-	_In_ int nShowCmd
-	)
+	_In_ PTSTR lpCmdLine,
+	_In_ int nShowCmd)
 {
-    MessageBox(NULL, TEXT("Hello, Windows 98!"), TEXT("HelloMsg"), 0);
+        // MessageBox() can only return IDOK when using MB_OK
+
+    MessageBox(NULL, TEXT("Hello, Windows 98!"), TEXT("HelloMsg"), MB_OK);
 
     return 0;
 }

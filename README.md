@@ -39,8 +39,12 @@ Using Visual Studio 2015 Community Edition.
 - Windows 98 is no longer supported - remove any `#define WINVER` and
    `GetVersion()`
 - Apply any errata as per various errata refernces on the interweb. Jason Doucette's
-   errata are referred to on the Charles Petzold's website and are well explained.
+   errata are referred to on Charles Petzold's own website and are well explained.
    There is another set of errata at *Computer Science Lab*.
+- Replace `WinMain` with `_tWinMain` using `PTSTR` for `szCommand`
+- There are no long pointers. 16 bit Windows is dead. Replace `LPTSTR` with `PTSTR` usw.
+- Use safe versions of functions susceptible to buffer overrun e.g. Replace
+   `_vsntprintf()` with `_vsntprintf_s()`
 - Annote Function Parameters and Return Values (a Microsoft thing)
 - Apply `#define STRICT` and `#define WIN32_LEAN_AND_MEAN`
 - `#include <windows.x>` and use its macros where suitable. `Edit_GetSel()`

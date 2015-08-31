@@ -49,7 +49,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chapter 22", "Chapter 22", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chapter 23", "Chapter 23", "{8545817B-90CA-4BD9-BFD6-FF7C917927C4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "0201 ScrnSize", "Chap02\ScrnSize\ScrnSize.vcxproj", "{A4C2661C-0343-43BE-A1A1-E5C655FE67A0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "0201 ScrnSize", "Chapter 02\0201 ScrnSize\ScrnSize.vcxproj", "{A4C2661C-0343-43BE-A1A1-E5C655FE67A0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "0301 HelloWin", "Chap03\HelloWin\HelloWin.vcxproj", "{88A2C2C7-F406-4A1E-BB98-758C01C78513}"
 EndProject
@@ -350,6 +350,7 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A4C2661C-0343-43BE-A1A1-E5C655FE67A0}.Debug|x64.ActiveCfg = Debug|x64
+		{A4C2661C-0343-43BE-A1A1-E5C655FE67A0}.Debug|x64.Build.0 = Debug|x64
 		{A4C2661C-0343-43BE-A1A1-E5C655FE67A0}.Debug|x86.ActiveCfg = Debug|Win32
 		{A4C2661C-0343-43BE-A1A1-E5C655FE67A0}.Debug|x86.Build.0 = Debug|Win32
 		{A4C2661C-0343-43BE-A1A1-E5C655FE67A0}.Release|x64.ActiveCfg = Release|x64
