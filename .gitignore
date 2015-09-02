@@ -41,5 +41,4 @@ x64
 Programming Windows
 *.sdf
 *.opensdf
-*.props
 *.vcxproj.user
