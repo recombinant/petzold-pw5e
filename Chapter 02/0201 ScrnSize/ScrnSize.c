@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <string.h>
 
 _Check_return_opt_
 int __cdecl MessageBoxPrintf(
