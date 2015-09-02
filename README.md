@@ -46,6 +46,7 @@ Using Visual Studio 2015 Community Edition.
 - Use safe versions of functions susceptible to buffer overrun e.g. Replace
    `_vsntprintf()` with `_vsntprintf_s()`
 - Annote Function Parameters and Return Values (a Microsoft thing)
+- (void)fn for functions where return value is ignored.
 - Apply `#define STRICT` and `#define WIN32_LEAN_AND_MEAN`
 - `#include <windows.x>` and use its macros where suitable. `Edit_GetSel()`
    being an example of one to avoid.

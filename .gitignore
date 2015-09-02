@@ -31,6 +31,9 @@
 # Debug files
 *.dSYM/
 
+# Temporary files
+*.tmp
+
 # Unwanted folders
 Debug
 Release
