@@ -3,10 +3,12 @@
                  (c) Charles Petzold, 1998
   -----------------------------------------------------*/
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <windows.h>
 #include <tchar.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
 
 _Check_return_opt_
 int __cdecl MessageBoxPrintf(
@@ -24,7 +26,7 @@ int __cdecl MessageBoxPrintf(
 
         // The last argument to wvsprintf_s points to the arguments
 
-    _vsntprintf_s(szBuffer, _countof(szBuffer) - 1, _TRUNCATE, szFormat, pArgList);
+    (void)_vsntprintf_s(szBuffer, _countof(szBuffer) - 1, _TRUNCATE, szFormat, pArgList);
 
         // The va_end macro just zeroes out pArgList for no good reason
 
@@ -38,13 +40,18 @@ int __cdecl MessageBoxPrintf(
 int WINAPI _tWinMain(
     _In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
-    _In_ PTSTR lpCmdLine,
+    _In_ PTSTR pCmdLine,
     _In_ int nShowCmd)
 {
+    UNREFERENCED_PARAMETER(hInstance);
+    UNREFERENCED_PARAMETER(hPrevInstance);
+    UNREFERENCED_PARAMETER(pCmdLine);
+    UNREFERENCED_PARAMETER(nShowCmd);
+
     int cxScreen = GetSystemMetrics(SM_CXSCREEN);
     int cyScreen = GetSystemMetrics(SM_CYSCREEN);
 
-    MessageBoxPrintf(
+    (void)MessageBoxPrintf(
         TEXT("ScrnSize"),
         TEXT("The screen is %i pixels wide by %i pixels high."),
         cxScreen, cyScreen);
