@@ -31,6 +31,10 @@ The initial commit was the source code roughly "as is" from the original
 Updating C source code
 ----------------------
 
+**As of 2018 Visual Studio 2017 Community Edition is being used.** Some of the
+items below are being pursued with less enthusiasm is plenty of work chasing
+down superseded functions e.g. SetWindowLong/GetWindowLong
+
 Using Visual Studio 2015 Community Edition.
 
 - Rename the chapter folder and project folder to improve lexicographical
