@@ -29,16 +29,16 @@ add_executable(002_ScrnSize WIN32
 # HelloWin.wav - to be copied to exe directory
 
 add_executable(003_HelloWin WIN32
-        "Chapter 03/0301 HelloWin/HelloWin.c"
-        "Chapter 03/0301 HelloWin/HelloWin.wav")
+        "Chapter 03/01 HelloWin/HelloWin.c"
+        "Chapter 03/01 HelloWin/HelloWin.wav")
 target_link_libraries(003_HelloWin winmm.lib)
 add_custom_command(
         OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/HelloWin.wav"
-        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/Chapter 03/0301 HelloWin/HelloWin.wav" "${CMAKE_CURRENT_BINARY_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/Chapter 03/01 HelloWin/HelloWin.wav" "${CMAKE_CURRENT_BINARY_DIR}"
         COMMENT "Copying HelloWin.wav to exe directory"
-        DEPENDS "Chapter 03/0301 HelloWin/HelloWin.wav")
-add_custom_target(003_HelloWin_wav ALL
+        DEPENDS "Chapter 03/01 HelloWin/HelloWin.wav")
+add_custom_target(custom_target_003 ALL
         DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/HelloWin.wav")
-add_dependencies(003_HelloWin 003_HelloWin_wav)
+add_dependencies(003_HelloWin custom_target_003)
 
 # -----------------------------------------------------------------------------
