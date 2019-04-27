@@ -1,11 +1,12 @@
 /*----------------------------------------------------
-   SYSMETS2.C -- System Metrics Display Program No. 2
+   SYSMETS1.C -- System Metrics Display Program No. 1
 				 (c) Charles Petzold, 1998
   ----------------------------------------------------*/
 
 #include <windows.h>
+#include <windowsx.h>
 #include <tchar.h>
-#include "sysmets.h"
+#include "SysMets.h"
 
 LRESULT CALLBACK WndProc(_In_ HWND, _In_ UINT, _In_ WPARAM, _In_ LPARAM);
 
@@ -18,7 +19,7 @@ int WINAPI _tWinMain(
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
 
-	static TCHAR szAppName[] = TEXT("SysMets2");
+	static TCHAR szAppName[] = TEXT("SysMets1");
 	HWND         hwnd;
 	MSG          msg;
 	WNDCLASS     wndclass;
@@ -30,7 +31,7 @@ int WINAPI _tWinMain(
 	wndclass.hInstance = hInstance;
 	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wndclass.hbrBackground = GetStockBrush(WHITE_BRUSH);
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = szAppName;
 
@@ -41,8 +42,8 @@ int WINAPI _tWinMain(
 		return 0;
 	}
 
-	hwnd = CreateWindow(szAppName, TEXT("Get System Metrics No. 2"),
-		WS_OVERLAPPEDWINDOW | WS_VSCROLL,
+	hwnd = CreateWindow(szAppName, TEXT("Get System Metrics No. 1"),
+		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		NULL, NULL, hInstance, NULL);
@@ -55,14 +56,14 @@ int WINAPI _tWinMain(
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	return msg.wParam;
+	return (int)msg.wParam;  // WM_QUIT
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(_In_ HWND hwnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam)
 {
-	static int  cxChar, cxCaps, cyChar, cyClient, iVscrollPos;
+	static int  cxChar, cxCaps, cyChar;
 	HDC         hdc;
-	int         i, y;
+	int         i;
 	PAINTSTRUCT ps;
 	TCHAR       szBuffer[10];
 	TEXTMETRIC  tm;
@@ -78,49 +79,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		cyChar = tm.tmHeight + tm.tmExternalLeading;
 
 		ReleaseDC(hwnd, hdc);
-
-		SetScrollRange(hwnd, SB_VERT, 0, NUMLINES - 1, FALSE);
-		SetScrollPos(hwnd, SB_VERT, iVscrollPos, TRUE);
-		return 0;
-
-	case WM_SIZE:
-		cyClient = HIWORD(lParam);
-		return 0;
-
-	case WM_VSCROLL:
-		switch (LOWORD(wParam))
-		{
-		case SB_LINEUP:
-			iVscrollPos -= 1;
-			break;
-
-		case SB_LINEDOWN:
-			iVscrollPos += 1;
-			break;
-
-		case SB_PAGEUP:
-			iVscrollPos -= cyClient / cyChar;
-			break;
-
-		case SB_PAGEDOWN:
-			iVscrollPos += cyClient / cyChar;
-			break;
-
-		case SB_THUMBPOSITION:
-			iVscrollPos = HIWORD(wParam);
-			break;
-
-		default:
-			break;
-		}
-
-		iVscrollPos = max(0, min(iVscrollPos, NUMLINES - 1));
-
-		if (iVscrollPos != GetScrollPos(hwnd, SB_VERT))
-		{
-			SetScrollPos(hwnd, SB_VERT, iVscrollPos, TRUE);
-			InvalidateRect(hwnd, NULL, TRUE);
-		}
 		return 0;
 
 	case WM_PAINT:
@@ -128,19 +86,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		for (i = 0; i < NUMLINES; i++)
 		{
-			y = cyChar * (i - iVscrollPos);
-
-			TextOut(hdc, 0, y,
+			TextOut(hdc, 0, cyChar * i,
 				sysmetrics[i].szLabel,
 				lstrlen(sysmetrics[i].szLabel));
 
-			TextOut(hdc, 22 * cxCaps, y,
+			TextOut(hdc, 22 * cxCaps, cyChar * i,
 				sysmetrics[i].szDesc,
 				lstrlen(sysmetrics[i].szDesc));
 
 			SetTextAlign(hdc, TA_RIGHT | TA_TOP);
 
-			TextOut(hdc, 22 * cxCaps + 40 * cxChar, y, szBuffer,
+			TextOut(hdc, 22 * cxCaps + 40 * cxChar, cyChar * i, szBuffer,
 				wsprintf(szBuffer, TEXT("%5d"),
 					GetSystemMetrics(sysmetrics[i].iIndex)));
 

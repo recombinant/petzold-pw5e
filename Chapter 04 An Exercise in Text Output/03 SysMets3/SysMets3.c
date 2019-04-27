@@ -4,8 +4,9 @@
   ----------------------------------------------------*/
 
 #include <windows.h>
+#include <windowsx.h>
 #include <tchar.h>
-#include "sysmets.h"
+#include "SysMets.h"
 
 LRESULT CALLBACK WndProc(_In_ HWND, _In_ UINT, _In_ WPARAM, _In_ LPARAM);
 
@@ -30,7 +31,7 @@ int WINAPI _tWinMain(
 	wndclass.hInstance = hInstance;
 	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wndclass.hbrBackground = GetStockBrush(WHITE_BRUSH);
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = szAppName;
 
@@ -55,10 +56,10 @@ int WINAPI _tWinMain(
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	return msg.wParam;
+	return (int)msg.wParam;  // WM_QUIT
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(_In_ HWND hwnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam)
 {
 	static int  cxChar, cxCaps, cyChar, cxClient, cyClient, iMaxWidth;
 	HDC         hdc;
@@ -86,8 +87,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_SIZE:
-		cxClient = LOWORD(lParam);
-		cyClient = HIWORD(lParam);
+		cxClient = GET_X_LPARAM(lParam);
+		cyClient = GET_Y_LPARAM(lParam);
 
 		// Set vertical scroll bar range and page size
 

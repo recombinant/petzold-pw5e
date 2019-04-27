@@ -4,13 +4,13 @@
 
 #define NUMLINES ((int) (sizeof sysmetrics / sizeof sysmetrics [0]))
 
-struct 
+struct
 {
 	int   iIndex;
 	PTSTR szLabel;
 	PTSTR szDesc;
-} 
-sysmetrics[] = 
+}
+sysmetrics[] =
 {
 	{SM_CXSCREEN,			TEXT("SM_CXSCREEN"),
 							TEXT("Screen width in pixels")},
