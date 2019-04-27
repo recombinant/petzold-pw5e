@@ -13,18 +13,18 @@ else ()
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -Wpedantic -Wextra")
 endif ()
 
-# -----------------------------------------------------------------------------
-# ------------------------------------------------------------------ Chapter 01
+# =============================================================================
+# ================================================================== Chapter 01
 
 add_executable(001_HelloMsg WIN32
         "Chapter 01/01 HelloMsg/HelloMsg.c")
 
-# ------------------------------------------------------------------ Chapter 02
+# ================================================================== Chapter 02
 
 add_executable(002_ScrnSize WIN32
         "Chapter 02/01 ScrnSize/ScrnSize.c")
 
-# ------------------------------------------------------------------ Chapter 03
+# ================================================================== Chapter 03
 # winmm.lib    - required library
 # HelloWin.wav - to be copied to exe directory
 
@@ -41,12 +41,28 @@ add_custom_target(custom_target_003 ALL
         DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/HelloWin.wav")
 add_dependencies(003_HelloWin custom_target_003)
 
-# ------------------------------------------------------------------ Chapter 04
+# ================================================================== Chapter 04
 # -------------------------------------------------------------- 04/01 SysMets1
 
 add_executable(004_SysMets1 WIN32
         "Chapter 04/01 SysMets1/SysMets1.c"
         "Chapter 04/01 SysMets1/SysMets.h")
 target_include_directories(004_SysMets1 PUBLIC "Chapter 04/01 SysMets1")
+
+# -------------------------------------------------------------- 04/02 SysMets2
+#                                                uses header file from SysMets1
+
+add_executable(005_SysMets2 WIN32
+        "Chapter 04/02 SysMets2/SysMets2.c"
+        "Chapter 04/01 SysMets1/SysMets.h")
+target_include_directories(005_SysMets2 PUBLIC "Chapter 04/01 SysMets1")
+
+# -------------------------------------------------------------- 04/03 SysMets3
+#                                                uses header file from SysMets1
+
+add_executable(006_SysMets3 WIN32
+        "Chapter 04/03 SysMets3/SysMets3.c"
+        "Chapter 04/01 SysMets1/SysMets.h")
+target_include_directories(006_SysMets3 PUBLIC "Chapter 04/01 SysMets1")
 
 # -----------------------------------------------------------------------------
