@@ -2,7 +2,7 @@
    HelloWin.c -- Displays "Hello, Windows 98!" in client area
                  (c) Charles Petzold, 1998
   ------------------------------------------------------------*/
-#pragma comment(lib, "winmm.lib")
+//#pragma comment(lib, "winmm.lib")
 
 #include <stdlib.h>
 #include <windows.h>

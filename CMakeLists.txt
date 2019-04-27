@@ -3,8 +3,8 @@ project(petzold_pw5e C)
 
 set(CMAKE_C_STANDARD 11)
 
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DSTRICT -DWIN32_LEAN_AND_MEAN -DCMAKE_GENERATOR_PLATFORM=x64")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DSTRICT -DWIN32_LEAN_AND_MEAN -DCMAKE_GENERATOR_PLATFORM=x64")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DSTRICT -DCMAKE_GENERATOR_PLATFORM=x64")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DSTRICT -DCMAKE_GENERATOR_PLATFORM=x64")
 
 if (MSVC)
     # MSVC Compiler
@@ -13,8 +13,32 @@ else ()
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -Wpedantic -Wextra")
 endif ()
 
-add_executable(HelloMsg WIN32
+# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------ Chapter 01
+
+add_executable(001_HelloMsg WIN32
         "Chapter 01/01 HelloMsg/HelloMsg.c")
 
-add_executable(ScrnSize WIN32
+# ------------------------------------------------------------------ Chapter 02
+
+add_executable(002_ScrnSize WIN32
         "Chapter 02/01 ScrnSize/ScrnSize.c")
+
+# ------------------------------------------------------------------ Chapter 03
+# winmm.lib    - required library
+# HelloWin.wav - to be copied to exe directory
+
+add_executable(003_HelloWin WIN32
+        "Chapter 03/0301 HelloWin/HelloWin.c"
+        "Chapter 03/0301 HelloWin/HelloWin.wav")
+target_link_libraries(003_HelloWin winmm.lib)
+add_custom_command(
+        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/HelloWin.wav"
+        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/Chapter 03/0301 HelloWin/HelloWin.wav" "${CMAKE_CURRENT_BINARY_DIR}"
+        COMMENT "Copying HelloWin.wav to exe directory"
+        DEPENDS "Chapter 03/0301 HelloWin/HelloWin.wav")
+add_custom_target(003_HelloWin_wav ALL
+        DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/HelloWin.wav")
+add_dependencies(003_HelloWin 003_HelloWin_wav)
+
+# -----------------------------------------------------------------------------
