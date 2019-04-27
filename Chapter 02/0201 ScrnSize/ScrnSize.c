@@ -9,7 +9,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-_Check_return_opt_
 int __cdecl MessageBoxPrintf(
     _In_opt_ PCTSTR szCaption,
     _In_z_ _Printf_format_string_ PCTSTR szFormat,
