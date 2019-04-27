@@ -14,7 +14,7 @@ else ()
 endif ()
 
 add_executable(HelloMsg WIN32
-        "Chapter 01/0101 HelloMsg/HelloMsg.c")
+        "Chapter 01/01 HelloMsg/HelloMsg.c")
 
 add_executable(ScrnSize WIN32
-        "Chapter 02/0201 ScrnSize/ScrnSize.c")
+        "Chapter 02/01 ScrnSize/ScrnSize.c")
