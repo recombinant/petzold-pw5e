@@ -3,8 +3,8 @@ project(petzold_pw5e C)
 
 set(CMAKE_C_STANDARD 11)
 
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DSTRICT -DCMAKE_GENERATOR_PLATFORM=x64")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DSTRICT -DCMAKE_GENERATOR_PLATFORM=x64")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSTRICT -DCMAKE_GENERATOR_PLATFORM=x64")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_WIN32_WINNT=0x0601 -DWINVER=0x0601")
 
 if (MSVC)
     # MSVC Compiler
@@ -40,5 +40,13 @@ add_custom_command(
 add_custom_target(custom_target_003 ALL
         DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/HelloWin.wav")
 add_dependencies(003_HelloWin custom_target_003)
+
+# ------------------------------------------------------------------ Chapter 04
+# -------------------------------------------------------------- 04/01 SysMets1
+
+add_executable(004_SysMets1 WIN32
+        "Chapter 04/01 SysMets1/SysMets1.c"
+        "Chapter 04/01 SysMets1/SysMets.h")
+target_include_directories(004_SysMets1 PUBLIC "Chapter 04/01 SysMets1")
 
 # -----------------------------------------------------------------------------
