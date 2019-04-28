@@ -5,6 +5,7 @@
 
 #include <windows.h>
 #include <windowsx.h>
+#include <tchar.h>
 #include <commctrl.h>
 
 
@@ -16,14 +17,14 @@ LRESULT CALLBACK ScrollProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 int idFocus;
 
 
-int CALLBACK WinMain(
-	_In_ HINSTANCE hInstance,
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPSTR lpCmdLine,
-	_In_ int nShowCmd)
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
-	UNREFERENCED_PARAMETER(hPrevInstance)
-	UNREFERENCED_PARAMETER(lpCmdLine)
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
 
 	static TCHAR szAppName[] = TEXT("Colors1");
 	HWND         hwnd;
@@ -62,7 +63,7 @@ int CALLBACK WinMain(
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	return msg.wParam;
+	return (int)msg.wParam;  // WM_QUIT
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -73,7 +74,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static HWND    hwndScroll[N], hwndLabel[N], hwndValue[N], hwndRect;
 	static int     color[N], cyChar;
 	static RECT    rcColor;
-	static TCHAR * szColorLabel[] = { TEXT("Red"), TEXT("Green"),
+	static TCHAR* szColorLabel[] = { TEXT("Red"), TEXT("Green"),
 									  TEXT("Blue") };
 	HINSTANCE      hInstance;
 	int            i, cxClient, cyClient;
@@ -136,8 +137,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_SIZE:
-      cxClient = GET_X_LPARAM(lParam);
-        cyClient = GET_Y_LPARAM(lParam);
+		cxClient = GET_X_LPARAM(lParam);
+		cyClient = GET_Y_LPARAM(lParam);
 
 		SetRect(&rcColor, cxClient / 2, 0, cxClient, cyClient);
 
@@ -235,7 +236,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		DeleteBrush((HBRUSH)
 			SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG_PTR)GetStockBrush(WHITE_BRUSH)));
 
-		for (i = 0; i < N; i++) {
+		for (i = 0; i < N; i++)
+		{
 			DeleteBrush(hBrush[i]);
 		}
 
@@ -255,15 +257,16 @@ LRESULT CALLBACK ScrollProc(
 	UINT_PTR uIdSubclass,
 	DWORD_PTR dwRefData)
 {
-	UNREFERENCED_PARAMETER(uIdSubclass)
-	UNREFERENCED_PARAMETER(dwRefData)
+	UNREFERENCED_PARAMETER(uIdSubclass);
+	UNREFERENCED_PARAMETER(dwRefData);
 
 	int id = GetWindowLongPtr(hwnd, GWLP_ID);
 
 	switch (uMsg)
 	{
 	case WM_KEYDOWN:
-		if (wParam == VK_TAB) {
+		if (wParam == VK_TAB)
+		{
 			SetFocus(GetDlgItem(GetParent(hwnd),
 				(id + (GetKeyState(VK_SHIFT) < 0 ? 2 : 1)) % N));
 		}

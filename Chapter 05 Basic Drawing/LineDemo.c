@@ -10,10 +10,11 @@
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI _tWinMain(
-	_In_ HINSTANCE hInstance,
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ PTSTR pCmdLine,
-	_In_ int nShowCmd) {
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
+{
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
 
@@ -33,7 +34,8 @@ int WINAPI _tWinMain(
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = szAppName;
 
-	if (!RegisterClass(&wndclass)) {
+	if (!RegisterClass(&wndclass))
+	{
 		MessageBox(NULL, TEXT("Program requires Windows NT!"),
 			szAppName, MB_ICONERROR);
 		return 0;
@@ -48,24 +50,29 @@ int WINAPI _tWinMain(
 	ShowWindow(hwnd, nShowCmd);
 	UpdateWindow(hwnd);
 
-	while (GetMessage(&msg, NULL, 0, 0)) {
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 	return (int)msg.wParam;  // WM_QUIT
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
 	static int cxClient, cyClient;
 	HDC hdc;
 	PAINTSTRUCT ps;
 
-	switch (message) {
-	case WM_SIZE:cxClient = GET_X_LPARAM(lParam);
+	switch (message)
+	{
+	case WM_SIZE:
+		cxClient = GET_X_LPARAM(lParam);
 		cyClient = GET_Y_LPARAM(lParam);
 		return 0;
 
-	case WM_PAINT:hdc = BeginPaint(hwnd, &ps);
+	case WM_PAINT:
+		hdc = BeginPaint(hwnd, &ps);
 
 		Rectangle(hdc, cxClient / 8, cyClient / 8,
 			7 * cxClient / 8, 7 * cyClient / 8);
@@ -86,7 +93,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		EndPaint(hwnd, &ps);
 		return 0;
 
-	case WM_DESTROY:PostQuitMessage(0);
+	case WM_DESTROY:
+		PostQuitMessage(0);
 		return 0;
 	}
 	return DefWindowProc(hwnd, message, wParam, lParam);

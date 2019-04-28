@@ -7,39 +7,41 @@
 
 #include <windows.h>
 #include <windowsx.h>
+#include <tchar.h>
+#include <stdlib.h>
 
 struct
 {
 	int     iStyle;
-	TCHAR * szText;
+	TCHAR* szText;
 }
 button[] =
 {
-	 BS_PUSHBUTTON,      TEXT("PUSHBUTTON"),
-	 BS_DEFPUSHBUTTON,   TEXT("DEFPUSHBUTTON"),
-	 BS_CHECKBOX,        TEXT("CHECKBOX"),
-	 BS_AUTOCHECKBOX,    TEXT("AUTOCHECKBOX"),
-	 BS_RADIOBUTTON,     TEXT("RADIOBUTTON"),
-	 BS_3STATE,          TEXT("3STATE"),
-	 BS_AUTO3STATE,      TEXT("AUTO3STATE"),
-	 BS_GROUPBOX,        TEXT("GROUPBOX"),
-	 BS_AUTORADIOBUTTON, TEXT("AUTORADIO"),
-	 BS_OWNERDRAW,       TEXT("OWNERDRAW")
+	{BS_PUSHBUTTON,      TEXT("PUSHBUTTON")},
+	{BS_DEFPUSHBUTTON,   TEXT("DEFPUSHBUTTON")},
+	{BS_CHECKBOX,        TEXT("CHECKBOX")},
+	{BS_AUTOCHECKBOX,    TEXT("AUTOCHECKBOX")},
+	{BS_RADIOBUTTON,     TEXT("RADIOBUTTON")},
+	{BS_3STATE,          TEXT("3STATE")},
+	{BS_AUTO3STATE,      TEXT("AUTO3STATE")},
+	{BS_GROUPBOX,        TEXT("GROUPBOX")},
+	{BS_AUTORADIOBUTTON, TEXT("AUTORADIO")},
+	{BS_OWNERDRAW,       TEXT("OWNERDRAW"})
 };
 
-#define NUM (sizeof button / sizeof button[0])
+#define NUM _countof(sizeof button)
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 
-int CALLBACK WinMain(
-	_In_ HINSTANCE hInstance,
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPSTR lpCmdLine,
-	_In_ int nShowCmd)
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
-	UNREFERENCED_PARAMETER(hPrevInstance)
-	UNREFERENCED_PARAMETER(lpCmdLine)
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
 
 	static TCHAR szAppName[] = TEXT("BtnLook");
 	HWND         hwnd;
@@ -78,7 +80,7 @@ int CALLBACK WinMain(
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	return msg.wParam;
+	return (int)msg.wParam;  // WM_QUIT
 }
 
 
@@ -93,7 +95,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int   cxChar, cyChar;
 	HDC          hdc;
 	PAINTSTRUCT  ps;
-	int          i;
 
 	switch (message)
 	{
@@ -101,7 +102,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		cxChar = LOWORD(GetDialogBaseUnits());
 		cyChar = HIWORD(GetDialogBaseUnits());
 
-		for (i = 0; i < NUM; i++)
+		for (unsigned i = 0; i < NUM; i++)
 			hwndButton[i] = CreateWindowEx(0, TEXT("button"),
 				button[i].szText,
 				WS_CHILD | WS_VISIBLE | button[i].iStyle,

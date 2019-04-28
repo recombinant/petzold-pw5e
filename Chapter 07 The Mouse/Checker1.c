@@ -4,14 +4,21 @@
   -------------------------------------------------*/
 
 #include <windows.h>
+#include <tchar.h>
 
 #define DIVISIONS 5
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR  szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+    _In_ HINSTANCE hInstance,
+    _In_opt_ HINSTANCE hPrevInstance,
+    _In_ PTSTR pCmdLine,
+    _In_ int nShowCmd)
 {
+  UNREFERENCED_PARAMETER(hPrevInstance);
+  UNREFERENCED_PARAMETER(pCmdLine);
+
      static TCHAR szAppName[] = TEXT ("Checker1") ;
      HWND         hwnd ;
      MSG          msg ;
@@ -41,7 +48,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
      
-     ShowWindow (hwnd, iCmdShow) ;
+     ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
      
      while (GetMessage (&msg, NULL, 0, 0))
@@ -49,7 +56,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
           TranslateMessage (&msg) ;
           DispatchMessage (&msg) ;
      }
-     return msg.wParam ;
+     return (int)msg.wParam;  // WM_QUIT
 }
 
 LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)

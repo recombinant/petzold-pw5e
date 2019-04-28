@@ -3,14 +3,13 @@
 			 (c) Charles Petzold, 1998
   ---------------------------------------------*/
 
-#pragma comment(lib, "Comctl32")
-
 #define WIN32_LEAN_AND_MEAN
 #undef NOUSER
 
-#include <Windows.h>
-#include <CommCtrl.h>
+#include <windows.h>
 #include <windowsx.h>
+#include <tchar.h>
+#include <commctrl.h>
 
 
 #define ID_LIST     1
@@ -25,14 +24,14 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK ListProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 
 
-int CALLBACK WinMain(
-	_In_ HINSTANCE hInstance,
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPSTR lpCmdLine,
-	_In_ int nShowCmd)
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
-	UNREFERENCED_PARAMETER(hPrevInstance)
-	UNREFERENCED_PARAMETER(lpCmdLine)
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
 
 	static TCHAR szAppName[] = TEXT("head");
 	HWND         hwnd;
@@ -50,7 +49,8 @@ int CALLBACK WinMain(
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = szAppName;
 
-	if (!RegisterClass(&wndclass)) {
+	if (!RegisterClass(&wndclass))
+	{
 		MessageBox(NULL, TEXT("This program requires Windows NT!"),
 			szAppName, MB_ICONERROR);
 		return 0;
@@ -65,24 +65,26 @@ int CALLBACK WinMain(
 	ShowWindow(hwnd, nShowCmd);
 	UpdateWindow(hwnd);
 
-	while (GetMessage(&msg, NULL, 0, 0)) {
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	return msg.wParam;
+	return (int)msg.wParam;  // WM_QUIT
 }
 
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static BOOL     bValidFile;
-	static BYTE     buffer[MAXREAD];
+	static TCHAR    buffer[MAXREAD];
 	static HWND     hwndList, hwndText;
 	static RECT     rect;
 	static TCHAR    szFile[MAX_PATH + 1];
 	HANDLE          hFile;
 	HDC             hdc;
-	int             i, cxChar, cyChar;
+	int             cxChar, cyChar;
+	DWORD           nBytesRead;
 	PAINTSTRUCT     ps;
 	TCHAR           szBuffer[MAX_PATH + 1];
 
@@ -129,17 +131,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_COMMAND:
-		if (LOWORD(wParam) == ID_LIST && HIWORD(wParam) == LBN_DBLCLK)
+		if (GET_WM_COMMAND_ID(wParam, lParam) == ID_LIST && GET_WM_COMMAND_CMD(wParam, lParam) == LBN_DBLCLK)
 		{
-			i = ListBox_GetCurSel(hwndList);
-			if (LB_ERR == i) {
+			int i = ListBox_GetCurSel(hwndList);
+			if (LB_ERR == i)
+			{
 				break;
 			}
 
 			ListBox_GetText(hwndList, i, szBuffer);
 
 			hFile = CreateFile(szBuffer, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-			if (INVALID_HANDLE_VALUE != hFile) {
+			if (INVALID_HANDLE_VALUE != hFile)
+			{
 				CloseHandle(hFile);
 				bValidFile = TRUE;
 				lstrcpy(szFile, szBuffer);
@@ -156,7 +160,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				// If setting the directory doesn't work, maybe it's
 				// a drive change, so try that.
 
-				if (!SetCurrentDirectory(szBuffer + 1)) {
+				if (!SetCurrentDirectory(szBuffer + 1))
+				{
 					szBuffer[3] = ':';
 					szBuffer[4] = '\0';
 					SetCurrentDirectory(szBuffer + 2);
@@ -174,17 +179,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_PAINT:
-		if (!bValidFile) {
+		if (!bValidFile)
+		{
 			break;
 		}
 
 		hFile = CreateFile(szFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-		if (INVALID_HANDLE_VALUE == hFile) {
+		if (INVALID_HANDLE_VALUE == hFile)
+		{
 			bValidFile = FALSE;
 			break;
 		}
 
-		ReadFile(hFile, buffer, MAXREAD, &i, NULL);
+		ReadFile(hFile, buffer, MAXREAD, &nBytesRead, NULL);
 		CloseHandle(hFile);
 
 		// i now equals the number of bytes in buffer.
@@ -197,7 +204,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		// Assume the file is ASCII
 
-		DrawTextA(hdc, buffer, i, &rect, DTFLAGS);
+		DrawTextA(hdc, buffer, nBytesRead, &rect, DTFLAGS);
 
 		EndPaint(hWnd, &ps);
 		return 0;
@@ -218,13 +225,14 @@ LRESULT CALLBACK ListProc(
 	UINT_PTR uIdSubclass,
 	DWORD_PTR dwRefData)
 {
-	UNREFERENCED_PARAMETER(uIdSubclass)
-	UNREFERENCED_PARAMETER(dwRefData)
+	UNREFERENCED_PARAMETER(uIdSubclass);
+	UNREFERENCED_PARAMETER(dwRefData);
 
-	switch (uMsg) {
-
+	switch (uMsg)
+	{
 	case WM_KEYDOWN:
-		if (wParam == VK_RETURN) {
+		if (wParam == VK_RETURN)
+		{
 			SendMessage(GetParent(hwnd), WM_COMMAND,
 				MAKELONG(ID_LIST, LBN_DBLCLK), (LPARAM)hwnd);
 		}

@@ -10,10 +10,10 @@
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI _tWinMain(
-	_In_ HINSTANCE hInstance,
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ PTSTR pCmdLine,
-	_In_ int nShowCmd)
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
@@ -60,8 +60,8 @@ int WINAPI _tWinMain(
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	static POINT aptFigure[10] = { 10,70, 50,70, 50,10, 90,10, 90,50,
-									30,50, 30,90, 70,90, 70,30, 10,30 };
+	static POINT aptFigure[10] = { {10,70}, {50,70}, {50,10}, {90,10}, {90,50},
+								   {30,50}, {30,90}, {70,90}, {70,30}, {10,30} };
 	static int   cxClient, cyClient;
 	HDC          hdc;
 	int          i;

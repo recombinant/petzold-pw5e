@@ -3,17 +3,19 @@
 				 (c) Charles Petzold, 1998
   --------------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
+#include <stdlib.h>
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI _tWinMain(
-	_In_ HINSTANCE hInstance,
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ PTSTR pCmdLine,
-	_In_ int nShowCmd)
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
@@ -64,15 +66,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int   cLinesMax, cLines;
 	static PMSG  pmsg;
 	static RECT  rectScroll;
-	static TCHAR szTop[] = TEXT("Message        Key       Char     ")
+	static TCHAR szTop[] =
+		TEXT("Message        Key       Char     ")
 		TEXT("Repeat Scan Ext ALT Prev Tran");
-	static TCHAR szUnd[] = TEXT("_______        ___       ____     ")
+	static TCHAR szUnd[] =
+		TEXT("_______        ___       ____     ")
 		TEXT("______ ____ ___ ___ ____ ____");
 
 	static TCHAR* szFormat[2] = {
-
-			  TEXT("%-13s %3d %-15s%c%6u %4d %3s %3s %4s %4s"),
-			  TEXT("%-13s            0x%04X%1s%c %6u %4d %3s %3s %4s %4s") };
+		TEXT("%-13s %3d %-15s%c%6u %4d %3s %3s %4s %4s"),
+		TEXT("%-13s            0x%04X%1s%c %6u %4d %3s %3s %4s %4s") };
 
 	static TCHAR* szYes = TEXT("Yes");
 	static TCHAR* szNo = TEXT("No");
@@ -80,15 +83,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static TCHAR* szUp = TEXT("Up");
 
 	static TCHAR* szMessage[] = {
-						TEXT("WM_KEYDOWN"),    TEXT("WM_KEYUP"),
-						TEXT("WM_CHAR"),       TEXT("WM_DEADCHAR"),
-						TEXT("WM_SYSKEYDOWN"), TEXT("WM_SYSKEYUP"),
-						TEXT("WM_SYSCHAR"),    TEXT("WM_SYSDEADCHAR") };
+		TEXT("WM_KEYDOWN"),    TEXT("WM_KEYUP"),
+		TEXT("WM_CHAR"),       TEXT("WM_DEADCHAR"),
+		TEXT("WM_SYSKEYDOWN"), TEXT("WM_SYSKEYUP"),
+		TEXT("WM_SYSCHAR"),    TEXT("WM_SYSDEADCHAR") };
 	HDC          hdc;
 	int          i, iType;
 	PAINTSTRUCT  ps;
 	TCHAR        szBuffer[128], szKeyName[32];
 	TEXTMETRIC   tm;
+
+	DBG_UNREFERENCED_LOCAL_VARIABLE(cxClientMax);
+	DBG_UNREFERENCED_LOCAL_VARIABLE(cxChar);
 
 	switch (message)
 	{
@@ -181,8 +187,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				pmsg[i].message == WM_DEADCHAR ||
 				pmsg[i].message == WM_SYSDEADCHAR;
 
-			GetKeyNameText(pmsg[i].lParam, szKeyName,
-				sizeof(szKeyName) / sizeof(TCHAR));
+			GetKeyNameText(pmsg[i].lParam, szKeyName, _countof(szKeyName));
 
 			TextOut(hdc, 0, (cyClient / cyChar - 1 - i) * cyChar, szBuffer,
 				wsprintf(szBuffer, szFormat[iType],

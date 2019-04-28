@@ -3,6 +3,7 @@
 				 (c) Charles Petzold, 1998
   -----------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <tchar.h>
 #include <stdlib.h>
@@ -10,7 +11,7 @@
 #include <stdio.h>
 
 int __cdecl MessageBoxPrintf(
-	_In_opt_z_ PCTSTR szCaption,
+	_In_opt_z_                    PCTSTR szCaption,
 	_In_z_ _Printf_format_string_ PCTSTR szFormat,
 	...)
 {
@@ -32,10 +33,10 @@ int __cdecl MessageBoxPrintf(
 }
 
 int WINAPI _tWinMain(
-	_In_ HINSTANCE hInstance,
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ PTSTR pCmdLine,
-	_In_ int nShowCmd)
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
 	UNREFERENCED_PARAMETER(hInstance);
 	UNREFERENCED_PARAMETER(hPrevInstance);

@@ -3,17 +3,22 @@
 				 (c) Charles Petzold, 1998
   --------------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
+#include <stdlib.h>
+
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
+
 int WINAPI _tWinMain(
-	_In_ HINSTANCE hInstance,
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ PTSTR pCmdLine,
-	_In_ int nShowCmd) {
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
+{
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
 
@@ -33,7 +38,8 @@ int WINAPI _tWinMain(
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = szAppName;
 
-	if (!RegisterClass(&wndclass)) {
+	if (!RegisterClass(&wndclass))
+	{
 		MessageBox(NULL, TEXT("This program requires Windows NT!"),
 			szAppName, MB_ICONERROR);
 		return 0;
@@ -48,14 +54,16 @@ int WINAPI _tWinMain(
 	ShowWindow(hwnd, nShowCmd);
 	UpdateWindow(hwnd);
 
-	while (GetMessage(&msg, NULL, 0, 0)) {
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 	return (int)msg.wParam;  // WM_QUIT
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
 	static DWORD dwCharSet = DEFAULT_CHARSET;
 	static int cxClientMax, cyClientMax, cxClient, cyClient, cxChar, cyChar;
 	static int cLinesMax, cLines;
@@ -87,8 +95,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	TCHAR szBuffer[128], szKeyName[32];
 	TEXTMETRIC tm;
 
-	switch (message) {
-	case WM_INPUTLANGCHANGE:dwCharSet = wParam;
+	DBG_UNREFERENCED_LOCAL_VARIABLE(cxClientMax);
+	DBG_UNREFERENCED_LOCAL_VARIABLE(cxChar);
+
+	switch (message)
+	{
+	case WM_INPUTLANGCHANGE:
+		dwCharSet = wParam;
 		// fall through
 	case WM_CREATE:
 	case WM_DISPLAYCHANGE:
@@ -122,7 +135,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		cLines = 0;
 		// fall through
 	case WM_SIZE:
-		if (message == WM_SIZE) {
+		if (message == WM_SIZE)
+		{
 			cxClient = GET_X_LPARAM(lParam);
 			cyClient = GET_Y_LPARAM(lParam);
 		}
@@ -151,7 +165,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 
 		// Rearrange storage array
 
-		for (i = cLinesMax - 1; i > 0; i--) {
+		for (i = cLinesMax - 1; i > 0; i--)
+		{
 			pmsg[i] = pmsg[i - 1];
 		}
 		// Store new message
@@ -169,7 +184,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 
 		break;        // ie, call DefWindowProc so Sys messages work
 
-	case WM_PAINT:hdc = BeginPaint(hwnd, &ps);
+	case WM_PAINT:
+		hdc = BeginPaint(hwnd, &ps);
 
 		SelectObject(hdc, CreateFont(0, 0, 0, 0, 0, 0, 0, 0,
 			dwCharSet, 0, 0, 0, FIXED_PITCH, NULL));
@@ -178,14 +194,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		TextOut(hdc, 0, 0, szTop, lstrlen(szTop));
 		TextOut(hdc, 0, 0, szUnd, lstrlen(szUnd));
 
-		for (i = 0; i < min(cLines, cyClient / cyChar - 1); i++) {
+		for (i = 0; i < min(cLines, cyClient / cyChar - 1); i++)
+		{
 			iType = pmsg[i].message == WM_CHAR ||
 				pmsg[i].message == WM_SYSCHAR ||
 				pmsg[i].message == WM_DEADCHAR ||
 				pmsg[i].message == WM_SYSDEADCHAR;
 
-			GetKeyNameText(pmsg[i].lParam, szKeyName,
-				sizeof(szKeyName) / sizeof(TCHAR));
+			GetKeyNameText(pmsg[i].lParam, szKeyName, _countof(szKeyName));
 
 			TextOut(hdc, 0, (cyClient / cyChar - 1 - i) * cyChar, szBuffer,
 				wsprintf(szBuffer, szFormat[iType],
@@ -204,7 +220,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		EndPaint(hwnd, &ps);
 		return 0;
 
-	case WM_DESTROY:PostQuitMessage(0);
+	case WM_DESTROY:
+		PostQuitMessage(0);
 		return 0;
 	}
 	return DefWindowProc(hwnd, message, wParam, lParam);

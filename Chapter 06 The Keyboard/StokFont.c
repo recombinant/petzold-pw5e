@@ -9,10 +9,11 @@
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI _tWinMain(
-	_In_ HINSTANCE hInstance,
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ PTSTR pCmdLine,
-	_In_ int nShowCmd) {
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
+{
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
 
@@ -32,7 +33,8 @@ int WINAPI _tWinMain(
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = szAppName;
 
-	if (!RegisterClass(&wndclass)) {
+	if (!RegisterClass(&wndclass))
+	{
 		MessageBox(NULL, TEXT("Program requires Windows NT!"),
 			szAppName, MB_ICONERROR);
 		return 0;
@@ -47,14 +49,16 @@ int WINAPI _tWinMain(
 	ShowWindow(hwnd, nShowCmd);
 	UpdateWindow(hwnd);
 
-	while (GetMessage(&msg, NULL, 0, 0)) {
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 	return (int)msg.wParam;  // WM_QUIT
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
 	static struct {
 		int idStockFont;
 		TCHAR* szStockFont;
@@ -67,22 +71,26 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 				   {SYSTEM_FIXED_FONT, TEXT("SYSTEM_FIXED_FONT")},
 				   {DEFAULT_GUI_FONT, TEXT("DEFAULT_GUI_FONT")} };
 
-	static int iFont, cFonts = sizeof stockfont / sizeof stockfont[0];
+	static int iFont, cFonts = _countof(stockfont);
 	HDC hdc;
 	int i, x, y, cxGrid, cyGrid;
 	PAINTSTRUCT ps;
 	TCHAR szFaceName[LF_FACESIZE], szBuffer[LF_FACESIZE + 64];
 	TEXTMETRIC tm;
 
-	switch (message) {
-	case WM_CREATE:SetScrollRange(hwnd, SB_VERT, 0, cFonts - 1, TRUE);
+	switch (message)
+	{
+	case WM_CREATE:
+		SetScrollRange(hwnd, SB_VERT, 0, cFonts - 1, TRUE);
 		return 0;
 
-	case WM_DISPLAYCHANGE:InvalidateRect(hwnd, NULL, TRUE);
+	case WM_DISPLAYCHANGE:
+		InvalidateRect(hwnd, NULL, TRUE);
 		return 0;
 
 	case WM_VSCROLL:
-		switch (LOWORD(wParam)) {
+		switch (LOWORD(wParam))
+		{
 		case SB_TOP: iFont = 0;
 			break;
 		case SB_BOTTOM: iFont = cFonts - 1;
@@ -102,7 +110,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		return 0;
 
 	case WM_KEYDOWN:
-		switch (wParam) {
+		switch (wParam)
+		{
 		case VK_HOME: SendMessage(hwnd, WM_VSCROLL, SB_TOP, 0);
 			break;
 		case VK_END: SendMessage(hwnd, WM_VSCROLL, SB_BOTTOM, 0);
@@ -118,7 +127,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		}
 		return 0;
 
-	case WM_PAINT:hdc = BeginPaint(hwnd, &ps);
+	case WM_PAINT:
+		hdc = BeginPaint(hwnd, &ps);
 
 		SelectObject(hdc, GetStockObject(stockfont[iFont].idStockFont));
 		GetTextFace(hdc, LF_FACESIZE, szFaceName);
@@ -135,7 +145,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 
 		// vertical and horizontal lines
 
-		for (i = 0; i < 17; i++) {
+		for (i = 0; i < 17; i++)
+		{
 			MoveToEx(hdc, (i + 2) * cxGrid, 2 * cyGrid, NULL);
 			LineTo(hdc, (i + 2) * cxGrid, 19 * cyGrid);
 
@@ -144,7 +155,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		}
 		// vertical and horizontal headings
 
-		for (i = 0; i < 16; i++) {
+		for (i = 0; i < 16; i++)
+		{
 			TextOut(hdc, (2 * i + 5) * cxGrid / 2, 2 * cyGrid + 2, szBuffer,
 				wsprintf(szBuffer, TEXT("%X-"), i));
 
@@ -154,7 +166,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		// characters
 
 		for (y = 0; y < 16; y++)
-			for (x = 0; x < 16; x++) {
+			for (x = 0; x < 16; x++)
+			{
 				TextOut(hdc, (2 * x + 5) * cxGrid / 2,
 					(y + 3) * cyGrid + 2, szBuffer,
 					wsprintf(szBuffer, TEXT("%c"), 16 * x + y));
@@ -163,7 +176,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		EndPaint(hwnd, &ps);
 		return 0;
 
-	case WM_DESTROY:PostQuitMessage(0);
+	case WM_DESTROY:
+		PostQuitMessage(0);
 		return 0;
 	}
 	return DefWindowProc(hwnd, message, wParam, lParam);

@@ -14,10 +14,11 @@ void DrawRectangle(HWND);
 int cxClient, cyClient;
 
 int WINAPI _tWinMain(
-	_In_ HINSTANCE hInstance,
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ PTSTR pCmdLine,
-	_In_ int nShowCmd) {
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
+{
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
 
@@ -37,7 +38,8 @@ int WINAPI _tWinMain(
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = szAppName;
 
-	if (!RegisterClass(&wndclass)) {
+	if (!RegisterClass(&wndclass))
+	{
 		MessageBox(NULL, TEXT("This program requires Windows NT!"),
 			szAppName, MB_ICONERROR);
 		return 0;
@@ -52,8 +54,10 @@ int WINAPI _tWinMain(
 	ShowWindow(hwnd, nShowCmd);
 	UpdateWindow(hwnd);
 
-	while (TRUE) {
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+	while (TRUE)
+	{
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
 			if (msg.message == WM_QUIT)
 				break;
 
@@ -66,8 +70,10 @@ int WINAPI _tWinMain(
 	return (int)msg.wParam;  // WM_QUIT
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
-	switch (iMsg) {
+LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (iMsg)
+	{
 	case WM_SIZE:cxClient = GET_X_LPARAM(lParam);
 		cyClient = GET_Y_LPARAM(lParam);
 		return 0;
@@ -78,7 +84,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
 	return DefWindowProc(hwnd, iMsg, wParam, lParam);
 }
 
-void DrawRectangle(HWND hwnd) {
+void DrawRectangle(HWND hwnd)
+{
 	HBRUSH hBrush;
 	HDC hdc;
 	RECT rect;

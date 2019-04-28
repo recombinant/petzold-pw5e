@@ -7,8 +7,6 @@
 #include <windowsx.h>
 #include <tchar.h>
 
-#define NUMLINES ((int) (sizeof devcaps / sizeof devcaps [0]))
-
 struct
 {
 	int   iIndex;
@@ -42,10 +40,10 @@ devcaps[] =
 LRESULT CALLBACK WndProc(_In_ HWND, _In_ UINT, _In_ WPARAM, _In_ LPARAM);
 
 int WINAPI _tWinMain(
-	_In_ HINSTANCE hInstance,
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ PTSTR pCmdLine,
-	_In_ int nShowCmd)
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
@@ -114,7 +112,7 @@ LRESULT CALLBACK WndProc(_In_ HWND hwnd, _In_ UINT message, _In_ WPARAM wParam, 
 	case WM_PAINT:
 		hdc = BeginPaint(hwnd, &ps);
 
-		for (int i = 0; i < NUMLINES; i++)
+		for (unsigned i = 0; i < _countof(devcaps); i++)
 		{
 			TextOut(hdc, 0, cyChar * i,
 				devcaps[i].szLabel,

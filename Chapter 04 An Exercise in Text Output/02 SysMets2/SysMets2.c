@@ -3,18 +3,21 @@
 				 (c) Charles Petzold, 1998
   ----------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
 #include "SysMets.h"
 
+
 LRESULT CALLBACK WndProc(_In_ HWND, _In_ UINT, _In_ WPARAM, _In_ LPARAM);
 
+
 int WINAPI _tWinMain(
-	_In_ HINSTANCE hInstance,
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ PTSTR pCmdLine,
-	_In_ int nShowCmd)
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
@@ -63,7 +66,7 @@ LRESULT CALLBACK WndProc(_In_ HWND hwnd, _In_ UINT message, _In_ WPARAM wParam, 
 {
 	static int  cxChar, cxCaps, cyChar, cyClient, iVscrollPos;
 	HDC         hdc;
-	int         i, y;
+	int         y;
 	PAINTSTRUCT ps;
 	TCHAR       szBuffer[10];
 	TEXTMETRIC  tm;
@@ -127,7 +130,7 @@ LRESULT CALLBACK WndProc(_In_ HWND hwnd, _In_ UINT message, _In_ WPARAM wParam, 
 	case WM_PAINT:
 		hdc = BeginPaint(hwnd, &ps);
 
-		for (i = 0; i < NUMLINES; i++)
+		for (unsigned i = 0; i < NUMLINES; i++)
 		{
 			y = cyChar * (i - iVscrollPos);
 

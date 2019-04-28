@@ -14,10 +14,11 @@
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI _tWinMain(
-	_In_ HINSTANCE hInstance,
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ PTSTR pCmdLine,
-	_In_ int nShowCmd) {
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
+{
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
 
@@ -37,7 +38,8 @@ int WINAPI _tWinMain(
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = szAppName;
 
-	if (!RegisterClass(&wndclass)) {
+	if (!RegisterClass(&wndclass))
+	{
 		MessageBox(NULL, TEXT("This program requires Windows NT!"),
 			szAppName, MB_ICONERROR);
 		return 0;
@@ -52,14 +54,16 @@ int WINAPI _tWinMain(
 	ShowWindow(hwnd, nShowCmd);
 	UpdateWindow(hwnd);
 
-	while (GetMessage(&msg, NULL, 0, 0)) {
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 	return (int)msg.wParam;  // WM_QUIT
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
+{
 	static HRGN hRgnClip;
 	static int cxClient, cyClient;
 	double fAngle, fRadius;
@@ -69,7 +73,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
 	int i;
 	PAINTSTRUCT ps;
 
-	switch (iMsg) {
+	switch (iMsg)
+	{
 	case WM_SIZE: cxClient = GET_X_LPARAM(lParam);
 		cyClient = GET_Y_LPARAM(lParam);
 
@@ -109,7 +114,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
 
 		fRadius = _hypot(cxClient / 2.0, cyClient / 2.0);
 
-		for (fAngle = 0.0; fAngle < TWO_PI; fAngle += TWO_PI / 360) {
+		for (fAngle = 0.0; fAngle < TWO_PI; fAngle += TWO_PI / 360)
+		{
 			MoveToEx(hdc, 0, 0, NULL);
 			LineTo(hdc, (int)(fRadius * cos(fAngle) + 0.5),
 				(int)(-fRadius * sin(fAngle) + 0.5));

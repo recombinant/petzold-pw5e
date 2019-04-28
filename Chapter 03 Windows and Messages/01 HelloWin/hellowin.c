@@ -2,8 +2,8 @@
    HelloWin.c -- Displays "Hello, Windows 98!" in client area
 				 (c) Charles Petzold, 1998
   ------------------------------------------------------------*/
-  //#pragma comment(lib, "winmm.lib")
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
@@ -13,10 +13,10 @@
 LRESULT CALLBACK WndProc(_In_ HWND, _In_ UINT, _In_ WPARAM, _In_ LPARAM);
 
 int WINAPI _tWinMain(
-	_In_ HINSTANCE hInstance,
+	_In_ HINSTANCE     hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ PTSTR pCmdLine,
-	_In_ int nShowCmd)
+	_In_ PTSTR         pCmdLine,
+	_In_ int           nShowCmd)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
@@ -31,12 +31,13 @@ int WINAPI _tWinMain(
 	//wndclassex.cbClsExtra = 0;
 	//wndclassex.cbWndExtra = 0;
 	wndclassex.hInstance = hInstance;
-	wndclassex.hIcon = LoadImage(hInstance,  // hInst
-		IDI_APPLICATION, // name
-		IMAGE_ICON, // type
-		0,          // cx
-		0,          // cy
-		LR_SHARED); // fuLoad
+	wndclassex.hIcon = LoadImage(
+		hInstance,        // hInst
+		IDI_APPLICATION,  // name
+		IMAGE_ICON,       // type
+		0,                // cx
+		0,                // cy
+		LR_SHARED);       // fuLoad
 	wndclassex.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wndclassex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wndclassex.hbrBackground = GetStockBrush(WHITE_BRUSH);
@@ -50,7 +51,8 @@ int WINAPI _tWinMain(
 		return 0;  // premature exit
 	}
 
-	HWND hwnd = CreateWindow((PCTSTR)atom,               // window class name or atom
+	HWND hwnd = CreateWindow(
+		(PCTSTR)atom,               // window class name or atom
 		TEXT("The Hello Program"),  // window caption
 		WS_OVERLAPPEDWINDOW,        // window style
 		CW_USEDEFAULT,              // initial x position

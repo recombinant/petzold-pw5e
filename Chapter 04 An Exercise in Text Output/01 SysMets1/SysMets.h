@@ -2,7 +2,8 @@
    SYSMETS.H -- System metrics display structure
   -----------------------------------------------*/
 
-#define NUMLINES ((int) (sizeof sysmetrics / sizeof sysmetrics [0]))
+#include <winuser.h>  // SM_
+#include <tchar.h>    // PTSTR, TEXT()
 
 struct
 {
@@ -163,3 +164,5 @@ sysmetrics[] =
 	{SM_SAMEDISPLAYFORMAT,	TEXT("SM_SAMEDISPLAYFORMAT"),
 							TEXT("Same color format flag")}
 };
+
+#define NUMLINES ((int)(sizeof(sysmetrics) / sizeof(sysmetrics[0])))

@@ -7,6 +7,7 @@
 
 #include <windows.h>
 #include <windowsx.h>
+#include <tchar.h>
 
 
 #define ID_EDIT     1
@@ -15,14 +16,14 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 TCHAR szAppName[] = TEXT("PopPad1");
 
-int CALLBACK WinMain(
-	_In_ HINSTANCE hInstance,
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPSTR lpCmdLine,
-	_In_ int nShowCmd)
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
-	UNREFERENCED_PARAMETER(hPrevInstance)
-	UNREFERENCED_PARAMETER(lpCmdLine)
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
 
 	HWND     hwnd;
 	MSG      msg;
@@ -60,7 +61,7 @@ int CALLBACK WinMain(
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	return msg.wParam;
+	return (int)msg.wParam;  // WM_QUIT
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)

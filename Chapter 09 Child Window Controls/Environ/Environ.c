@@ -7,6 +7,7 @@
 
 #include <Windows.h>
 #include <windowsx.h>
+#include <tchar.h>
 #include <malloc.h>
 
 
@@ -15,14 +16,14 @@
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-int CALLBACK WinMain(
-	_In_ HINSTANCE hInstance,
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPSTR lpCmdLine,
-	_In_ int nShowCmd)
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
-	UNREFERENCED_PARAMETER(hPrevInstance)
-	UNREFERENCED_PARAMETER(lpCmdLine)
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
 
 	static TCHAR szAppName[] = TEXT("Environ");
 	HWND         hwnd;
@@ -61,14 +62,14 @@ int CALLBACK WinMain(
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	return msg.wParam;
+	return (int)msg.wParam;  // WM_QUIT
 }
 
 
 void FillListBox(HWND hwndList)
 {
 	int    iLength;
-	TCHAR *pEBlock, *pVarBlock, *pVarBeg, *pVarEnd, *pVarName;
+	TCHAR* pEBlock, * pVarBlock, * pVarBeg, * pVarEnd, * pVarName;
 
 	pEBlock = GetEnvironmentStrings();  // Get pointer to environment block
 	pVarBlock = pEBlock;
@@ -104,7 +105,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static HWND  hwndList, hwndText;
 	int          iIndex, iLength, cxChar, cyChar;
-	TCHAR       *pVarName, *pVarValue;
+	TCHAR* pVarName, * pVarValue;
 
 	switch (message)
 	{

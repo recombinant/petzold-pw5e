@@ -10,10 +10,11 @@
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI _tWinMain(
-	_In_ HINSTANCE hInstance,
+	_In_     HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ PTSTR pCmdLine,
-	_In_ int nShowCmd) {
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
+{
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
 
@@ -33,7 +34,8 @@ int WINAPI _tWinMain(
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = szAppName;
 
-	if (!RegisterClass(&wndclass)) {
+	if (!RegisterClass(&wndclass))
+	{
 		MessageBox(NULL, TEXT("Program requires Windows NT!"),
 			szAppName, MB_ICONERROR);
 		return 0;
@@ -48,14 +50,16 @@ int WINAPI _tWinMain(
 	ShowWindow(hwnd, nShowCmd);
 	UpdateWindow(hwnd);
 
-	while (GetMessage(&msg, NULL, 0, 0)) {
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 	return (int)msg.wParam;  // WM_QUIT
 }
 
-void DrawBezier(HDC hdc, POINT apt[]) {
+void DrawBezier(HDC hdc, POINT apt[])
+{
 	PolyBezier(hdc, apt, 4);
 
 	MoveToEx(hdc, apt[0].x, apt[0].y, NULL);
@@ -65,14 +69,17 @@ void DrawBezier(HDC hdc, POINT apt[]) {
 	LineTo(hdc, apt[3].x, apt[3].y);
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
 	static POINT apt[4];
 	HDC hdc;
 	int cxClient, cyClient;
 	PAINTSTRUCT ps;
 
-	switch (message) {
-	case WM_SIZE:cxClient = GET_X_LPARAM(lParam);
+	switch (message)
+	{
+	case WM_SIZE:
+		cxClient = GET_X_LPARAM(lParam);
 		cyClient = GET_Y_LPARAM(lParam);
 
 		apt[0].x = cxClient / 4;
@@ -92,18 +99,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 	case WM_MOUSEMOVE:
-		if (wParam & MK_LBUTTON || wParam & MK_RBUTTON) {
+		if (wParam & MK_LBUTTON || wParam & MK_RBUTTON)
+		{
 			hdc = GetDC(hwnd);
 
 			SelectObject(hdc, GetStockObject(WHITE_PEN));
 			DrawBezier(hdc, apt);
 
-			if (wParam & MK_LBUTTON) {
+			if (wParam & MK_LBUTTON)
+			{
 				apt[1].x = LOWORD(lParam);
 				apt[1].y = HIWORD(lParam);
 			}
 
-			if (wParam & MK_RBUTTON) {
+			if (wParam & MK_RBUTTON)
+			{
 				apt[2].x = LOWORD(lParam);
 				apt[2].y = HIWORD(lParam);
 			}
@@ -114,7 +124,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		}
 		return 0;
 
-	case WM_PAINT:InvalidateRect(hwnd, NULL, TRUE);
+	case WM_PAINT:
+		InvalidateRect(hwnd, NULL, TRUE);
 
 		hdc = BeginPaint(hwnd, &ps);
 
@@ -123,7 +134,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		EndPaint(hwnd, &ps);
 		return 0;
 
-	case WM_DESTROY:PostQuitMessage(0);
+	case WM_DESTROY:
+		PostQuitMessage(0);
 		return 0;
 	}
 	return DefWindowProc(hwnd, message, wParam, lParam);
