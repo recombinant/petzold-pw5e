@@ -3,6 +3,8 @@
                  (c) Charles Petzold, 1998
   ----------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
 #include "Resource.h"
 
@@ -15,13 +17,16 @@ void    DeleteAllBitmaps (HWND) ;
 
 TCHAR szAppName[] = TEXT ("GrafMenu") ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
      HWND     hwnd ;
      MSG      msg ;
      WNDCLASS wndclass ;
-     
+
      wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
      wndclass.lpfnWndProc   = WndProc ;
      wndclass.cbClsExtra    = 0 ;
@@ -32,23 +37,23 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = NULL ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
           MessageBox (NULL, TEXT ("This program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
+
      hwnd = CreateWindow (szAppName, TEXT ("Bitmap Menu Demonstration"),
                           WS_OVERLAPPEDWINDOW,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
-     
+
      while (GetMessage (&msg, NULL, 0, 0))
      {
           TranslateMessage (&msg) ;
@@ -61,7 +66,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
      HMENU      hMenu ;
      static int iCurrentFont = IDM_FONT_COUR ;
-     
+
      switch (iMsg)
      {
      case WM_CREATE:
@@ -70,7 +75,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
           SetMenu (hwnd, hMenu) ;
           CheckMenuItem (hMenu, iCurrentFont, MF_CHECKED) ;
           return 0 ;
-          
+
      case WM_SYSCOMMAND:
           switch (LOWORD (wParam))
           {
@@ -80,7 +85,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
                return 0 ;
           }
           break ;
-          
+
      case WM_COMMAND:
           switch (LOWORD (wParam))
           {
@@ -95,7 +100,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
           case IDM_EDIT_CLEAR:
                MessageBeep (0) ;
                return 0 ;
-                    
+
           case IDM_FONT_COUR:
           case IDM_FONT_ARIAL:
           case IDM_FONT_TIMES:
@@ -106,7 +111,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
                return 0 ;
           }
           break ;
-               
+
      case WM_DESTROY:
           DeleteAllBitmaps (hwnd) ;
           PostQuitMessage (0) ;
@@ -141,26 +146,26 @@ HMENU CreateMyMenu (HINSTANCE hInstance)
      int     i ;
 
      hMenu = CreateMenu () ;
-     
+
      hMenuPopup = LoadMenu (hInstance, TEXT ("MenuFile")) ;
      hBitmap = StretchBitmap (LoadBitmap (hInstance, TEXT ("BitmapFile"))) ;
      AppendMenu (hMenu, MF_BITMAP | MF_POPUP, (int) hMenuPopup,
                         (PTSTR) (LONG) hBitmap) ;
-     
+
      hMenuPopup = LoadMenu (hInstance, TEXT ("MenuEdit")) ;
      hBitmap = StretchBitmap (LoadBitmap (hInstance, TEXT ("BitmapEdit"))) ;
      AppendMenu (hMenu, MF_BITMAP | MF_POPUP, (int) hMenuPopup,
                         (PTSTR) (LONG) hBitmap) ;
-     
+
      hMenuPopup = CreateMenu () ;
-     
+
      for (i = 0 ; i < 3 ; i++)
      {
           hBitmap = GetBitmapFont (i) ;
-          AppendMenu (hMenuPopup, MF_BITMAP, IDM_FONT_COUR + i, 
+          AppendMenu (hMenuPopup, MF_BITMAP, IDM_FONT_COUR + i,
                                   (PTSTR) (LONG) hBitmap) ;
      }
-     
+
      hBitmap = StretchBitmap (LoadBitmap (hInstance, TEXT ("BitmapFont"))) ;
      AppendMenu (hMenu, MF_BITMAP | MF_POPUP, (int) hMenuPopup,
                         (PTSTR) (LONG) hBitmap) ;
@@ -184,41 +189,41 @@ HBITMAP StretchBitmap (HBITMAP hBitmap1)
      cyChar = HIWORD (GetDialogBaseUnits ()) ;
 
           // Create 2 memory DCs compatible with the display
-     
+
      hdc = CreateIC (TEXT ("DISPLAY"), NULL, NULL, NULL) ;
      hdcMem1 = CreateCompatibleDC (hdc) ;
      hdcMem2 = CreateCompatibleDC (hdc) ;
      DeleteDC (hdc) ;
 
           // Get the dimensions of the bitmap to be stretched
-     
+
      GetObject (hBitmap1, sizeof (BITMAP), (PTSTR) &bm1) ;
 
           // Scale these dimensions based on the system font size
-     
+
      bm2 = bm1 ;
      bm2.bmWidth      = (cxChar * bm2.bmWidth)  / 4 ;
      bm2.bmHeight     = (cyChar * bm2.bmHeight) / 8 ;
      bm2.bmWidthBytes = ((bm2.bmWidth + 15) / 16) * 2 ;
 
           // Create a new bitmap of larger size
-     
+
      hBitmap2 = CreateBitmapIndirect (&bm2) ;
 
           // Select the bitmaps in the memory DCs and do a StretchBlt
-     
+
      SelectObject (hdcMem1, hBitmap1) ;
      SelectObject (hdcMem2, hBitmap2) ;
-     
+
      StretchBlt (hdcMem2, 0, 0, bm2.bmWidth, bm2.bmHeight,
                  hdcMem1, 0, 0, bm1.bmWidth, bm1.bmHeight, SRCCOPY) ;
 
           // Clean up
-     
+
      DeleteDC (hdcMem1) ;
      DeleteDC (hdcMem2) ;
      DeleteObject (hBitmap1) ;
-     
+
      return hBitmap2 ;
 }
 
@@ -228,38 +233,38 @@ HBITMAP StretchBitmap (HBITMAP hBitmap1)
 
 HBITMAP GetBitmapFont (int i)
 {
-     static TCHAR  * szFaceName[3] = { TEXT ("Courier New"), TEXT ("Arial"), 
+     static TCHAR  * szFaceName[3] = { TEXT ("Courier New"), TEXT ("Arial"),
                                        TEXT ("Times New Roman") } ;
      HBITMAP         hBitmap ;
      HDC             hdc, hdcMem ;
      HFONT           hFont ;
      SIZE            size ;
      TEXTMETRIC      tm ;
-     
+
      hdc = CreateIC (TEXT ("DISPLAY"), NULL, NULL, NULL) ;
      GetTextMetrics (hdc, &tm) ;
-     
+
      hdcMem = CreateCompatibleDC (hdc) ;
      hFont  = CreateFont (2 * tm.tmHeight, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                           szFaceName[i]) ;
 
      hFont = (HFONT) SelectObject (hdcMem, hFont) ;
-     GetTextExtentPoint32 (hdcMem, szFaceName[i], 
+     GetTextExtentPoint32 (hdcMem, szFaceName[i],
                            lstrlen (szFaceName[i]), &size);
-     
+
      hBitmap = CreateBitmap (size.cx, size.cy, 1, 1, NULL) ;
      SelectObject (hdcMem, hBitmap) ;
-     
+
      TextOut (hdcMem, 0, 0, szFaceName[i], lstrlen (szFaceName[i])) ;
-     
+
      DeleteObject (SelectObject (hdcMem, hFont)) ;
      DeleteDC (hdcMem) ;
      DeleteDC (hdc) ;
-     
+
      return hBitmap ;
 }
 
-/*------------------------------------------------------- 
+/*-------------------------------------------------------
    DeleteAllBitmaps: Deletes all the bitmaps in the menu
   -------------------------------------------------------*/
 

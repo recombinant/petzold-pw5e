@@ -3,7 +3,10 @@
                  (c) Charles Petzold, 1998
   -----------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <windowsx.h>
+#include <tchar.h>
 #include "resource.h"
 
 #define ID_TIMER 1
@@ -12,13 +15,16 @@ LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 
 TCHAR szAppName[] = TEXT ("MenuDemo") ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
      HWND     hwnd ;
      MSG      msg ;
      WNDCLASS wndclass ;
-     
+
      wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
      wndclass.lpfnWndProc   = WndProc ;
      wndclass.cbClsExtra    = 0 ;
@@ -29,23 +35,23 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = szAppName ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
           MessageBox (NULL, TEXT ("This program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
+
      hwnd = CreateWindow (szAppName, TEXT ("Menu Demonstration"),
                           WS_OVERLAPPEDWINDOW,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
-     
+
      while (GetMessage (&msg, NULL, 0, 0))
      {
           TranslateMessage (&msg) ;
@@ -60,12 +66,12 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                                 DKGRAY_BRUSH, BLACK_BRUSH } ;
      static int iSelection = IDM_BKGND_WHITE ;
      HMENU      hMenu ;
-     
+
      switch (message)
      {
      case WM_COMMAND:
           hMenu = GetMenu (hwnd) ;
-          
+
           switch (LOWORD (wParam))
           {
           case IDM_FILE_NEW:
@@ -74,11 +80,11 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
           case IDM_FILE_SAVE_AS:
                MessageBeep (0) ;
                return 0 ;
-               
+
           case IDM_APP_EXIT:
                SendMessage (hwnd, WM_CLOSE, 0, 0) ;
                return 0 ;
-               
+
           case IDM_EDIT_UNDO:
           case IDM_EDIT_CUT:
           case IDM_EDIT_COPY:
@@ -86,24 +92,24 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
           case IDM_EDIT_CLEAR:
                MessageBeep (0) ;
                return 0 ;
-               
+
           case IDM_BKGND_WHITE:         // Note: Logic below
           case IDM_BKGND_LTGRAY:        //   assumes that IDM_WHITE
           case IDM_BKGND_GRAY:          //   through IDM_BLACK are
           case IDM_BKGND_DKGRAY:        //   consecutive numbers in
           case IDM_BKGND_BLACK:         //   the order shown here.
-               
+
                CheckMenuItem (hMenu, iSelection, MF_UNCHECKED) ;
                iSelection = LOWORD (wParam) ;
                CheckMenuItem (hMenu, iSelection, MF_CHECKED) ;
-               
-               SetClassLong (hwnd, GCL_HBRBACKGROUND, (LONG) 
-                    GetStockObject 
+
+               SetClassLong (hwnd, GCL_HBRBACKGROUND, (LONG)
+                    GetStockObject
                              (idColor [LOWORD (wParam) - IDM_BKGND_WHITE])) ;
-               
+
                InvalidateRect (hwnd, NULL, TRUE) ;
                return 0 ;
-               
+
           case IDM_TIMER_START:
                if (SetTimer (hwnd, ID_TIMER, 1000, NULL))
                {
@@ -111,18 +117,18 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                     EnableMenuItem (hMenu, IDM_TIMER_STOP,  MF_ENABLED) ;
                }
                return 0 ;
-               
+
           case IDM_TIMER_STOP:
                KillTimer (hwnd, ID_TIMER) ;
                EnableMenuItem (hMenu, IDM_TIMER_START, MF_ENABLED) ;
                EnableMenuItem (hMenu, IDM_TIMER_STOP,  MF_GRAYED) ;
                return 0 ;
-               
+
           case IDM_APP_HELP:
                MessageBox (hwnd, TEXT ("Help not yet implemented!"),
                            szAppName, MB_ICONEXCLAMATION | MB_OK) ;
                return 0 ;
-               
+
           case IDM_APP_ABOUT:
                MessageBox (hwnd, TEXT ("Menu Demonstration Program\n")
                                  TEXT ("(c) Charles Petzold, 1998"),
@@ -130,11 +136,11 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                return 0 ;
           }
           break ;
-          
+
      case WM_TIMER:
           MessageBeep (0) ;
           return 0 ;
-               
+
      case WM_DESTROY:
           PostQuitMessage (0) ;
           return 0 ;

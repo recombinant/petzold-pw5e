@@ -3,14 +3,19 @@
                (c) Charles Petzold, 1998
   ---------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
 #include <stdlib.h>      // for abs definition
 #include "Resource.h"
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
      static TCHAR szAppName [] = TEXT ("Blowup") ;
      HACCEL       hAccel ;
@@ -28,16 +33,16 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = szAppName ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
           MessageBox (NULL, TEXT ("This program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
-     hwnd = CreateWindow (szAppName, TEXT ("Blow-Up Mouse Demo"), 
-                          WS_OVERLAPPEDWINDOW, 
+
+     hwnd = CreateWindow (szAppName, TEXT ("Blow-Up Mouse Demo"),
+                          WS_OVERLAPPEDWINDOW,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
@@ -160,15 +165,15 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                hdc = GetDC (hwnd) ;
                hdcMem = CreateCompatibleDC (hdc) ;
-               hBitmap = CreateCompatibleBitmap (hdc, 
+               hBitmap = CreateCompatibleBitmap (hdc,
                                    abs (ptEnd.x - ptBeg.x),
                                    abs (ptEnd.y - ptBeg.y)) ;
 
                SelectObject (hdcMem, hBitmap) ;
 
                StretchBlt (hdcMem, 0, 0, abs (ptEnd.x - ptBeg.x),
-                                         abs (ptEnd.y - ptBeg.y), 
-                           hdc, ptBeg.x, ptBeg.y, ptEnd.x - ptBeg.x, 
+                                         abs (ptEnd.y - ptBeg.y),
+                           hdc, ptBeg.x, ptBeg.y, ptEnd.x - ptBeg.x,
                                                   ptEnd.y - ptBeg.y, SRCCOPY) ;
 
                DeleteDC (hdcMem) ;
@@ -185,7 +190,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
           return 0 ;
 
      case WM_INITMENUPOPUP:
-          iEnable = IsClipboardFormatAvailable (CF_BITMAP) ? 
+          iEnable = IsClipboardFormatAvailable (CF_BITMAP) ?
                               MF_ENABLED : MF_GRAYED ;
 
           EnableMenuItem ((HMENU) wParam, IDM_EDIT_PASTE, iEnable) ;

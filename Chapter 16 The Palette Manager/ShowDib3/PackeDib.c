@@ -3,6 +3,7 @@
                  (c) Charles Petzold, 1998
   ----------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 /*---------------------------------------------------------
@@ -19,7 +20,7 @@ BITMAPINFO * PackedDibLoad (PTSTR szFileName)
 
           // Open the file: read access, prohibit write access
 
-     hFile = CreateFile (szFileName, GENERIC_READ, FILE_SHARE_READ, NULL, 
+     hFile = CreateFile (szFileName, GENERIC_READ, FILE_SHARE_READ, NULL,
                          OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL) ;
 
      if (hFile == INVALID_HANDLE_VALUE)
@@ -27,10 +28,10 @@ BITMAPINFO * PackedDibLoad (PTSTR szFileName)
 
           // Read in the BITMAPFILEHEADER
 
-     bSuccess = ReadFile (hFile, &bmfh, sizeof (BITMAPFILEHEADER), 
+     bSuccess = ReadFile (hFile, &bmfh, sizeof (BITMAPFILEHEADER),
                           &dwBytesRead, NULL) ;
 
-     if (!bSuccess || (dwBytesRead != sizeof (BITMAPFILEHEADER))         
+     if (!bSuccess || (dwBytesRead != sizeof (BITMAPFILEHEADER))
                    || (bmfh.bfType != * (WORD *) "BM"))
      {
           CloseHandle (hFile) ;
@@ -85,7 +86,7 @@ int PackedDibGetBitCount (BITMAPINFO * pPackedDib)
 
 int PackedDibGetRowLength (BITMAPINFO * pPackedDib)
 {
-     return ((PackedDibGetWidth (pPackedDib) * 
+     return ((PackedDibGetWidth (pPackedDib) *
               PackedDibGetBitCount (pPackedDib) + 31) & ~31) >> 3 ;
 }
 
@@ -99,8 +100,8 @@ int PackedDibGetInfoHeaderSize (BITMAPINFO * pPackedDib)
           return ((PBITMAPCOREINFO)pPackedDib)->bmciHeader.bcSize ;
 
      else if (pPackedDib->bmiHeader.biSize == sizeof (BITMAPINFOHEADER))
-          return pPackedDib->bmiHeader.biSize + 
-                    (pPackedDib->bmiHeader.biCompression == 
+          return pPackedDib->bmiHeader.biSize +
+                    (pPackedDib->bmiHeader.biCompression ==
                                         BI_BITFIELDS ? 12 : 0) ;
 
      else return pPackedDib->bmiHeader.biSize ;
@@ -148,7 +149,7 @@ RGBQUAD * PackedDibGetColorTablePtr (BITMAPINFO * pPackedDib)
      if (PackedDibGetNumColors (pPackedDib) == 0)
           return 0 ;
 
-     return (RGBQUAD *) (((BYTE *) pPackedDib) + 
+     return (RGBQUAD *) (((BYTE *) pPackedDib) +
                                    PackedDibGetInfoHeaderSize (pPackedDib)) ;
 }
 
@@ -158,7 +159,7 @@ RGBQUAD * PackedDibGetColorTableEntry (BITMAPINFO * pPackedDib, int i)
           return 0 ;
 
      if (pPackedDib->bmiHeader.biSize == sizeof (BITMAPCOREHEADER))
-          return (RGBQUAD *) 
+          return (RGBQUAD *)
                (((RGBTRIPLE *) PackedDibGetColorTablePtr (pPackedDib)) + i) ;
      else
           return PackedDibGetColorTablePtr (pPackedDib) + i ;
@@ -174,7 +175,7 @@ BYTE * PackedDibGetBitsPtr (BITMAPINFO * pPackedDib)
                                     PackedDibGetColorTableSize (pPackedDib) ;
 }
 
-/*----------------------------------------------------------------------- 
+/*-----------------------------------------------------------------------
    PackedDibGetBitsSize can be calculated from the height and row length
           if it's not explicitly in the biSizeImage field
   -----------------------------------------------------------------------*/
@@ -185,7 +186,7 @@ int PackedDibGetBitsSize (BITMAPINFO * pPackedDib)
          (pPackedDib->bmiHeader.biSizeImage != 0))
          return pPackedDib->bmiHeader.biSizeImage ;
 
-     return PackedDibGetHeight (pPackedDib) * 
+     return PackedDibGetHeight (pPackedDib) *
             PackedDibGetRowLength (pPackedDib) ;
 }
 
@@ -203,7 +204,7 @@ HPALETTE PackedDibCreatePalette (BITMAPINFO * pPackedDib)
      if (0 == (iNumColors = PackedDibGetNumColors (pPackedDib)))
           return NULL ;
 
-     plp = malloc (sizeof (LOGPALETTE) * 
+     plp = malloc (sizeof (LOGPALETTE) *
                          (iNumColors - 1) * sizeof (PALETTEENTRY)) ;
 
      plp->palVersion    = 0x0300 ;

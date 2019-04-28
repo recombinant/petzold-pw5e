@@ -3,6 +3,8 @@
                  (c) Charles Petzold, 1998
   -------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
 
 #define DIVISIONS 5
@@ -13,14 +15,17 @@ LRESULT CALLBACK ChildWndProc (HWND, UINT, WPARAM, LPARAM) ;
 int   idFocus = 0 ;
 TCHAR szChildClass[] = TEXT ("Checker4_Child") ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
      static TCHAR szAppName[] = TEXT ("Checker4") ;
      HWND         hwnd ;
      MSG          msg ;
      WNDCLASS     wndclass ;
-     
+
      wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
      wndclass.lpfnWndProc   = WndProc ;
      wndclass.cbClsExtra    = 0 ;
@@ -31,30 +36,30 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = NULL ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
-          MessageBox (NULL, TEXT ("Program requires Windows NT!"), 
+          MessageBox (NULL, TEXT ("Program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
+
      wndclass.lpfnWndProc   = ChildWndProc ;
      wndclass.cbWndExtra    = sizeof (long) ;
      wndclass.hIcon         = NULL ;
      wndclass.lpszClassName = szChildClass ;
-     
+
      RegisterClass (&wndclass) ;
-     
+
      hwnd = CreateWindow (szAppName, TEXT ("Checker4 Mouse Hit-Test Demo"),
                           WS_OVERLAPPEDWINDOW,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
-     
+
      while (GetMessage (&msg, NULL, 0, 0))
      {
           TranslateMessage (&msg) ;
@@ -67,7 +72,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
      static HWND hwndChild[DIVISIONS][DIVISIONS] ;
      int         cxBlock, cyBlock, x, y ;
-     
+
      switch (message)
      {
      case WM_CREATE :
@@ -80,18 +85,18 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                               (HINSTANCE) GetWindowLong (hwnd, GWL_HINSTANCE),
                               NULL) ;
           return 0 ;
-               
+
      case WM_SIZE :
           cxBlock = LOWORD (lParam) / DIVISIONS ;
           cyBlock = HIWORD (lParam) / DIVISIONS ;
-          
+
           for (x = 0 ; x < DIVISIONS ; x++)
                 for (y = 0 ; y < DIVISIONS ; y++)
                     MoveWindow (hwndChild[x][y],
                                 x * cxBlock, y * cyBlock,
                                 cxBlock, cyBlock, TRUE) ;
           return 0 ;
-                       
+
      case WM_LBUTTONDOWN :
           MessageBeep (0) ;
           return 0 ;
@@ -134,13 +139,13 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      return DefWindowProc (hwnd, message, wParam, lParam) ;
 }
 
-LRESULT CALLBACK ChildWndProc (HWND hwnd, UINT message, 
+LRESULT CALLBACK ChildWndProc (HWND hwnd, UINT message,
                                WPARAM wParam, LPARAM lParam)
 {
      HDC         hdc ;
      PAINTSTRUCT ps ;
      RECT        rect ;
-     
+
      switch (message)
      {
      case WM_CREATE :
@@ -149,14 +154,14 @@ LRESULT CALLBACK ChildWndProc (HWND hwnd, UINT message,
 
      case WM_KEYDOWN:
                // Send most key presses to the parent window
-          
+
           if (wParam != VK_RETURN && wParam != VK_SPACE)
           {
                SendMessage (GetParent (hwnd), message, wParam, lParam) ;
                return 0 ;
           }
                // For Return and Space, fall through to toggle the square
-          
+
      case WM_LBUTTONDOWN :
           SetWindowLong (hwnd, 0, 1 ^ GetWindowLong (hwnd, 0)) ;
           SetFocus (hwnd) ;
@@ -164,7 +169,7 @@ LRESULT CALLBACK ChildWndProc (HWND hwnd, UINT message,
           return 0 ;
 
                // For focus messages, invalidate the window for repaint
-          
+
      case WM_SETFOCUS:
           idFocus = GetWindowLong (hwnd, GWL_ID) ;
 
@@ -173,15 +178,15 @@ LRESULT CALLBACK ChildWndProc (HWND hwnd, UINT message,
      case WM_KILLFOCUS:
           InvalidateRect (hwnd, NULL, TRUE) ;
           return 0 ;
-          
+
      case WM_PAINT :
           hdc = BeginPaint (hwnd, &ps) ;
-          
+
           GetClientRect (hwnd, &rect) ;
           Rectangle (hdc, 0, 0, rect.right, rect.bottom) ;
 
                // Draw the "x" mark
-          
+
           if (GetWindowLong (hwnd, 0))
           {
                MoveToEx (hdc, 0,          0, NULL) ;
@@ -191,7 +196,7 @@ LRESULT CALLBACK ChildWndProc (HWND hwnd, UINT message,
           }
 
                // Draw the "focus" rectangle
-          
+
           if (hwnd == GetFocus ())
           {
                rect.left   += rect.right / 10 ;

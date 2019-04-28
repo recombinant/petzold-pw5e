@@ -3,6 +3,7 @@
                  (c) Charles Petzold, 1998
   -----------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
@@ -38,7 +39,7 @@ int WINAPI _tWinMain(
 
      if (!RegisterClass (&wndclass))
      {
-          MessageBox (NULL, TEXT ("Program requires Windows NT!"), 
+          MessageBox (NULL, TEXT ("Program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
@@ -82,7 +83,7 @@ void DisplayDigit (HDC hdc, int iNumber)
          {{  36, 37},  {40, 41},  {40, 61},  {36, 65},  {32, 61},  {32, 41}},
          {{   7, 66},  {11, 62},  {31, 62},  {35, 66},  {31, 70},  {11, 70 } }};
      int          iSeg ;
-     
+
      for (iSeg = 0 ; iSeg < 7 ; iSeg++)
           if (fSevenSegment [iNumber][iSeg])
                Polygon (hdc, ptSegment [iSeg], 6) ;

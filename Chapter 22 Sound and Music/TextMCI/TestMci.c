@@ -1,164 +1,175 @@
 /*----------------------------------------
    TESTMCI.C -- MCI Command String Tester
-                (c) Charles Petzold, 1998
+				(c) Charles Petzold, 1998
   ----------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
-#include "Resource.h"
+#include <mmsystem.h>
+#include <stdlib.h>
+#include "./Resource.h"
 
 #define ID_TIMER    1
 
-BOOL CALLBACK DlgProc (HWND, UINT, WPARAM, LPARAM) ;
+UINT_PTR CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 
-TCHAR szAppName [] = TEXT ("TestMci") ;
+TCHAR szAppName[] = TEXT("TestMci");
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
-     if (-1 == DialogBox (hInstance, szAppName, NULL, DlgProc))
-     {
-          MessageBox (NULL, TEXT ("This program requires Windows NT!"),
-                      szAppName, MB_ICONERROR) ;
-     }
-     return 0 ;
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
+	UNREFERENCED_PARAMETER(nShowCmd);
+
+	if (-1 == DialogBox(hInstance, szAppName, NULL, (DLGPROC)DlgProc))
+	{
+		MessageBox(NULL, TEXT("This program requires Windows NT!"),
+			szAppName, MB_ICONERROR);
+	}
+	return 0;
 }
 
-BOOL CALLBACK DlgProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+UINT_PTR CALLBACK DlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-     static HWND hwndEdit ;
-     int         iCharBeg, iCharEnd, iLineBeg, iLineEnd, iChar, iLine, iLength ;
-     MCIERROR    error ;
-     RECT        rect ;
-     TCHAR       szCommand [1024], szReturn [1024], 
-                 szError [1024], szBuffer [32] ;
+	static HWND hwndEdit;
+	int         iCharBeg, iCharEnd, iLineBeg, iLineEnd, iChar, iLine, iLength;
+	MCIERROR    error;
+	RECT        rect;
+	TCHAR       szCommand[1024], szReturn[1024],
+		szError[1024], szBuffer[32];
 
-     switch (message)
-     {
-     case WM_INITDIALOG:
-               // Center the window on screen
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		// Center the window on screen
 
-          GetWindowRect (hwnd, &rect) ;
-          SetWindowPos (hwnd, NULL, 
-               (GetSystemMetrics (SM_CXSCREEN) - rect.right + rect.left) / 2,
-               (GetSystemMetrics (SM_CYSCREEN) - rect.bottom + rect.top) / 2,
-               0, 0, SWP_NOZORDER | SWP_NOSIZE) ;
+		GetWindowRect(hwnd, &rect);
+		SetWindowPos(hwnd, NULL,
+			(GetSystemMetrics(SM_CXSCREEN) - rect.right + rect.left) / 2,
+			(GetSystemMetrics(SM_CYSCREEN) - rect.bottom + rect.top) / 2,
+			0, 0, SWP_NOZORDER | SWP_NOSIZE);
 
-          hwndEdit = GetDlgItem (hwnd, IDC_MAIN_EDIT) ;
-          SetFocus (hwndEdit) ;
-          return FALSE ;
+		hwndEdit = GetDlgItem(hwnd, IDC_MAIN_EDIT);
+		SetFocus(hwndEdit);
+		return FALSE;
 
-     case WM_COMMAND:
-          switch (LOWORD (wParam))
-          {
-          case IDOK:
-                    // Find the line numbers corresponding to the selection
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDOK:
+			// Find the line numbers corresponding to the selection
 
-               SendMessage (hwndEdit, EM_GETSEL, (WPARAM) &iCharBeg, 
-                                                 (LPARAM) &iCharEnd) ;
+			SendMessage(hwndEdit, EM_GETSEL, (WPARAM)& iCharBeg,
+				(LPARAM)& iCharEnd);
 
-               iLineBeg = SendMessage (hwndEdit, EM_LINEFROMCHAR, iCharBeg, 0) ;
-               iLineEnd = SendMessage (hwndEdit, EM_LINEFROMCHAR, iCharEnd, 0) ;
+			iLineBeg = SendMessage(hwndEdit, EM_LINEFROMCHAR, iCharBeg, 0);
+			iLineEnd = SendMessage(hwndEdit, EM_LINEFROMCHAR, iCharEnd, 0);
 
-                    // Loop through all the lines               
+			// Loop through all the lines
 
-               for (iLine = iLineBeg ; iLine <= iLineEnd ; iLine++)
-               {
-                         // Get the line and terminate it; ignore if blank
+			for (iLine = iLineBeg; iLine <= iLineEnd; iLine++)
+			{
+				// Get the line and terminate it; ignore if blank
 
-                    * (WORD *) szCommand = _countof(szCommand)  ;
+				*(WORD*)szCommand = _countof(szCommand);
 
-                    iLength = SendMessage (hwndEdit, EM_GETLINE, iLine, 
-                                                     (LPARAM) szCommand) ;
-                    szCommand [iLength] = '\0' ;
+				iLength = SendMessage(hwndEdit, EM_GETLINE, iLine,
+					(LPARAM)szCommand);
+				szCommand[iLength] = '\0';
 
-                    if (iLength == 0)
-                         continue ;
+				if (iLength == 0)
+					continue;
 
-                         // Send the MCI command
+				// Send the MCI command
 
-                    error = mciSendString (szCommand, szReturn, 
-                              _countof(szReturn) , hwnd) ;
+				error = mciSendString(szCommand, szReturn,
+					_countof(szReturn), hwnd);
 
-                         // Set the Return String field
+				// Set the Return String field
 
-                    SetDlgItemText (hwnd, IDC_RETURN_STRING, szReturn) ;
+				SetDlgItemText(hwnd, IDC_RETURN_STRING, szReturn);
 
-                         // Set the Error String field (even if no error)
+				// Set the Error String field (even if no error)
 
-                    mciGetErrorString (error, szError,
-                                       _countof(szError) ) ;
+				mciGetErrorString(error, szError,
+					_countof(szError));
 
-                    SetDlgItemText (hwnd, IDC_ERROR_STRING, szError) ;
-               }
-                    // Send the caret to the end of the last selected line
+				SetDlgItemText(hwnd, IDC_ERROR_STRING, szError);
+			}
+			// Send the caret to the end of the last selected line
 
-               iChar  = SendMessage (hwndEdit, EM_LINEINDEX,  iLineEnd, 0) ;
-               iChar += SendMessage (hwndEdit, EM_LINELENGTH, iCharEnd, 0) ;
-               SendMessage (hwndEdit, EM_SETSEL, iChar, iChar) ;
-               
-                    // Insert a carriage return/line feed combination
+			iChar = SendMessage(hwndEdit, EM_LINEINDEX, iLineEnd, 0);
+			iChar += SendMessage(hwndEdit, EM_LINELENGTH, iCharEnd, 0);
+			SendMessage(hwndEdit, EM_SETSEL, iChar, iChar);
 
-               SendMessage (hwndEdit, EM_REPLACESEL, FALSE, 
-                                      (LPARAM) TEXT ("\r\n")) ;
-               SetFocus (hwndEdit) ;
-               return TRUE ;
+			// Insert a carriage return/line feed combination
 
-          case IDCANCEL:
-               EndDialog (hwnd, 0) ;
-               return TRUE ;
+			SendMessage(hwndEdit, EM_REPLACESEL, FALSE,
+				(LPARAM)TEXT("\r\n"));
+			SetFocus(hwndEdit);
+			return TRUE;
 
-          case IDC_MAIN_EDIT:
-               if (HIWORD (wParam) == EN_ERRSPACE)
-               {
-                    MessageBox (hwnd, TEXT ("Error control out of space."),
-                                szAppName, MB_OK | MB_ICONINFORMATION) ;
-                    return TRUE ;
-               }
-               break ;
-          }
-          break ;
+		case IDCANCEL:
+			EndDialog(hwnd, 0);
+			return TRUE;
 
-     case MM_MCINOTIFY:
-          EnableWindow (GetDlgItem (hwnd, IDC_NOTIFY_MESSAGE), TRUE) ;
+		case IDC_MAIN_EDIT:
+			if (HIWORD(wParam) == EN_ERRSPACE)
+			{
+				MessageBox(hwnd, TEXT("Error control out of space."),
+					szAppName, MB_OK | MB_ICONINFORMATION);
+				return TRUE;
+			}
+			break;
+		}
+		break;
 
-          wsprintf (szBuffer, TEXT ("Device ID = %i"), lParam) ;
-          SetDlgItemText (hwnd, IDC_NOTIFY_ID, szBuffer) ;
-          EnableWindow (GetDlgItem (hwnd, IDC_NOTIFY_ID), TRUE) ;
+	case MM_MCINOTIFY:
+		EnableWindow(GetDlgItem(hwnd, IDC_NOTIFY_MESSAGE), TRUE);
 
-          EnableWindow (GetDlgItem (hwnd, IDC_NOTIFY_SUCCESSFUL),
-                              wParam & MCI_NOTIFY_SUCCESSFUL) ;
-          
-          EnableWindow (GetDlgItem (hwnd, IDC_NOTIFY_SUPERSEDED),
-                              wParam & MCI_NOTIFY_SUPERSEDED) ;
+		wsprintf(szBuffer, TEXT("Device ID = %i"), lParam);
+		SetDlgItemText(hwnd, IDC_NOTIFY_ID, szBuffer);
+		EnableWindow(GetDlgItem(hwnd, IDC_NOTIFY_ID), TRUE);
 
-          EnableWindow (GetDlgItem (hwnd, IDC_NOTIFY_ABORTED),
-                              wParam & MCI_NOTIFY_ABORTED) ;
+		EnableWindow(GetDlgItem(hwnd, IDC_NOTIFY_SUCCESSFUL),
+			wParam & MCI_NOTIFY_SUCCESSFUL);
 
-          EnableWindow (GetDlgItem (hwnd, IDC_NOTIFY_FAILURE),
-                              wParam & MCI_NOTIFY_FAILURE) ;
+		EnableWindow(GetDlgItem(hwnd, IDC_NOTIFY_SUPERSEDED),
+			wParam & MCI_NOTIFY_SUPERSEDED);
 
-          SetTimer (hwnd, ID_TIMER, 5000, NULL) ;
-          return TRUE ;
+		EnableWindow(GetDlgItem(hwnd, IDC_NOTIFY_ABORTED),
+			wParam & MCI_NOTIFY_ABORTED);
 
-     case WM_TIMER:
-          KillTimer (hwnd, ID_TIMER) ;
+		EnableWindow(GetDlgItem(hwnd, IDC_NOTIFY_FAILURE),
+			wParam & MCI_NOTIFY_FAILURE);
 
-          EnableWindow (GetDlgItem (hwnd, IDC_NOTIFY_MESSAGE), FALSE) ;
-          EnableWindow (GetDlgItem (hwnd, IDC_NOTIFY_ID), FALSE) ;
-          EnableWindow (GetDlgItem (hwnd, IDC_NOTIFY_SUCCESSFUL), FALSE) ;
-          EnableWindow (GetDlgItem (hwnd, IDC_NOTIFY_SUPERSEDED), FALSE) ;
-          EnableWindow (GetDlgItem (hwnd, IDC_NOTIFY_ABORTED), FALSE) ;
-          EnableWindow (GetDlgItem (hwnd, IDC_NOTIFY_FAILURE), FALSE) ;
-          return TRUE ;
+		SetTimer(hwnd, ID_TIMER, 5000, NULL);
+		return TRUE;
 
-     case WM_SYSCOMMAND:
-          switch (LOWORD (wParam))
-          {
-          case SC_CLOSE:
-               EndDialog (hwnd, 0) ;
-               return TRUE ;
-          }
-          break ;
-     }
-     return FALSE ;
+	case WM_TIMER:
+		KillTimer(hwnd, ID_TIMER);
+
+		EnableWindow(GetDlgItem(hwnd, IDC_NOTIFY_MESSAGE), FALSE);
+		EnableWindow(GetDlgItem(hwnd, IDC_NOTIFY_ID), FALSE);
+		EnableWindow(GetDlgItem(hwnd, IDC_NOTIFY_SUCCESSFUL), FALSE);
+		EnableWindow(GetDlgItem(hwnd, IDC_NOTIFY_SUPERSEDED), FALSE);
+		EnableWindow(GetDlgItem(hwnd, IDC_NOTIFY_ABORTED), FALSE);
+		EnableWindow(GetDlgItem(hwnd, IDC_NOTIFY_FAILURE), FALSE);
+		return TRUE;
+
+	case WM_SYSCOMMAND:
+		switch (LOWORD(wParam))
+		{
+		case SC_CLOSE:
+			EndDialog(hwnd, 0);
+			return TRUE;
+		}
+		break;
+	}
+	return FALSE;
 }

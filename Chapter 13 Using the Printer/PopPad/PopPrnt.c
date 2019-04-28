@@ -2,6 +2,7 @@
    POPPRNT.C -- Popup Editor Printing Functions
   ----------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <commdlg.h>
 #include "Resource.h"
@@ -11,12 +12,15 @@ HWND hDlgPrint ;
 
 BOOL CALLBACK PrintDlgProc (HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+  UNREFERENCED_PARAMETER(wParam);
+  UNREFERENCED_PARAMETER(lParam);
+
      switch (msg)
      {
      case WM_INITDIALOG :
           EnableMenuItem (GetSystemMenu (hDlg, FALSE), SC_CLOSE, MF_GRAYED) ;
           return TRUE ;
-          
+
      case WM_COMMAND :
           bUserAbort = TRUE ;
           EnableWindow (GetParent (hDlg), TRUE) ;
@@ -25,12 +29,12 @@ BOOL CALLBACK PrintDlgProc (HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
           return TRUE ;
      }
      return FALSE ;
-}          
+}
 
 BOOL CALLBACK AbortProc (HDC hPrinterDC, int iCode)
 {
      MSG msg ;
-     
+
      while (!bUserAbort && PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))
      {
           if (!hDlgPrint || !IsDialogMessage (hDlgPrint, &msg))
@@ -42,7 +46,7 @@ BOOL CALLBACK AbortProc (HDC hPrinterDC, int iCode)
      return !bUserAbort ;
 }
 
-BOOL PopPrntPrintFile (HINSTANCE hInst, HWND hwnd, HWND hwndEdit, 
+BOOL PopPrntPrintFile (HINSTANCE hInst, HWND hwnd, HWND hwndEdit,
                        PTSTR szTitleName)
 {
      static DOCINFO  di = { sizeof (DOCINFO) } ;
@@ -56,13 +60,13 @@ BOOL PopPrntPrintFile (HINSTANCE hInst, HWND hwnd, HWND hwndEdit,
      WORD            iColCopy, iNoiColCopy ;
 
           // Invoke Print common dialog box
-     
+
      pd.lStructSize         = sizeof (PRINTDLG) ;
      pd.hwndOwner           = hwnd ;
      pd.hDevMode            = NULL ;
      pd.hDevNames           = NULL ;
      pd.hDC                 = NULL ;
-     pd.Flags               = PD_ALLPAGES | PD_COLLATE | 
+     pd.Flags               = PD_ALLPAGES | PD_COLLATE |
                               PD_RETURNDC | PD_NOSELECTION ;
      pd.nFromPage           = 0 ;
      pd.nToPage             = 0 ;
@@ -77,34 +81,34 @@ BOOL PopPrntPrintFile (HINSTANCE hInst, HWND hwnd, HWND hwndEdit,
      pd.lpSetupTemplateName = NULL ;
      pd.hPrintTemplate      = NULL ;
      pd.hSetupTemplate      = NULL ;
-     
+
      if (!PrintDlg (&pd))
           return TRUE ;
-     
+
      if (0 == (iTotalLines = SendMessage (hwndEdit, EM_GETLINECOUNT, 0, 0)))
           return TRUE ;
 
-          // Calculate necessary metrics for file 
-     
+          // Calculate necessary metrics for file
+
      GetTextMetrics (pd.hDC, &tm) ;
      yChar = tm.tmHeight + tm.tmExternalLeading ;
-     
+
      iCharsPerLine = GetDeviceCaps (pd.hDC, HORZRES) / tm.tmAveCharWidth ;
      iLinesPerPage = GetDeviceCaps (pd.hDC, VERTRES) / yChar ;
      iTotalPages   = (iTotalLines + iLinesPerPage - 1) / iLinesPerPage ;
 
           // Allocate a buffer for each line of text
-     
+
      pstrBuffer = malloc (sizeof (TCHAR) * (iCharsPerLine + 1)) ;
 
           // Display the printing dialog box
-     
+
      EnableWindow (hwnd, FALSE) ;
-     
+
      bSuccess   = TRUE ;
      bUserAbort = FALSE ;
-     
-     hDlgPrint = CreateDialog (hInst, TEXT ("PrintDlgBox"), 
+
+     hDlgPrint = CreateDialog (hInst, TEXT ("PrintDlgBox"),
                                hwnd, PrintDlgProc) ;
 
      SetDlgItemText (hDlgPrint, IDC_FILENAME, szTitleName) ;
@@ -114,7 +118,7 @@ BOOL PopPrntPrintFile (HINSTANCE hInst, HWND hwnd, HWND hwndEdit,
 
      GetWindowText (hwnd, szJobName, sizeof (szJobName)) ;
      di.lpszDocName = szJobName ;
-     
+
      if (StartDoc (pd.hDC, &di) > 0)
      {
                // Collation requires this loop and iNoiColCopy
@@ -138,53 +142,53 @@ BOOL PopPrntPrintFile (HINSTANCE hInst, HWND hwnd, HWND hwndEdit,
                          }
 
                               // For each page, print the lines
-                         
+
                          for (iLine = 0 ; iLine < iLinesPerPage ; iLine++)
                          {
                               iLineNum = iLinesPerPage * iPage + iLine ;
-                              
+
                               if (iLineNum > iTotalLines)
                                    break ;
-                              
+
                               *(int *) pstrBuffer = iCharsPerLine ;
-                              
+
                               TextOut (pd.hDC, 0, yChar * iLine, pstrBuffer,
                                        (int) SendMessage (hwndEdit, EM_GETLINE,
                                        (WPARAM) iLineNum, (LPARAM) pstrBuffer));
                          }
-                         
+
                          if (EndPage (pd.hDC) < 0)
                          {
                               bSuccess = FALSE ;
                               break ;
                          }
-                         
+
                          if (bUserAbort)
                               break ;
                     }
-                    
+
                     if (!bSuccess || bUserAbort)
                          break ;
                }
-               
+
                if (!bSuccess || bUserAbort)
                     break ;
           }
      }
      else
           bSuccess = FALSE ;
-     
+
      if (bSuccess)
           EndDoc (pd.hDC) ;
-     
+
      if (!bUserAbort)
      {
           EnableWindow (hwnd, TRUE) ;
           DestroyWindow (hDlgPrint) ;
      }
-     
+
      free (pstrBuffer) ;
      DeleteDC (pd.hDC) ;
-     
+
      return bSuccess && !bUserAbort ;
 }

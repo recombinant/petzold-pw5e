@@ -3,18 +3,23 @@
                 (c) Charles Petzold, 1998
   ----------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
      static TCHAR szAppName[] = TEXT ("HexCalc") ;
      HWND         hwnd ;
      MSG          msg ;
      WNDCLASS     wndclass ;
-     
+
      wndclass.style         = CS_HREDRAW | CS_VREDRAW;
      wndclass.lpfnWndProc   = WndProc ;
      wndclass.cbClsExtra    = 0 ;
@@ -25,18 +30,18 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.hbrBackground = (HBRUSH) (COLOR_BTNFACE + 1) ;
      wndclass.lpszMenuName  = NULL ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
           MessageBox (NULL, TEXT ("This program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
+
      hwnd = CreateDialog (hInstance, szAppName, 0, NULL) ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
-     
+
      while (GetMessage (&msg, NULL, 0, 0))
      {
           TranslateMessage (&msg) ;
@@ -78,7 +83,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      static int   iOperation = '=' ;
      static UINT  iNumber, iFirstNum ;
      HWND         hButton ;
-     
+
      switch (message)
      {
      case WM_KEYDOWN:                   // left arrow --> backspace
@@ -89,7 +94,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      case WM_CHAR:
           if ((wParam = (WPARAM) CharUpper ((TCHAR *) wParam)) == VK_RETURN)
                wParam = '=' ;
-          
+
           if (hButton = GetDlgItem (hwnd, wParam))
           {
                SendMessage (hButton, BM_SETSTATE, 1, 0) ;
@@ -104,13 +109,13 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                                         // fall through
      case WM_COMMAND:
           SetFocus (hwnd) ;
-          
+
           if (LOWORD (wParam) == VK_BACK)         // backspace
                ShowNumber (hwnd, iNumber /= 16) ;
-          
+
           else if (LOWORD (wParam) == VK_ESCAPE)  // escape
                ShowNumber (hwnd, iNumber = 0) ;
-          
+
           else if (isxdigit (LOWORD (wParam)))    // hex digit
           {
                if (bNewNumber)
@@ -119,7 +124,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                     iNumber = 0 ;
                }
                bNewNumber = FALSE ;
-               
+
                if (iNumber <= MAXDWORD >> 4)
                     ShowNumber (hwnd, iNumber = 16 * iNumber + wParam -
                     (isdigit (wParam) ? '0': 'A' - 10)) ;
@@ -135,7 +140,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                iOperation = LOWORD (wParam) ;
           }
           return 0 ;
-          
+
      case WM_DESTROY:
           PostQuitMessage (0) ;
           return 0 ;

@@ -3,6 +3,7 @@
                (c) Charles Petzold, 1998
   ---------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include "EZFont.h"
 
@@ -30,7 +31,7 @@ void PaintRoutine (HWND hwnd, HDC hdc, int cxArea, int cyArea)
 
      for (iPointSize = 80 ; iPointSize <= 120 ; iPointSize++)
      {
-          hFont = EzCreateFont (hdc, TEXT ("Times New Roman"), 
+          hFont = EzCreateFont (hdc, TEXT ("Times New Roman"),
                                 iPointSize, 0, 0, TRUE) ;
 
           GetObject (hFont, sizeof (LOGFONT), &lf) ;
@@ -38,8 +39,8 @@ void PaintRoutine (HWND hwnd, HDC hdc, int cxArea, int cyArea)
           SelectObject (hdc, hFont) ;
           GetTextMetrics (hdc, &tm) ;
 
-          TextOut (hdc, 0, y, szBuffer, 
-               wsprintf (szBuffer, 
+          TextOut (hdc, 0, y, szBuffer,
+               wsprintf (szBuffer,
                          TEXT ("Times New Roman font of %i.%i points, ")
                          TEXT ("lf.lfHeight = %i, tm.tmHeight = %i"),
                          iPointSize / 10, iPointSize % 10,

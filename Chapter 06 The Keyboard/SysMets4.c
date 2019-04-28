@@ -3,6 +3,7 @@
 				 (c) Charles Petzold, 1998
   ----------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
@@ -214,7 +215,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		SetScrollInfo(hwnd, SB_HORZ, &si, TRUE);
 		GetScrollInfo(hwnd, SB_HORZ, &si);
 
-		// If the position has changed, scroll the window 
+		// If the position has changed, scroll the window
 
 		if (si.nPos != iHorzPos)
 		{

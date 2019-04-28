@@ -3,6 +3,7 @@
                (c) Charles Petzold, 1998
   ------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <wchar.h>       // for wide-character string functions
 #include "StrLib.h"
@@ -42,10 +43,10 @@ EXPORT BOOL CALLBACK AddStringW (PCWSTR pStringIn)
 {
      PWSTR pString ;
      int   i, iLength ;
-     
+
      if (iTotal == MAX_STRINGS - 1)
           return FALSE ;
-     
+
      if ((iLength = wcslen (pStringIn)) == 0)
           return FALSE ;
 
@@ -56,12 +57,12 @@ EXPORT BOOL CALLBACK AddStringW (PCWSTR pStringIn)
      _wcsupr (pString) ;
 
           // Alphabetize the strings
-     
+
      for (i = iTotal ; i > 0 ; i--)
      {
           if (wcscmp (pString, szStrings[i - 1]) >= 0)
                break ;
-          
+
           wcscpy (szStrings[i], szStrings[i - 1]) ;
      }
      wcscpy (szStrings[i], pString) ;
@@ -91,25 +92,25 @@ EXPORT BOOL CALLBACK DeleteStringA (PCSTR pStringIn)
 EXPORT BOOL CALLBACK DeleteStringW (PCWSTR pStringIn)
 {
      int i, j ;
-     
+
      if (0 == wcslen (pStringIn))
           return FALSE ;
-     
+
      for (i = 0 ; i < iTotal ; i++)
      {
           if (_wcsicmp (szStrings[i], pStringIn) == 0)
                break ;
      }
           // If given string not in list, return without taking action
-     
+
      if (i == iTotal)
           return FALSE ;
-     
+
           // Else adjust list downward
-     
+
      for (j = i ; j < iTotal ; j++)
           wcscpy (szStrings[j], szStrings[j + 1]) ;
-     
+
      szStrings[iTotal--][0] = '\0' ;
      return TRUE ;
 }
@@ -133,7 +134,7 @@ EXPORT int CALLBACK GetStringsA (GETSTRCB pfnGetStrCallBack, PVOID pParam)
                // Call callback function
 
           bReturn = pfnGetStrCallBack (pAnsiStr, pParam) ;
-          
+
           if (bReturn == FALSE)
                return i + 1 ;
 
@@ -146,11 +147,11 @@ EXPORT int CALLBACK GetStringsW (GETSTRCB pfnGetStrCallBack, PVOID pParam)
 {
      BOOL bReturn ;
      int  i ;
-     
+
      for (i = 0 ; i < iTotal ; i++)
      {
           bReturn = pfnGetStrCallBack (szStrings[i], pParam) ;
-          
+
           if (bReturn == FALSE)
                return i + 1 ;
      }

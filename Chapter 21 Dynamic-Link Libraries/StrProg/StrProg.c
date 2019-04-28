@@ -3,6 +3,8 @@
                 (c) Charles Petzold, 1998
   --------------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
 #include "StrLib.h"
 #include "Resource.h"
@@ -26,13 +28,16 @@ LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 TCHAR szAppName [] = TEXT ("StrProg") ;
 TCHAR szString [MAX_LENGTH + 1] ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
      HWND     hwnd ;
      MSG      msg ;
      WNDCLASS wndclass ;
-     
+
      wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
      wndclass.lpfnWndProc   = WndProc ;
      wndclass.cbClsExtra    = 0 ;
@@ -43,7 +48,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = szAppName ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
           MessageBox (NULL, TEXT ("This program requires Windows NT!"),
@@ -56,10 +61,10 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
-     
+
      while (GetMessage (&msg, NULL, 0, 0))
      {
           TranslateMessage (&msg) ;
@@ -75,7 +80,7 @@ BOOL CALLBACK DlgProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
      case WM_INITDIALOG:
           SendDlgItemMessage (hDlg, IDC_STRING, EM_LIMITTEXT, MAX_LENGTH, 0) ;
           return TRUE ;
-          
+
      case WM_COMMAND:
           switch (wParam)
           {
@@ -83,7 +88,7 @@ BOOL CALLBACK DlgProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                GetDlgItemText (hDlg, IDC_STRING, szString, MAX_LENGTH) ;
                EndDialog (hDlg, TRUE) ;
                return TRUE ;
-               
+
           case IDCANCEL:
                EndDialog (hDlg, FALSE) ;
                return TRUE ;
@@ -96,7 +101,7 @@ BOOL CALLBACK GetStrCallBack (PTSTR pString, CBPARAM * pcbp)
 {
      TextOut (pcbp->hdc, pcbp->xText, pcbp->yText,
               pString, lstrlen (pString)) ;
-     
+
      if ((pcbp->yText += pcbp->yIncr) > pcbp->yMax)
      {
           pcbp->yText = pcbp->yStart ;
@@ -115,7 +120,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      HDC               hdc ;
      PAINTSTRUCT       ps ;
      TEXTMETRIC        tm ;
-     
+
      switch (message)
      {
      case WM_CREATE:
@@ -130,7 +135,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
           iDataChangeMsg = RegisterWindowMessage (TEXT ("StrProgDataChange")) ;
           return 0 ;
-          
+
      case WM_COMMAND:
           switch (wParam)
           {
@@ -143,7 +148,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                          MessageBeep (0) ;
                }
                break ;
-               
+
           case IDM_DELETE:
                if (DialogBox (hInst, TEXT ("DeleteDlg"), hwnd, &DlgProc))
                {
@@ -155,15 +160,15 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                break ;
           }
           return 0 ;
-          
+
      case WM_SIZE:
           cxClient = (int) LOWORD (lParam) ;
           cyClient = (int) HIWORD (lParam) ;
           return 0 ;
-               
+
      case WM_PAINT:
           hdc = BeginPaint (hwnd, &ps) ;
-               
+
           cbparam.hdc   = hdc ;
           cbparam.xText = cbparam.xStart = cxChar ;
           cbparam.yText = cbparam.yStart = cyChar ;
@@ -171,12 +176,12 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
           cbparam.yIncr = cyChar ;
           cbparam.xMax  = cbparam.xIncr * (1 + cxClient / cbparam.xIncr) ;
           cbparam.yMax  = cyChar * (cyClient / cyChar - 1) ;
-               
+
           GetStrings ((GETSTRCB) GetStrCallBack, (PVOID) &cbparam) ;
-              
+
           EndPaint (hwnd, &ps) ;
           return 0 ;
-               
+
      case WM_DESTROY:
           PostQuitMessage (0) ;
           return 0 ;

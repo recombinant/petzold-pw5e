@@ -1,427 +1,436 @@
 /*----------------------------------------
    EMFVIEW.C -- View Enhanced Metafiles
-                (c) Charles Petzold, 1998
+				(c) Charles Petzold, 1998
   ----------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <windowsx.h>
+#include <tchar.h>
 #include <commdlg.h>
 #include "Resource.h"
 
-LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-TCHAR szAppName[] = TEXT ("EmfView") ;
+TCHAR szAppName[] = TEXT("EmfView");
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
-     HACCEL   hAccel ;
-     HWND     hwnd ;
-     MSG      msg ;
-     WNDCLASS wndclass ;
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
 
-     wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
-     wndclass.lpfnWndProc   = WndProc ;
-     wndclass.cbClsExtra    = 0 ;
-     wndclass.cbWndExtra    = 0 ;
-     wndclass.hInstance     = hInstance ;
-     wndclass.hIcon         = LoadIcon (NULL, IDI_APPLICATION) ;
-     wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-     wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
-     wndclass.lpszMenuName  = szAppName ;
-     wndclass.lpszClassName = szAppName ;
+	HACCEL   hAccel;
+	HWND     hwnd;
+	MSG      msg;
+	WNDCLASS wndclass;
 
-     if (!RegisterClass (&wndclass))
-     {
-          MessageBox (NULL, TEXT ("This program requires Windows NT!"), 
-                      szAppName, MB_ICONERROR) ;
-          return 0 ;
-     }
+	wndclass.style = CS_HREDRAW | CS_VREDRAW;
+	wndclass.lpfnWndProc = WndProc;
+	wndclass.cbClsExtra = 0;
+	wndclass.cbWndExtra = 0;
+	wndclass.hInstance = hInstance;
+	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wndclass.lpszMenuName = szAppName;
+	wndclass.lpszClassName = szAppName;
 
-     hwnd = CreateWindow (szAppName, TEXT ("Enhanced Metafile Viewer"),
-                          WS_OVERLAPPEDWINDOW,
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          CW_USEDEFAULT, CW_USEDEFAULT, 
-                          NULL, NULL, hInstance, NULL) ;
+	if (!RegisterClass(&wndclass))
+	{
+		MessageBox(NULL, TEXT("This program requires Windows NT!"),
+			szAppName, MB_ICONERROR);
+		return 0;
+	}
 
-     ShowWindow (hwnd, nShowCmd) ;
-     UpdateWindow (hwnd) ;
+	hwnd = CreateWindow(szAppName, TEXT("Enhanced Metafile Viewer"),
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		NULL, NULL, hInstance, NULL);
 
-     hAccel = LoadAccelerators (hInstance, szAppName) ;
+	ShowWindow(hwnd, nShowCmd);
+	UpdateWindow(hwnd);
 
-     while (GetMessage (&msg, NULL, 0, 0))
-     {
-          if (!TranslateAccelerator (hwnd, hAccel, &msg))
-          {
-               TranslateMessage (&msg) ;
-               DispatchMessage (&msg) ;
-          }
-     }
-     return (int)msg.wParam;  // WM_QUIT
+	hAccel = LoadAccelerators(hInstance, szAppName);
+
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		if (!TranslateAccelerator(hwnd, hAccel, &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+	return (int)msg.wParam;  // WM_QUIT
 }
 
-HPALETTE CreatePaletteFromMetaFile (HENHMETAFILE hemf)
+HPALETTE CreatePaletteFromMetaFile(HENHMETAFILE hemf)
 {
-     HPALETTE     hPalette ;
-     int          iNum ;
-     LOGPALETTE * plp ;
+	HPALETTE     hPalette;
+	int          iNum;
+	LOGPALETTE* plp;
 
-     if (!hemf)
-          return NULL ;
+	if (!hemf)
+		return NULL;
 
-     if (0 == (iNum = GetEnhMetaFilePaletteEntries (hemf, 0, NULL)))
-          return NULL ;
+	if (0 == (iNum = GetEnhMetaFilePaletteEntries(hemf, 0, NULL)))
+		return NULL;
 
-     plp = malloc (sizeof (LOGPALETTE) + (iNum - 1) * sizeof (PALETTEENTRY)) ;
+	plp = malloc(sizeof(LOGPALETTE) + (iNum - 1) * sizeof(PALETTEENTRY));
 
-     plp->palVersion    = 0x0300 ;
-     plp->palNumEntries = iNum ;
+	plp->palVersion = 0x0300;
+	plp->palNumEntries = iNum;
 
-     GetEnhMetaFilePaletteEntries (hemf, iNum, plp->palPalEntry) ;
-     
-     hPalette = CreatePalette (plp) ;
+	GetEnhMetaFilePaletteEntries(hemf, iNum, plp->palPalEntry);
 
-     free (plp) ;
+	hPalette = CreatePalette(plp);
 
-     return hPalette ;
+	free(plp);
+
+	return hPalette;
 }
 
-LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-     static DOCINFO      di = { sizeof (DOCINFO), TEXT ("EmfView: Printing") } ;
-     static HENHMETAFILE hemf ;
-     static OPENFILENAME ofn ;
-     static PRINTDLG     printdlg = { sizeof (PRINTDLG) } ;
-     static TCHAR        szFileName [MAX_PATH], szTitleName [MAX_PATH] ;
-     static TCHAR        szFilter[] = 
-                               TEXT ("Enhanced Metafiles (*.EMF)\0*.emf\0")
-                               TEXT ("All Files (*.*)\0*.*\0\0") ;
-     BOOL                bSuccess ;
-     ENHMETAHEADER       header ;
-     HDC                 hdc, hdcPrn ;
-     HENHMETAFILE        hemfCopy ;
-     HMENU               hMenu ;
-     HPALETTE            hPalette ;
-     int                 i, iLength, iEnable ;
-     PAINTSTRUCT         ps ;
-     RECT                rect ;
-     PTSTR               pBuffer ;
+	static DOCINFO      di = { sizeof(DOCINFO), TEXT("EmfView: Printing") };
+	static HENHMETAFILE hemf;
+	static OPENFILENAME ofn;
+	static PRINTDLG     printdlg = { sizeof(PRINTDLG) };
+	static TCHAR        szFileName[MAX_PATH], szTitleName[MAX_PATH];
+	static TCHAR        szFilter[] =
+		TEXT("Enhanced Metafiles (*.EMF)\0*.emf\0")
+		TEXT("All Files (*.*)\0*.*\0\0");
+	BOOL                bSuccess;
+	ENHMETAHEADER       header;
+	HDC                 hdc, hdcPrn;
+	HENHMETAFILE        hemfCopy;
+	HMENU               hMenu;
+	HPALETTE            hPalette;
+	int                 i, iLength, iEnable;
+	PAINTSTRUCT         ps;
+	RECT                rect;
+	PTSTR               pBuffer;
 
-     switch (message)
-     {
-     case WM_CREATE:
-               // Initialize OPENFILENAME structure
-     
-          ofn.lStructSize       = sizeof (OPENFILENAME) ;
-          ofn.hwndOwner         = hwnd ;
-          ofn.hInstance         = NULL ;
-          ofn.lpstrFilter       = szFilter ;
-          ofn.lpstrCustomFilter = NULL ;
-          ofn.nMaxCustFilter    = 0 ;
-          ofn.nFilterIndex      = 0 ;
-          ofn.lpstrFile         = szFileName ;
-          ofn.nMaxFile          = MAX_PATH ;
-          ofn.lpstrFileTitle    = szTitleName ;
-          ofn.nMaxFileTitle     = MAX_PATH ;
-          ofn.lpstrInitialDir   = NULL ;
-          ofn.lpstrTitle        = NULL ;
-          ofn.Flags             = 0 ;   
-          ofn.nFileOffset       = 0 ;
-          ofn.nFileExtension    = 0 ;
-          ofn.lpstrDefExt       = TEXT ("emf") ;
-          ofn.lCustData         = 0 ;
-          ofn.lpfnHook          = NULL ;
-          ofn.lpTemplateName    = NULL ;
-          return 0 ;
+	switch (message)
+	{
+	case WM_CREATE:
+		// Initialize OPENFILENAME structure
 
-     case WM_INITMENUPOPUP:
-          hMenu = GetMenu (hwnd) ;
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = hwnd;
+		ofn.hInstance = NULL;
+		ofn.lpstrFilter = szFilter;
+		ofn.lpstrCustomFilter = NULL;
+		ofn.nMaxCustFilter = 0;
+		ofn.nFilterIndex = 0;
+		ofn.lpstrFile = szFileName;
+		ofn.nMaxFile = MAX_PATH;
+		ofn.lpstrFileTitle = szTitleName;
+		ofn.nMaxFileTitle = MAX_PATH;
+		ofn.lpstrInitialDir = NULL;
+		ofn.lpstrTitle = NULL;
+		ofn.Flags = 0;
+		ofn.nFileOffset = 0;
+		ofn.nFileExtension = 0;
+		ofn.lpstrDefExt = TEXT("emf");
+		ofn.lCustData = 0;
+		ofn.lpfnHook = NULL;
+		ofn.lpTemplateName = NULL;
+		return 0;
 
-          iEnable = hemf ? MF_ENABLED : MF_GRAYED ;
+	case WM_INITMENUPOPUP:
+		hMenu = GetMenu(hwnd);
 
-          EnableMenuItem (hMenu, IDM_FILE_SAVE_AS,    iEnable) ;
-          EnableMenuItem (hMenu, IDM_FILE_PRINT,      iEnable) ;
-          EnableMenuItem (hMenu, IDM_FILE_PROPERTIES, iEnable) ;
-          EnableMenuItem (hMenu, IDM_EDIT_CUT,        iEnable) ;
-          EnableMenuItem (hMenu, IDM_EDIT_COPY,       iEnable) ;
-          EnableMenuItem (hMenu, IDM_EDIT_DELETE,     iEnable) ;
+		iEnable = hemf ? MF_ENABLED : MF_GRAYED;
 
-          EnableMenuItem (hMenu, IDM_EDIT_PASTE,
-               IsClipboardFormatAvailable (CF_ENHMETAFILE) ?
-                    MF_ENABLED : MF_GRAYED) ;
-          return 0 ;
+		EnableMenuItem(hMenu, IDM_FILE_SAVE_AS, iEnable);
+		EnableMenuItem(hMenu, IDM_FILE_PRINT, iEnable);
+		EnableMenuItem(hMenu, IDM_FILE_PROPERTIES, iEnable);
+		EnableMenuItem(hMenu, IDM_EDIT_CUT, iEnable);
+		EnableMenuItem(hMenu, IDM_EDIT_COPY, iEnable);
+		EnableMenuItem(hMenu, IDM_EDIT_DELETE, iEnable);
 
-     case WM_COMMAND:
-          switch (LOWORD (wParam))
-          {
-          case IDM_FILE_OPEN:
-                    // Show the File Open dialog box
+		EnableMenuItem(hMenu, IDM_EDIT_PASTE,
+			IsClipboardFormatAvailable(CF_ENHMETAFILE) ?
+			MF_ENABLED : MF_GRAYED);
+		return 0;
 
-               ofn.Flags = 0 ;
-     
-               if (!GetOpenFileName (&ofn))
-                    return 0 ;
-               
-                    // If there's an existing EMF, get rid of it.
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDM_FILE_OPEN:
+			// Show the File Open dialog box
 
-               if (hemf)
-               {
-                    DeleteEnhMetaFile (hemf) ;
-                    hemf = NULL ;
-               }
-                    // Load the EMF into memory
+			ofn.Flags = 0;
 
-               SetCursor (LoadCursor (NULL, IDC_WAIT)) ;
-               ShowCursor (TRUE) ;
+			if (!GetOpenFileName(&ofn))
+				return 0;
 
-               hemf = GetEnhMetaFile (szFileName) ;
+			// If there's an existing EMF, get rid of it.
 
-               ShowCursor (FALSE) ;
-               SetCursor (LoadCursor (NULL, IDC_ARROW)) ;
+			if (hemf)
+			{
+				DeleteEnhMetaFile(hemf);
+				hemf = NULL;
+			}
+			// Load the EMF into memory
 
-                    // Invalidate the client area for later update
+			SetCursor(LoadCursor(NULL, IDC_WAIT));
+			ShowCursor(TRUE);
 
-               InvalidateRect (hwnd, NULL, TRUE) ;
+			hemf = GetEnhMetaFile(szFileName);
 
-               if (hemf == NULL)
-               {
-                    MessageBox (hwnd, TEXT ("Cannot load metafile"), 
-                                szAppName, MB_ICONEXCLAMATION | MB_OK) ;
-               }
-               return 0 ;
+			ShowCursor(FALSE);
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
 
-          case IDM_FILE_SAVE_AS:
-               if (!hemf)
-                    return 0 ;
+			// Invalidate the client area for later update
 
-                    // Show the File Save dialog box
+			InvalidateRect(hwnd, NULL, TRUE);
 
-               ofn.Flags = OFN_OVERWRITEPROMPT ;
-     
-               if (!GetSaveFileName (&ofn))
-                    return 0 ;
-               
-                    // Save the EMF to disk file
+			if (hemf == NULL)
+			{
+				MessageBox(hwnd, TEXT("Cannot load metafile"),
+					szAppName, MB_ICONEXCLAMATION | MB_OK);
+			}
+			return 0;
 
-               SetCursor (LoadCursor (NULL, IDC_WAIT)) ;
-               ShowCursor (TRUE) ;
+		case IDM_FILE_SAVE_AS:
+			if (!hemf)
+				return 0;
 
-               hemfCopy = CopyEnhMetaFile (hemf, szFileName) ;
+			// Show the File Save dialog box
 
-               ShowCursor (FALSE) ;
-               SetCursor (LoadCursor (NULL, IDC_ARROW)) ;
+			ofn.Flags = OFN_OVERWRITEPROMPT;
 
-               if (hemfCopy)
-               {
-                    DeleteEnhMetaFile (hemf) ;
-                    hemf = hemfCopy ;
-               }
-               else
-                    MessageBox (hwnd, TEXT ("Cannot save metafile"), 
-                                szAppName, MB_ICONEXCLAMATION | MB_OK) ;
-               return 0 ;
+			if (!GetSaveFileName(&ofn))
+				return 0;
 
-          case IDM_FILE_PRINT:
-                    // Show the Print dialog box and get printer DC
-	
-	          printdlg.Flags = PD_RETURNDC | PD_NOPAGENUMS | PD_NOSELECTION ;
+			// Save the EMF to disk file
 
-	          if (!PrintDlg (&printdlg))
-		          return 0 ;
-               
-               if (NULL == (hdcPrn = printdlg.hDC)) 
-               {
-                    MessageBox (hwnd, TEXT ("Cannot obtain printer DC"),
-                                szAppName, MB_ICONEXCLAMATION | MB_OK) ;
-                    return 0 ;
-               }
-                    // Get size of printable area of page
+			SetCursor(LoadCursor(NULL, IDC_WAIT));
+			ShowCursor(TRUE);
 
-               rect.left   = 0 ;
-               rect.right  = GetDeviceCaps (hdcPrn, HORZRES) ;
-               rect.top    = 0 ;
-               rect.bottom = GetDeviceCaps (hdcPrn, VERTRES) ;
+			hemfCopy = CopyEnhMetaFile(hemf, szFileName);
 
-               bSuccess = FALSE ;
+			ShowCursor(FALSE);
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
 
-                    // Play the EMF to the printer
+			if (hemfCopy)
+			{
+				DeleteEnhMetaFile(hemf);
+				hemf = hemfCopy;
+			}
+			else
+				MessageBox(hwnd, TEXT("Cannot save metafile"),
+					szAppName, MB_ICONEXCLAMATION | MB_OK);
+			return 0;
 
-               SetCursor (LoadCursor (NULL, IDC_WAIT)) ;
-               ShowCursor (TRUE) ;
+		case IDM_FILE_PRINT:
+			// Show the Print dialog box and get printer DC
 
-               if ((StartDoc (hdcPrn, &di) > 0) && (StartPage (hdcPrn) > 0))
-               {
-                    PlayEnhMetaFile (hdcPrn, hemf, &rect) ;
-                    
-                    if (EndPage (hdcPrn) > 0)
-                    {
-                         bSuccess = TRUE ;
-                         EndDoc (hdcPrn) ;
-                    }
-               }
-               ShowCursor (FALSE) ;
-               SetCursor (LoadCursor (NULL, IDC_ARROW)) ;
+			printdlg.Flags = PD_RETURNDC | PD_NOPAGENUMS | PD_NOSELECTION;
 
-               DeleteDC (hdcPrn) ;
+			if (!PrintDlg(&printdlg))
+				return 0;
 
-               if (!bSuccess)
-                    MessageBox (hwnd, TEXT ("Could not print metafile"),
-                                szAppName, MB_ICONEXCLAMATION | MB_OK) ;
-               return 0 ;
+			if (NULL == (hdcPrn = printdlg.hDC))
+			{
+				MessageBox(hwnd, TEXT("Cannot obtain printer DC"),
+					szAppName, MB_ICONEXCLAMATION | MB_OK);
+				return 0;
+			}
+			// Get size of printable area of page
 
-          case IDM_FILE_PROPERTIES:
-               if (!hemf)
-                    return 0 ;
+			rect.left = 0;
+			rect.right = GetDeviceCaps(hdcPrn, HORZRES);
+			rect.top = 0;
+			rect.bottom = GetDeviceCaps(hdcPrn, VERTRES);
 
-               iLength = GetEnhMetaFileDescription (hemf, 0, NULL) ;
-               pBuffer = malloc ((iLength + 256) * sizeof (TCHAR)) ;
+			bSuccess = FALSE;
 
-               GetEnhMetaFileHeader (hemf, sizeof (ENHMETAHEADER), &header) ;
+			// Play the EMF to the printer
 
-                    // Format header file information 
+			SetCursor(LoadCursor(NULL, IDC_WAIT));
+			ShowCursor(TRUE);
 
-               i  = wsprintf (pBuffer, 
-                              TEXT ("Bounds = (%i, %i) to (%i, %i) pixels\n"),
-                              header.rclBounds.left, header.rclBounds.top,
-                              header.rclBounds.right, header.rclBounds.bottom) ;
+			if ((StartDoc(hdcPrn, &di) > 0) && (StartPage(hdcPrn) > 0))
+			{
+				PlayEnhMetaFile(hdcPrn, hemf, &rect);
 
-               i += wsprintf (pBuffer + i, 
-                              TEXT ("Frame = (%i, %i) to (%i, %i) mms\n"),
-                              header.rclFrame.left, header.rclFrame.top,
-                              header.rclFrame.right, header.rclFrame.bottom) ;
+				if (EndPage(hdcPrn) > 0)
+				{
+					bSuccess = TRUE;
+					EndDoc(hdcPrn);
+				}
+			}
+			ShowCursor(FALSE);
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
 
-               i += wsprintf (pBuffer + i,
-                              TEXT ("Resolution = (%i, %i) pixels")
-                              TEXT (" = (%i, %i) mms\n"),
-                              header.szlDevice.cx, header.szlDevice.cy,
-                              header.szlMillimeters.cx, 
-                              header.szlMillimeters.cy) ;
+			DeleteDC(hdcPrn);
 
-               i += wsprintf (pBuffer + i,
-                              TEXT ("Size = %i, Records = %i, ")
-                              TEXT ("Handles = %i, Palette entries = %i\n"),
-                              header.nBytes, header.nRecords,
-                              header.nHandles, header.nPalEntries) ;
+			if (!bSuccess)
+				MessageBox(hwnd, TEXT("Could not print metafile"),
+					szAppName, MB_ICONEXCLAMATION | MB_OK);
+			return 0;
 
-                    // Include the metafile description, if present
+		case IDM_FILE_PROPERTIES:
+			if (!hemf)
+				return 0;
 
-               if (iLength)
-               {
-                    i += wsprintf (pBuffer + i, TEXT ("Description = ")) ;
-                    GetEnhMetaFileDescription (hemf, iLength, pBuffer + i) ;
-                    pBuffer [lstrlen (pBuffer)] = '\t' ;
-               }
+			iLength = GetEnhMetaFileDescription(hemf, 0, NULL);
+			pBuffer = malloc((iLength + 256) * sizeof(TCHAR));
 
-               MessageBox (hwnd, pBuffer, TEXT ("Metafile Properties"), MB_OK) ;
-               free (pBuffer) ;                              
-               return 0 ;
+			GetEnhMetaFileHeader(hemf, sizeof(ENHMETAHEADER), &header);
 
-          case IDM_EDIT_COPY:
-          case IDM_EDIT_CUT:
-               if (!hemf)
-                    return 0 ;
+			// Format header file information
 
-                    // Transfer metafile copy to the clipboard
+			i = wsprintf(pBuffer,
+				TEXT("Bounds = (%i, %i) to (%i, %i) pixels\n"),
+				header.rclBounds.left, header.rclBounds.top,
+				header.rclBounds.right, header.rclBounds.bottom);
 
-               hemfCopy = CopyEnhMetaFile (hemf, NULL) ;
+			i += wsprintf(pBuffer + i,
+				TEXT("Frame = (%i, %i) to (%i, %i) mms\n"),
+				header.rclFrame.left, header.rclFrame.top,
+				header.rclFrame.right, header.rclFrame.bottom);
 
-               OpenClipboard (hwnd) ;
-               EmptyClipboard () ;
-               SetClipboardData (CF_ENHMETAFILE, hemfCopy) ;
-               CloseClipboard () ;
+			i += wsprintf(pBuffer + i,
+				TEXT("Resolution = (%i, %i) pixels")
+				TEXT(" = (%i, %i) mms\n"),
+				header.szlDevice.cx, header.szlDevice.cy,
+				header.szlMillimeters.cx,
+				header.szlMillimeters.cy);
 
-               if (LOWORD (wParam) == IDM_EDIT_COPY)
-                    return 0 ;
-                                        // fall through if IDM_EDIT_CUT 
-          case IDM_EDIT_DELETE:
-               if (hemf)
-               {
-                    DeleteEnhMetaFile (hemf) ;
-                    hemf = NULL ;
-                    InvalidateRect (hwnd, NULL, TRUE) ;
-               }
-               return 0 ;
+			i += wsprintf(pBuffer + i,
+				TEXT("Size = %i, Records = %i, ")
+				TEXT("Handles = %i, Palette entries = %i\n"),
+				header.nBytes, header.nRecords,
+				header.nHandles, header.nPalEntries);
 
-          case IDM_EDIT_PASTE:
-               OpenClipboard (hwnd) ;
-               hemfCopy = GetClipboardData (CF_ENHMETAFILE) ;
-               CloseClipboard () ;
+			// Include the metafile description, if present
 
-               if (hemfCopy && hemf)
-               {
-                    DeleteEnhMetaFile (hemf) ;
-                    hemf = NULL ;
-               }
+			if (iLength)
+			{
+				i += wsprintf(pBuffer + i, TEXT("Description = "));
+				GetEnhMetaFileDescription(hemf, iLength, pBuffer + i);
+				pBuffer[lstrlen(pBuffer)] = '\t';
+			}
 
-               hemf = CopyEnhMetaFile (hemfCopy, NULL) ;
-               InvalidateRect (hwnd, NULL, TRUE) ;
-               return 0 ;
+			MessageBox(hwnd, pBuffer, TEXT("Metafile Properties"), MB_OK);
+			free(pBuffer);
+			return 0;
 
-          case IDM_APP_ABOUT:
-               MessageBox (hwnd, TEXT ("Enhanced Metafile Viewer\n")
-                                 TEXT ("(c) Charles Petzold, 1998"),
-                           szAppName, MB_OK) ;
-               return 0 ;
+		case IDM_EDIT_COPY:
+		case IDM_EDIT_CUT:
+			if (!hemf)
+				return 0;
 
-          case IDM_APP_EXIT:
-               SendMessage (hwnd, WM_CLOSE, 0, 0L) ;
-               return 0 ;
-          }
-          break ;
-         
-     case WM_PAINT:
-          hdc = BeginPaint (hwnd, &ps) ;
+			// Transfer metafile copy to the clipboard
 
-          if (hemf)
-          {
-               if (hPalette = CreatePaletteFromMetaFile (hemf))
-               {
-                    SelectPalette (hdc, hPalette, FALSE) ;
-                    RealizePalette (hdc) ;
-               }
-               GetClientRect (hwnd, &rect) ;
-               PlayEnhMetaFile (hdc, hemf, &rect) ;
+			hemfCopy = CopyEnhMetaFile(hemf, NULL);
 
-               if (hPalette)
-                    DeleteObject (hPalette) ;
-          }
-          EndPaint (hwnd, &ps) ;
-          return 0 ;
+			OpenClipboard(hwnd);
+			EmptyClipboard();
+			SetClipboardData(CF_ENHMETAFILE, hemfCopy);
+			CloseClipboard();
 
-     case WM_QUERYNEWPALETTE:
-          if (!hemf || !(hPalette = CreatePaletteFromMetaFile (hemf)))
-               return FALSE ;
+			if (LOWORD(wParam) == IDM_EDIT_COPY)
+				return 0;
+			// fall through if IDM_EDIT_CUT
+		case IDM_EDIT_DELETE:
+			if (hemf)
+			{
+				DeleteEnhMetaFile(hemf);
+				hemf = NULL;
+				InvalidateRect(hwnd, NULL, TRUE);
+			}
+			return 0;
 
-          hdc = GetDC (hwnd) ;
-          SelectPalette (hdc, hPalette, FALSE) ;
-          RealizePalette (hdc) ;
-          InvalidateRect (hwnd, NULL, FALSE) ;
+		case IDM_EDIT_PASTE:
+			OpenClipboard(hwnd);
+			hemfCopy = GetClipboardData(CF_ENHMETAFILE);
+			CloseClipboard();
 
-          DeleteObject (hPalette) ;
-          ReleaseDC (hwnd, hdc) ;
-          return TRUE ;
+			if (hemfCopy && hemf)
+			{
+				DeleteEnhMetaFile(hemf);
+				hemf = NULL;
+			}
 
-     case WM_PALETTECHANGED:
-          if ((HWND) wParam == hwnd)
-               break ;
+			hemf = CopyEnhMetaFile(hemfCopy, NULL);
+			InvalidateRect(hwnd, NULL, TRUE);
+			return 0;
 
-          if (!hemf || !(hPalette = CreatePaletteFromMetaFile (hemf)))
-               break ;
+		case IDM_APP_ABOUT:
+			MessageBox(hwnd, TEXT("Enhanced Metafile Viewer\n")
+				TEXT("(c) Charles Petzold, 1998"),
+				szAppName, MB_OK);
+			return 0;
 
-          hdc = GetDC (hwnd) ;
-          SelectPalette (hdc, hPalette, FALSE) ;
-          RealizePalette (hdc) ;
-          UpdateColors (hdc) ;
+		case IDM_APP_EXIT:
+			SendMessage(hwnd, WM_CLOSE, 0, 0L);
+			return 0;
+		}
+		break;
 
-          DeleteObject (hPalette) ;
-          ReleaseDC (hwnd, hdc) ;
-          break ;
-          
-     case WM_DESTROY:
-          if (hemf)
-               DeleteEnhMetaFile (hemf) ;
+	case WM_PAINT:
+		hdc = BeginPaint(hwnd, &ps);
 
-          PostQuitMessage (0) ;
-          return 0 ;
-     }
-     return DefWindowProc (hwnd, message, wParam, lParam) ;
+		if (hemf)
+		{
+			if (hPalette = CreatePaletteFromMetaFile(hemf))
+			{
+				SelectPalette(hdc, hPalette, FALSE);
+				RealizePalette(hdc);
+			}
+			GetClientRect(hwnd, &rect);
+			PlayEnhMetaFile(hdc, hemf, &rect);
+
+			if (hPalette)
+				DeleteObject(hPalette);
+		}
+		EndPaint(hwnd, &ps);
+		return 0;
+
+	case WM_QUERYNEWPALETTE:
+		if (!hemf || !(hPalette = CreatePaletteFromMetaFile(hemf)))
+			return FALSE;
+
+		hdc = GetDC(hwnd);
+		SelectPalette(hdc, hPalette, FALSE);
+		RealizePalette(hdc);
+		InvalidateRect(hwnd, NULL, FALSE);
+
+		DeleteObject(hPalette);
+		ReleaseDC(hwnd, hdc);
+		return TRUE;
+
+	case WM_PALETTECHANGED:
+		if ((HWND)wParam == hwnd)
+			break;
+
+		if (!hemf || !(hPalette = CreatePaletteFromMetaFile(hemf)))
+			break;
+
+		hdc = GetDC(hwnd);
+		SelectPalette(hdc, hPalette, FALSE);
+		RealizePalette(hdc);
+		UpdateColors(hdc);
+
+		DeleteObject(hPalette);
+		ReleaseDC(hwnd, hdc);
+		break;
+
+	case WM_DESTROY:
+		if (hemf)
+			DeleteEnhMetaFile(hemf);
+
+		PostQuitMessage(0);
+		return 0;
+	}
+	return DefWindowProc(hwnd, message, wParam, lParam);
 }

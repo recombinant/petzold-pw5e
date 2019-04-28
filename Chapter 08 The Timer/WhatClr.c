@@ -3,6 +3,7 @@
                 (c) Charles Petzold, 1998
   ------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <tchar.h>
 
@@ -25,7 +26,7 @@ int WINAPI _tWinMain(
      int          cxWindow, cyWindow ;
      MSG          msg ;
      WNDCLASS     wndclass ;
-     
+
      wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
      wndclass.lpfnWndProc   = WndProc ;
      wndclass.cbClsExtra    = 0 ;
@@ -36,25 +37,25 @@ int WINAPI _tWinMain(
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = NULL ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
           MessageBox (NULL, TEXT ("This program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
+
      FindWindowSize (&cxWindow, &cyWindow) ;
-     
+
      hwnd = CreateWindow (szAppName, TEXT ("What Color"),
                           WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_BORDER,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           cxWindow, cyWindow,
                           NULL, NULL, hInstance, NULL) ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
-     
+
      while (GetMessage (&msg, NULL, 0, 0))
      {
           TranslateMessage (&msg) ;
@@ -67,16 +68,16 @@ void FindWindowSize (int * pcxWindow, int * pcyWindow)
 {
      HDC        hdcScreen ;
      TEXTMETRIC tm ;
-     
+
      hdcScreen = CreateIC (TEXT ("DISPLAY"), NULL, NULL, NULL) ;
      GetTextMetrics (hdcScreen, &tm) ;
      DeleteDC (hdcScreen) ;
-     
-     * pcxWindow = 2 * GetSystemMetrics (SM_CXBORDER)  + 
+
+     * pcxWindow = 2 * GetSystemMetrics (SM_CXBORDER)  +
                         12 * tm.tmAveCharWidth ;
 
      * pcyWindow = 2 * GetSystemMetrics (SM_CYBORDER)  +
-                       GetSystemMetrics (SM_CYCAPTION) + 
+                       GetSystemMetrics (SM_CYCAPTION) +
                          2 * tm.tmHeight ;
 }
 
@@ -89,7 +90,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      POINT           pt ;
      RECT            rc ;
      TCHAR           szBuffer [16] ;
-     
+
      switch (message)
      {
      case WM_CREATE:
@@ -105,28 +106,28 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      case WM_TIMER:
           GetCursorPos (&pt) ;
           cr = GetPixel (hdcScreen, pt.x, pt.y) ;
-          
+
           if (cr != crLast)
           {
                crLast = cr ;
                InvalidateRect (hwnd, NULL, FALSE) ;
           }
           return 0 ;
-          
+
      case WM_PAINT:
           hdc = BeginPaint (hwnd, &ps) ;
-          
+
           GetClientRect (hwnd, &rc) ;
-          
+
           wsprintf (szBuffer, TEXT ("  %02X %02X %02X  "),
                     GetRValue (cr), GetGValue (cr), GetBValue (cr)) ;
-          
+
           DrawText (hdc, szBuffer, -1, &rc,
                     DT_SINGLELINE | DT_CENTER | DT_VCENTER) ;
-          
+
           EndPaint (hwnd, &ps) ;
           return 0 ;
-          
+
      case WM_DESTROY:
           DeleteDC (hdcScreen) ;
           KillTimer (hwnd, ID_TIMER) ;

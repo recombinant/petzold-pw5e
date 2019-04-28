@@ -3,6 +3,8 @@
                  (c) Charles Petzold, 1998
   -----------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
 #include "Resource.h"
 
@@ -22,15 +24,18 @@ TCHAR szCaption[]     = TEXT ("Clipboard Text Transfers - ANSI Version") ;
 
 #endif
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
      static TCHAR szAppName[] = TEXT ("ClipText") ;
      HACCEL       hAccel ;
      HWND         hwnd ;
      MSG          msg ;
      WNDCLASS     wndclass ;
-     
+
      wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
      wndclass.lpfnWndProc   = WndProc ;
      wndclass.cbClsExtra    = 0 ;
@@ -41,20 +46,20 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = szAppName ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
           MessageBox (NULL, TEXT ("This program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
+
      hwnd = CreateWindow (szAppName, szCaption,
                           WS_OVERLAPPEDWINDOW,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
 
@@ -80,7 +85,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      PTSTR        pGlobal ;
      PAINTSTRUCT  ps ;
      RECT         rect ;
-     
+
      switch (message)
      {
      case WM_CREATE:
@@ -97,7 +102,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
           EnableMenuItem ((HMENU) wParam, IDM_EDIT_COPY,  bEnable) ;
           EnableMenuItem ((HMENU) wParam, IDM_EDIT_CLEAR, bEnable) ;
           break ;
-          
+
      case WM_COMMAND:
           switch (LOWORD (wParam))
           {
@@ -125,7 +130,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                if (!pText)
                     return 0 ;
 
-               hGlobal = GlobalAlloc (GHND | GMEM_SHARE, 
+               hGlobal = GlobalAlloc (GHND | GMEM_SHARE,
                                       (lstrlen (pText) + 1) * sizeof (TCHAR)) ;
                pGlobal = GlobalLock (hGlobal) ;
                lstrcpy (pGlobal, pText) ;
@@ -137,7 +142,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                CloseClipboard () ;
 
                if (LOWORD (wParam) == IDM_EDIT_COPY)
-                    return 0 ;        
+                    return 0 ;
                                              // fall through for IDM_EDIT_CUT
           case IDM_EDIT_CLEAR:
                if (pText)
@@ -166,13 +171,13 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
           hdc = BeginPaint (hwnd, &ps) ;
 
           GetClientRect (hwnd, &rect) ;
-          
+
           if (pText != NULL)
                DrawText (hdc, pText, -1, &rect, DT_EXPANDTABS | DT_WORDBREAK) ;
 
           EndPaint (hwnd, &ps) ;
           return 0 ;
-          
+
      case WM_DESTROY:
           if (pText)
                free (pText) ;

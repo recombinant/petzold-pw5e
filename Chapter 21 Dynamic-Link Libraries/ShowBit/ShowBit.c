@@ -3,19 +3,24 @@
                 (c) Charles Petzold, 1998
   -----------------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 
 TCHAR szAppName [] = TEXT ("ShowBit") ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
      HWND     hwnd ;
      MSG      msg ;
      WNDCLASS wndclass ;
-     
+
      wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
      wndclass.lpfnWndProc   = WndProc ;
      wndclass.cbClsExtra    = 0 ;
@@ -26,15 +31,15 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = NULL ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
           MessageBox (NULL, TEXT ("This program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
-     hwnd = CreateWindow (szAppName, 
+
+     hwnd = CreateWindow (szAppName,
                           TEXT ("Show Bitmaps from BITLIB (Press Key)"),
                           WS_OVERLAPPEDWINDOW,
                           CW_USEDEFAULT, CW_USEDEFAULT,
@@ -43,10 +48,10 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
      if (!hwnd)
           return 0 ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
-     
+
      while (GetMessage (&msg, NULL, 0, 0))
      {
           TranslateMessage (&msg) ;
@@ -60,15 +65,15 @@ void DrawBitmap (HDC hdc, int xStart, int yStart, HBITMAP hBitmap)
      BITMAP bm ;
      HDC    hMemDC ;
      POINT  pt ;
-     
+
      hMemDC = CreateCompatibleDC (hdc) ;
      SelectObject (hMemDC, hBitmap) ;
      GetObject (hBitmap, sizeof (BITMAP), &bm) ;
      pt.x = bm.bmWidth ;
      pt.y = bm.bmHeight ;
-     
+
      BitBlt (hdc, xStart, yStart, pt.x, pt.y, hMemDC, 0, 0, SRCCOPY) ;
-     
+
      DeleteDC (hMemDC) ;
 }
 
@@ -79,7 +84,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      HBITMAP          hBitmap ;
      HDC              hdc ;
      PAINTSTRUCT      ps ;
-     
+
      switch (message)
      {
      case WM_CREATE:
@@ -90,7 +95,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                return -1 ;
           }
           return 0 ;
-          
+
      case WM_CHAR:
           if (hLibrary)
           {
@@ -98,18 +103,18 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                InvalidateRect (hwnd, NULL, TRUE) ;
           }
           return 0 ;
-          
+
      case WM_PAINT:
           hdc = BeginPaint (hwnd, &ps) ;
-          
+
           if (hLibrary)
           {
                hBitmap = LoadBitmap (hLibrary, MAKEINTRESOURCE (iCurrent)) ;
 
-               if (!hBitmap) 
+               if (!hBitmap)
                {
                     iCurrent = 1 ;
-                    hBitmap = LoadBitmap (hLibrary, 
+                    hBitmap = LoadBitmap (hLibrary,
                                           MAKEINTRESOURCE (iCurrent)) ;
                }
                if (hBitmap)
@@ -120,11 +125,11 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
           }
           EndPaint (hwnd, &ps) ;
           return 0 ;
-          
+
      case WM_DESTROY:
           if (hLibrary)
                FreeLibrary (hLibrary) ;
-          
+
           PostQuitMessage (0) ;
           return 0 ;
      }

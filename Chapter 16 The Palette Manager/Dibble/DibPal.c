@@ -3,6 +3,7 @@
                (c) Charles Petzold, 1998
   ----------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include "DibHelp.h"
 #include "DibPal.h"
@@ -42,7 +43,7 @@ HPALETTE DibPalDibTable (HDIB hdib)
 
 /*------------------------------------------------------------------------
    DibPalAllPurpose: Creates a palette suitable for a wide variety
-          of images; the palette has 247 entries, but 15 of them are 
+          of images; the palette has 247 entries, but 15 of them are
           duplicates or match the standard 20 colors.
   ------------------------------------------------------------------------*/
 
@@ -70,7 +71,7 @@ HPALETTE DibPalAllPurpose (void)
           incr = (incr == 9 ? 8 : 9) ;
      }
 
-          // The following loop is responsible for 216 entries, but 8 of 
+          // The following loop is responsible for 216 entries, but 8 of
           //        them will match the standard 20 colors, and another
           //        4 of them will match the gray shades above.
 
@@ -109,7 +110,7 @@ HPALETTE DibPalUniformGrays (int iNum)
      for (i = 0 ; i < iNum ; i++)
      {
           plp->palPalEntry[i].peRed   =
-          plp->palPalEntry[i].peGreen = 
+          plp->palPalEntry[i].peGreen =
           plp->palPalEntry[i].peBlue  = (BYTE) (i * 255 / (iNum - 1)) ;
           plp->palPalEntry[i].peFlags = 0 ;
      }
@@ -240,7 +241,7 @@ HPALETTE DibPalPopularity (HDIB hdib, int iRes)
      LOGPALETTE * plp ;
 
           // Validity checks
-    
+
      if (DibBitCount (hdib) < 16)
           return NULL ;
 
@@ -281,9 +282,9 @@ HPALETTE DibPalPopularity (HDIB hdib, int iRes)
           G = (iMask & (iIndex >>         iRes )) << (8 - iRes) ;
           B = (iMask & (iIndex >> (iRes + iRes))) << (8 - iRes) ;
 
-          plp->palPalEntry[iEntry].peRed   = (BYTE) R ; 
-          plp->palPalEntry[iEntry].peGreen = (BYTE) G ; 
-          plp->palPalEntry[iEntry].peBlue  = (BYTE) B ; 
+          plp->palPalEntry[iEntry].peRed   = (BYTE) R ;
+          plp->palPalEntry[iEntry].peGreen = (BYTE) G ;
+          plp->palPalEntry[iEntry].peBlue  = (BYTE) B ;
           plp->palPalEntry[iEntry].peFlags = 0 ;
 
           piCount [iIndex] = 0 ;
@@ -323,7 +324,7 @@ BOXES ;
    FindAverageColor: In a box
   ----------------------------*/
 
-static int FindAverageColor (int * piCount, MINMAX mm, 
+static int FindAverageColor (int * piCount, MINMAX mm,
                              int iRes, RGBQUAD * prgb)
 {
      int R, G, B, iR, iG, iB, iTotal, iCount ;
@@ -331,9 +332,9 @@ static int FindAverageColor (int * piCount, MINMAX mm,
           // Initialize some variables
 
      iTotal = iR = iG = iB = 0 ;
-          
+
           // Loop through all colors in the box
-          
+
      for (R = mm.Rmin ; R <= mm.Rmax ; R++)
      for (G = mm.Gmin ; G <= mm.Gmax ; G++)
      for (B = mm.Bmin ; B <= mm.Bmax ; B++)
@@ -357,7 +358,7 @@ static int FindAverageColor (int * piCount, MINMAX mm,
      prgb->rgbBlue  = (BYTE) ((iB / iTotal) << (8 - iRes)) ;
 
           // Return the total number of pixels in the box
-     
+
      return iTotal ;
 }
 
@@ -370,8 +371,8 @@ static void CutBox (int * piCount, int iBoxCount, MINMAX mm,
 {
      int    iCount, R, G, B ;
      MINMAX mmNew ;
-     
-          // If the box is empty, return 
+
+          // If the box is empty, return
 
      if (iBoxCount == 0)
           return ;
@@ -380,18 +381,18 @@ static void CutBox (int * piCount, int iBoxCount, MINMAX mm,
           //   to find the average color in the box and save it along with
           //   the number of pixels of that color
 
-     if (iLevel == 8 || (mm.Rmin == mm.Rmax && 
-                         mm.Gmin == mm.Gmax && 
+     if (iLevel == 8 || (mm.Rmin == mm.Rmax &&
+                         mm.Gmin == mm.Gmax &&
                          mm.Bmin == mm.Bmax))
      {
-          pboxes[*piEntry].iBoxCount = 
+          pboxes[*piEntry].iBoxCount =
                FindAverageColor (piCount, mm, iRes, &pboxes[*piEntry].rgbBoxAv) ;
 
           (*piEntry) ++ ;
      }
           // Otherwise, if blue is the largest side, split it
 
-     else if ((mm.Bmax - mm.Bmin > mm.Rmax - mm.Rmin) && 
+     else if ((mm.Bmax - mm.Bmin > mm.Rmax - mm.Rmin) &&
               (mm.Bmax - mm.Bmin > mm.Gmax - mm.Gmin))
      {
                // Initialize a counter and loop through the blue side
@@ -424,7 +425,7 @@ static void CutBox (int * piCount, int iBoxCount, MINMAX mm,
           mmNew.Bmin = mm.Bmin ;
           mmNew.Bmax = B ;
 
-          CutBox (piCount, iCount, mmNew, iRes, iLevel + 1, 
+          CutBox (piCount, iCount, mmNew, iRes, iLevel + 1,
                   pboxes, piEntry) ;
 
           mmNew.Bmin = B + 1 ;
@@ -455,7 +456,7 @@ static void CutBox (int * piCount, int iBoxCount, MINMAX mm,
           mmNew.Rmin = mm.Rmin ;
           mmNew.Rmax = R ;
 
-          CutBox (piCount, iCount, mmNew, iRes, iLevel + 1, 
+          CutBox (piCount, iCount, mmNew, iRes, iLevel + 1,
                   pboxes, piEntry) ;
 
           mmNew.Rmin = R + 1 ;
@@ -465,7 +466,7 @@ static void CutBox (int * piCount, int iBoxCount, MINMAX mm,
                   pboxes, piEntry) ;
      }
           // Otherwise, split along the green size
-     else 
+     else
      {
           iCount = 0 ;
 
@@ -485,7 +486,7 @@ static void CutBox (int * piCount, int iBoxCount, MINMAX mm,
           mmNew.Gmin = mm.Gmin ;
           mmNew.Gmax = G ;
 
-          CutBox (piCount, iCount, mmNew, iRes, iLevel + 1, 
+          CutBox (piCount, iCount, mmNew, iRes, iLevel + 1,
                   pboxes, piEntry) ;
 
           mmNew.Gmin = G + 1 ;
@@ -519,7 +520,7 @@ HPALETTE DibPalMedianCut (HDIB hdib, int iRes)
      MINMAX       mm ;
 
           // Validity checks
-    
+
      if (DibBitCount (hdib) < 16)
           return NULL ;
 
@@ -561,7 +562,7 @@ HPALETTE DibPalMedianCut (HDIB hdib, int iRes)
           }
 
           // Cut the first box (iterative function).
-          //   On return, the boxes structure will have up to 256 RGB values, 
+          //   On return, the boxes structure will have up to 256 RGB values,
           //        one for each of the boxes, and the number of pixels in
           //        each box.
           //   The iEntry value will indicate the number of non-empty boxes.

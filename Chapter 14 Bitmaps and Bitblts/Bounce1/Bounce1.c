@@ -3,14 +3,24 @@
 			   (c) Charles Petzold, 1998
   ---------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <windowsx.h>
+#include <tchar.h>
+
 #define ID_TIMER    1
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
+
 	static TCHAR szAppName[] = TEXT("Bounce");
 	HWND         hwnd;
 	MSG          msg;

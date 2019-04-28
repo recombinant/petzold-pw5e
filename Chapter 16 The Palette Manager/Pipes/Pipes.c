@@ -3,6 +3,7 @@
               (c) Charles Petzold, 1998
   --------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 #define ID_TIMER 1
@@ -18,9 +19,9 @@ HPALETTE CreateRoutine (HWND hwnd)
      int      i ;
 
      plp = malloc (sizeof (LOGPALETTE) + 32 * sizeof (PALETTEENTRY)) ;
-     
+
           // Initialize the fields of the LOGPALETTE structure
-     
+
      plp->palVersion    = 0x300 ;
      plp->palNumEntries = 16 ;
 
@@ -37,7 +38,7 @@ HPALETTE CreateRoutine (HWND hwnd)
      }
 
      hPalette = CreatePalette (plp) ;
-     
+
      SetTimer (hwnd, ID_TIMER, 100, NULL) ;
      return hPalette ;
 }

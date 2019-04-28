@@ -1,195 +1,205 @@
 /*----------------------------------------------
    SHOWDIB1.C -- Shows a DIB in the client area
-                 (c) Charles Petzold, 1998
+				 (c) Charles Petzold, 1998
   ----------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <windowsx.h>
+#include <tchar.h>
+#include <commdlg.h>
 #include "DibFile.h"
-#include "Resource.h"
+#include "./Resource.h"
 
-LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-TCHAR szAppName[] = TEXT ("ShowDib1") ;
+TCHAR szAppName[] = TEXT("ShowDib1");
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
-     HACCEL   hAccel ;
-     HWND     hwnd ;
-     MSG      msg ;
-     WNDCLASS wndclass ;
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
 
-     wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
-     wndclass.lpfnWndProc   = WndProc ;
-     wndclass.cbClsExtra    = 0 ;
-     wndclass.cbWndExtra    = 0 ;
-     wndclass.hInstance     = hInstance ;
-     wndclass.hIcon         = LoadIcon (NULL, IDI_APPLICATION) ;
-     wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-     wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
-     wndclass.lpszMenuName  = szAppName ;
-     wndclass.lpszClassName = szAppName ;
+	HACCEL   hAccel;
+	HWND     hwnd;
+	MSG      msg;
+	WNDCLASS wndclass;
 
-     if (!RegisterClass (&wndclass))
-     {
-          MessageBox (NULL, TEXT ("This program requires Windows NT!"), 
-                      szAppName, MB_ICONERROR) ;
-          return 0 ;
-     }
+	wndclass.style = CS_HREDRAW | CS_VREDRAW;
+	wndclass.lpfnWndProc = WndProc;
+	wndclass.cbClsExtra = 0;
+	wndclass.cbWndExtra = 0;
+	wndclass.hInstance = hInstance;
+	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wndclass.lpszMenuName = szAppName;
+	wndclass.lpszClassName = szAppName;
 
-     hwnd = CreateWindow (szAppName, TEXT ("Show DIB #1"),
-                          WS_OVERLAPPEDWINDOW,
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          CW_USEDEFAULT, CW_USEDEFAULT, 
-                          NULL, NULL, hInstance, NULL) ;
+	if (!RegisterClass(&wndclass))
+	{
+		MessageBox(NULL, TEXT("This program requires Windows NT!"),
+			szAppName, MB_ICONERROR);
+		return 0;
+	}
 
-     ShowWindow (hwnd, nShowCmd) ;
-     UpdateWindow (hwnd) ;
+	hwnd = CreateWindow(szAppName, TEXT("Show DIB #1"),
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		NULL, NULL, hInstance, NULL);
 
-     hAccel = LoadAccelerators (hInstance, szAppName) ;
+	ShowWindow(hwnd, nShowCmd);
+	UpdateWindow(hwnd);
 
-     while (GetMessage (&msg, NULL, 0, 0))
-     {
-          if (!TranslateAccelerator (hwnd, hAccel, &msg))
-          {
-               TranslateMessage (&msg) ;
-               DispatchMessage (&msg) ;
-          }
-     }
-     return (int)msg.wParam;  // WM_QUIT
+	hAccel = LoadAccelerators(hInstance, szAppName);
+
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		if (!TranslateAccelerator(hwnd, hAccel, &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+	return (int)msg.wParam;  // WM_QUIT
 }
 
-LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-     static BITMAPFILEHEADER * pbmfh ;
-     static BITMAPINFO       * pbmi ;
-     static BYTE             * pBits ;
-     static int                cxClient, cyClient, cxDib, cyDib ;
-     static TCHAR              szFileName [MAX_PATH], szTitleName [MAX_PATH] ;
-     BOOL                      bSuccess ;
-     HDC                       hdc ;
-     PAINTSTRUCT               ps ;
+	static BITMAPFILEHEADER* pbmfh;
+	static BITMAPINFO* pbmi;
+	static BYTE* pBits;
+	static int                cxClient, cyClient, cxDib, cyDib;
+	static TCHAR              szFileName[MAX_PATH], szTitleName[MAX_PATH];
+	BOOL                      bSuccess;
+	HDC                       hdc;
+	PAINTSTRUCT               ps;
 
-     switch (message)
-     {
-     case WM_CREATE:
-          DibFileInitialize (hwnd) ;
-          return 0 ;
+	switch (message)
+	{
+	case WM_CREATE:
+		DibFileInitialize(hwnd);
+		return 0;
 
-     case WM_SIZE:
-          cxClient = GET_X_LPARAM(lParam);
-          cyClient = GET_Y_LPARAM(lParam);
-          return 0 ;
+	case WM_SIZE:
+		cxClient = GET_X_LPARAM(lParam);
+		cyClient = GET_Y_LPARAM(lParam);
+		return 0;
 
-     case WM_INITMENUPOPUP:
-          EnableMenuItem ((HMENU) wParam, IDM_FILE_SAVE,   
-                          pbmfh ? MF_ENABLED : MF_GRAYED) ;
-          return 0 ;
+	case WM_INITMENUPOPUP:
+		EnableMenuItem((HMENU)wParam, IDM_FILE_SAVE,
+			pbmfh ? MF_ENABLED : MF_GRAYED);
+		return 0;
 
-     case WM_COMMAND:
-          switch (LOWORD (wParam))
-          {
-          case IDM_FILE_OPEN:
-                    // Show the File Open dialog box
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDM_FILE_OPEN:
+			// Show the File Open dialog box
 
-               if (!DibFileOpenDlg (hwnd, szFileName, szTitleName))
-                    return 0 ;
-               
-                    // If there's an existing DIB, free the memory
+			if (!DibFileOpenDlg(hwnd, szFileName, szTitleName))
+				return 0;
 
-               if (pbmfh)
-               {
-                    free (pbmfh) ;
-                    pbmfh = NULL ;
-               }
-                    // Load the entire DIB into memory
+			// If there's an existing DIB, free the memory
 
-               SetCursor (LoadCursor (NULL, IDC_WAIT)) ;
-               ShowCursor (TRUE) ;
+			if (pbmfh)
+			{
+				free(pbmfh);
+				pbmfh = NULL;
+			}
+			// Load the entire DIB into memory
 
-               pbmfh = DibLoadImage (szFileName) ;
+			SetCursor(LoadCursor(NULL, IDC_WAIT));
+			ShowCursor(TRUE);
 
-               ShowCursor (FALSE) ;
-               SetCursor (LoadCursor (NULL, IDC_ARROW)) ;
+			pbmfh = DibLoadImage(szFileName);
 
-                    // Invalidate the client area for later update
+			ShowCursor(FALSE);
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
 
-               InvalidateRect (hwnd, NULL, TRUE) ;
+			// Invalidate the client area for later update
 
-               if (pbmfh == NULL)
-               {
-                    MessageBox (hwnd, TEXT ("Cannot load DIB file"), 
-                                szAppName, 0) ;
-                    return 0 ;
-               }
-                    // Get pointers to the info structure & the bits
+			InvalidateRect(hwnd, NULL, TRUE);
 
-               pbmi  = (BITMAPINFO *) (pbmfh + 1) ;
-               pBits = (BYTE *) pbmfh + pbmfh->bfOffBits ;
+			if (pbmfh == NULL)
+			{
+				MessageBox(hwnd, TEXT("Cannot load DIB file"),
+					szAppName, 0);
+				return 0;
+			}
+			// Get pointers to the info structure & the bits
 
-                    // Get the DIB width and height
+			pbmi = (BITMAPINFO*)(pbmfh + 1);
+			pBits = (BYTE*)pbmfh + pbmfh->bfOffBits;
 
-               if (pbmi->bmiHeader.biSize == sizeof (BITMAPCOREHEADER))
-               {
-                    cxDib = ((BITMAPCOREHEADER *) pbmi)->bcWidth ;
-                    cyDib = ((BITMAPCOREHEADER *) pbmi)->bcHeight ;
-               }
-               else
-               {
-                    cxDib =      pbmi->bmiHeader.biWidth ;
-                    cyDib = abs (pbmi->bmiHeader.biHeight) ;
-               }
-               return 0 ;
+			// Get the DIB width and height
 
-          case IDM_FILE_SAVE:
-                    // Show the File Save dialog box
+			if (pbmi->bmiHeader.biSize == sizeof(BITMAPCOREHEADER))
+			{
+				cxDib = ((BITMAPCOREHEADER*)pbmi)->bcWidth;
+				cyDib = ((BITMAPCOREHEADER*)pbmi)->bcHeight;
+			}
+			else
+			{
+				cxDib = pbmi->bmiHeader.biWidth;
+				cyDib = abs(pbmi->bmiHeader.biHeight);
+			}
+			return 0;
 
-               if (!DibFileSaveDlg (hwnd, szFileName, szTitleName))
-                    return 0 ;
-               
-                    // Save the DIB to memory
+		case IDM_FILE_SAVE:
+			// Show the File Save dialog box
 
-               SetCursor (LoadCursor (NULL, IDC_WAIT)) ;
-               ShowCursor (TRUE) ;
+			if (!DibFileSaveDlg(hwnd, szFileName, szTitleName))
+				return 0;
 
-               bSuccess = DibSaveImage (szFileName, pbmfh) ;
+			// Save the DIB to memory
 
-               ShowCursor (FALSE) ;
-               SetCursor (LoadCursor (NULL, IDC_ARROW)) ;
+			SetCursor(LoadCursor(NULL, IDC_WAIT));
+			ShowCursor(TRUE);
 
-               if (!bSuccess)
-                    MessageBox (hwnd, TEXT ("Cannot save DIB file"), 
-                                szAppName, 0) ;
-               return 0 ;
-          }
-          break ;
+			bSuccess = DibSaveImage(szFileName, pbmfh);
 
-     case WM_PAINT:
-          hdc = BeginPaint (hwnd, &ps) ;
+			ShowCursor(FALSE);
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
 
-          if (pbmfh)
-               SetDIBitsToDevice (hdc, 
-                                  0,         // xDst
-                                  0,         // yDst
-                                  cxDib,     // cxSrc
-                                  cyDib,     // cySrc
-                                  0,         // xSrc
-                                  0,         // ySrc
-                                  0,         // first scan line
-                                  cyDib,     // number of scan lines
-                                  pBits, 
-                                  pbmi, 
-                                  DIB_RGB_COLORS) ;
+			if (!bSuccess)
+				MessageBox(hwnd, TEXT("Cannot save DIB file"),
+					szAppName, 0);
+			return 0;
+		}
+		break;
 
-          EndPaint (hwnd, &ps) ;
-          return 0 ;
-          
-     case WM_DESTROY:
-          if (pbmfh)
-               free (pbmfh) ;
+	case WM_PAINT:
+		hdc = BeginPaint(hwnd, &ps);
 
-          PostQuitMessage (0) ;
-          return 0 ;
-     }
-     return DefWindowProc (hwnd, message, wParam, lParam) ;
+		if (pbmfh)
+			SetDIBitsToDevice(hdc,
+				0,         // xDst
+				0,         // yDst
+				cxDib,     // cxSrc
+				cyDib,     // cySrc
+				0,         // xSrc
+				0,         // ySrc
+				0,         // first scan line
+				cyDib,     // number of scan lines
+				pBits,
+				pbmi,
+				DIB_RGB_COLORS);
+
+		EndPaint(hwnd, &ps);
+		return 0;
+
+	case WM_DESTROY:
+		if (pbmfh)
+			free(pbmfh);
+
+		PostQuitMessage(0);
+		return 0;
+	}
+	return DefWindowProc(hwnd, message, wParam, lParam);
 }

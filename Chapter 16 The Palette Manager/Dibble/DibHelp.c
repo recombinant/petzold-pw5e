@@ -1,8 +1,9 @@
 /*------------------------------------------
-   DIBHELP.C -- DIB Section Helper Routines 
+   DIBHELP.C -- DIB Section Helper Routines
                 (c) Charles Petzold, 1998
   ------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include "DibHelp.h"
 
@@ -48,7 +49,7 @@ HBITMAP DibBitmapHandle (HDIB hdib)
 {
      if (!DibIsValid (hdib))
           return NULL ;
-     
+
      return ((PDIBSTRUCT) hdib)->hBitmap ;
 }
 
@@ -60,7 +61,7 @@ int DibWidth (HDIB hdib)
 {
      if (!DibIsValid (hdib))
           return 0 ;
-     
+
      return ((PDIBSTRUCT) hdib)->ds.dsBm.bmWidth ;
 }
 
@@ -71,8 +72,8 @@ int DibWidth (HDIB hdib)
 int DibHeight (HDIB hdib)
 {
      if (!DibIsValid (hdib))
-          return 0 ; 
-     
+          return 0 ;
+
      return ((PDIBSTRUCT) hdib)->ds.dsBm.bmHeight ;
 }
 
@@ -84,7 +85,7 @@ int DibBitCount (HDIB hdib)
 {
      if (!DibIsValid (hdib))
           return 0 ;
-     
+
      return ((PDIBSTRUCT) hdib)->ds.dsBm.bmBitsPixel ;
 }
 
@@ -96,7 +97,7 @@ int DibRowLength (HDIB hdib)
 {
      if (!DibIsValid (hdib))
           return 0 ;
-     
+
      return 4 * ((DibWidth (hdib) * DibBitCount (hdib) + 31) / 32) ;
 }
 
@@ -132,7 +133,7 @@ DWORD DibMask (HDIB hdib, int i)
 
      if (!DibIsValid (hdib) || i < 0 || i > 2)
           return 0 ;
-     
+
      return pdib->ds.dsBitfields[i] ;
 }
 
@@ -146,7 +147,7 @@ int DibRShift (HDIB hdib, int i)
 
      if (!DibIsValid (hdib) || i < 0 || i > 2)
           return 0 ;
-     
+
      return pdib->iRShift[i] ;
 }
 
@@ -160,7 +161,7 @@ int DibLShift (HDIB hdib, int i)
 
      if (!DibIsValid (hdib) || i < 0 || i > 2)
           return 0 ;
-     
+
      return pdib->iLShift[i] ;
 }
 
@@ -225,7 +226,7 @@ DWORD DibMaskSize (HDIB hdib)
 DWORD DibColorSize (HDIB hdib)
 {
      return DibNumColors (hdib) * sizeof (RGBQUAD) ;
-} 
+}
 
 DWORD DibInfoSize (HDIB hdib)
 {
@@ -252,7 +253,7 @@ DWORD DibTotalSize (HDIB hdib)
 }
 
 /*----------------------------------------------------------------------
-   These functions return pointers to the various components of the DIB 
+   These functions return pointers to the various components of the DIB
      section.
   ----------------------------------------------------------------------*/
 
@@ -260,7 +261,7 @@ BITMAPINFOHEADER * DibInfoHeaderPtr (HDIB hdib)
 {
      if (!DibIsValid (hdib))
           return NULL ;
-     
+
      return & (((PDIBSTRUCT) hdib)->ds.dsBmih) ;
 }
 
@@ -278,7 +279,7 @@ void * DibBitsPtr (HDIB hdib)
 {
      if (!DibIsValid (hdib))
           return NULL ;
-     
+
      return ((PDIBSTRUCT) hdib)->pBits ;
 }
 
@@ -306,7 +307,7 @@ BOOL DibGetColor (HDIB hdib, int index, RGBQUAD * prgb)
 /*----------------------------------------------------
    DibGetColor:  Sets an entry in the DIB color table
   ----------------------------------------------------*/
- 
+
 BOOL DibSetColor (HDIB hdib, int index, RGBQUAD * prgb)
 {
      PDIBSTRUCT pdib = hdib ;
@@ -356,7 +357,7 @@ DWORD DibGetPixel (HDIB hdib, int x, int y)
      case  4:  return 0x0F & (* pPixel >> (x & 1 ? 0 : 4)) ;
      case  8:  return * pPixel ;
      case 16:  return * (WORD *) pPixel ;
-     case 24:  return 0x00FFFFFF & * (DWORD *) pPixel ; 
+     case 24:  return 0x00FFFFFF & * (DWORD *) pPixel ;
      case 32:  return * (DWORD *) pPixel ;
      }
      return 0 ;
@@ -389,7 +390,7 @@ BOOL DibSetPixel (HDIB hdib, int x, int y, DWORD dwPixel)
      case 16:  * (WORD *) pPixel = (WORD) dwPixel ;
                break ;
 
-     case 24:  * (RGBTRIPLE *) pPixel = * (RGBTRIPLE *) &dwPixel ; 
+     case 24:  * (RGBTRIPLE *) pPixel = * (RGBTRIPLE *) &dwPixel ;
                break ;
 
      case 32:  * (DWORD *) pPixel = dwPixel ;
@@ -435,7 +436,7 @@ BOOL DibGetPixelColor (HDIB hdib, int x, int y, RGBQUAD * prgb)
           // If the bit-count is 32 and the biCompression field is BI_RGB,
           //   just use the pixel
 
-     else if (iBitCount == 32 && 
+     else if (iBitCount == 32 &&
                pdib->ds.dsBmih.biCompression == BI_RGB)
      {
           * prgb = * (RGBQUAD *) & dwPixel ;
@@ -445,20 +446,20 @@ BOOL DibGetPixelColor (HDIB hdib, int x, int y, RGBQUAD * prgb)
           //   (for best performance, don't use DibMask and DibShift functions)
      else
      {
-          prgb->rgbRed   = (BYTE) (((pdib->ds.dsBitfields[0] & dwPixel) 
+          prgb->rgbRed   = (BYTE) (((pdib->ds.dsBitfields[0] & dwPixel)
                                    >> pdib->iRShift[0]) << pdib->iLShift[0]) ;
 
-          prgb->rgbGreen = (BYTE) (((pdib->ds.dsBitfields[1] & dwPixel) 
+          prgb->rgbGreen = (BYTE) (((pdib->ds.dsBitfields[1] & dwPixel)
                                    >> pdib->iRShift[1]) << pdib->iLShift[1]) ;
 
-          prgb->rgbBlue  = (BYTE) (((pdib->ds.dsBitfields[2] & dwPixel) 
+          prgb->rgbBlue  = (BYTE) (((pdib->ds.dsBitfields[2] & dwPixel)
                                    >> pdib->iRShift[2]) << pdib->iLShift[2]) ;
      }
      return TRUE ;
 }
 
 /*---------------------------------------------------
-   DibSetPixelColor:  Sets the pixel color at (x, y) 
+   DibSetPixelColor:  Sets the pixel color at (x, y)
   ---------------------------------------------------*/
 
 BOOL DibSetPixelColor (HDIB hdib, int x, int y, RGBQUAD * prgb)
@@ -490,14 +491,14 @@ BOOL DibSetPixelColor (HDIB hdib, int x, int y, RGBQUAD * prgb)
 
      else
      {
-          dwPixel  = (((DWORD) prgb->rgbRed >> pdib->iLShift[0]) 
-                         << pdib->iRShift[0]) ; 
+          dwPixel  = (((DWORD) prgb->rgbRed >> pdib->iLShift[0])
+                         << pdib->iRShift[0]) ;
 
           dwPixel |= (((DWORD) prgb->rgbGreen >> pdib->iLShift[1])
-                         << pdib->iRShift[1]) ; 
+                         << pdib->iRShift[1]) ;
 
           dwPixel |= (((DWORD) prgb->rgbBlue >> pdib->iLShift[2])
-                         << pdib->iRShift[2]) ; 
+                         << pdib->iRShift[2]) ;
      }
 
      DibSetPixel (hdib, x, y, dwPixel) ;
@@ -505,7 +506,7 @@ BOOL DibSetPixelColor (HDIB hdib, int x, int y, RGBQUAD * prgb)
 }
 
 /*--------------------------------------------------------------
-   Calculating shift values from color masks is required by the 
+   Calculating shift values from color masks is required by the
      DibCreateFromInfo function.
   --------------------------------------------------------------*/
 
@@ -550,7 +551,7 @@ HDIB DibCreateFromInfo (BITMAPINFO * pbmi)
      DIBSTRUCT * pdib ;
      HBITMAP     hBitmap ;
      int         i, iRowLength, cy, y ;
-     
+
      hBitmap = CreateDIBSection (NULL, pbmi, DIB_RGB_COLORS, &pBits, NULL, 0) ;
 
      if (hBitmap == NULL)
@@ -568,7 +569,7 @@ HDIB DibCreateFromInfo (BITMAPINFO * pbmi)
 
      GetObject (hBitmap, sizeof (DIBSECTION), &pdib->ds) ;
 
-          // Notice that we can now use the DIB information functions 
+          // Notice that we can now use the DIB information functions
           //   defined above.
 
           // If the compression is BI_BITFIELDS, calculate shifts from masks
@@ -595,7 +596,7 @@ HDIB DibCreateFromInfo (BITMAPINFO * pbmi)
 
                pdib->iRShift[0] = 10 ;
                pdib->iRShift[1] =  5 ;
-               pdib->iRShift[2] =  0 ; 
+               pdib->iRShift[2] =  0 ;
 
                pdib->iLShift[0] =  3 ;
                pdib->iLShift[1] =  3 ;
@@ -609,7 +610,7 @@ HDIB DibCreateFromInfo (BITMAPINFO * pbmi)
 
                pdib->iRShift[0] = 16 ;
                pdib->iRShift[1] =  8 ;
-               pdib->iRShift[2] =  0 ; 
+               pdib->iRShift[2] =  0 ;
 
                pdib->iLShift[0] =  0 ;
                pdib->iLShift[1] =  0 ;
@@ -629,7 +630,7 @@ HDIB DibCreateFromInfo (BITMAPINFO * pbmi)
 
           // Initialize them.
 
-     iRowLength = DibRowLength (pdib) ; 
+     iRowLength = DibRowLength (pdib) ;
 
      if (pbmi->bmiHeader.biHeight > 0)       // ie, bottom up
      {
@@ -663,7 +664,7 @@ BOOL DibDelete (HDIB hdib)
 
 /*----------------------------------------------------
    DibCreate: Creates an HDIB from explicit arguments
-  ----------------------------------------------------*/ 
+  ----------------------------------------------------*/
 
 HDIB DibCreate (int cx, int cy, int cBits, int cColors)
 {
@@ -672,8 +673,8 @@ HDIB DibCreate (int cx, int cy, int cBits, int cColors)
      HDIB         hDib ;
      int          cEntries ;
 
-     if (cx <= 0 || cy <= 0 || 
-         ((cBits !=  1) && (cBits !=  4) && (cBits !=  8) && 
+     if (cx <= 0 || cy <= 0 ||
+         ((cBits !=  1) && (cBits !=  4) && (cBits !=  8) &&
           (cBits != 16) && (cBits != 24) && (cBits != 32)))
      {
           return NULL ;
@@ -732,9 +733,9 @@ static BITMAPINFO * DibCopyToInfo (HDIB hdib)
 
           // Copy the information header
 
-     CopyMemory (pbmi, DibInfoHeaderPtr (hdib), 
+     CopyMemory (pbmi, DibInfoHeaderPtr (hdib),
                                         sizeof (BITMAPINFOHEADER));
-          
+
           // Copy the possible color masks
 
      prgb = (RGBQUAD *) ((BYTE *) pbmi + sizeof (BITMAPINFOHEADER)) ;
@@ -797,9 +798,9 @@ HDIB DibCopy (HDIB hdibSrc, BOOL fRotate)
 }
 
 /*----------------------------------------------------------------------
-   DibCopyToPackedDib is generally used for saving DIBs and for 
-     transferring DIBs to the clipboard. In the second case, the second 
-     argument should be set to TRUE so that the memory is allocated 
+   DibCopyToPackedDib is generally used for saving DIBs and for
+     transferring DIBs to the clipboard. In the second case, the second
+     argument should be set to TRUE so that the memory is allocated
      with the GMEM_SHARE flag.
   ----------------------------------------------------------------------*/
 
@@ -831,7 +832,7 @@ BITMAPINFO * DibCopyToPackedDib (HDIB hdib, BOOL fUseGlobal)
           pPackedDib = malloc (dwDibSize) ;
      }
 
-     if (pPackedDib == NULL) 
+     if (pPackedDib == NULL)
           return NULL ;
 
           // Copy the information header
@@ -864,31 +865,31 @@ BITMAPINFO * DibCopyToPackedDib (HDIB hdib, BOOL fUseGlobal)
 
      CopyMemory (pBits, pdib->pBits, DibBitsSize (pdib)) ;
 
-          // If last argument is TRUE, unlock global memory block and 
+          // If last argument is TRUE, unlock global memory block and
           //   cast it to pointer in preparation for return
 
      if (fUseGlobal)
      {
           GlobalUnlock (hGlobal) ;
-          pPackedDib = (BITMAPINFO *) hGlobal ;     
+          pPackedDib = (BITMAPINFO *) hGlobal ;
      }
      return pPackedDib ;
 }
 
 /*------------------------------------------------------------------
-   DibCopyFromPackedDib is generally used for pasting DIBs from the 
+   DibCopyFromPackedDib is generally used for pasting DIBs from the
      clipboard.
   ------------------------------------------------------------------*/
 
 HDIB DibCopyFromPackedDib (BITMAPINFO * pPackedDib)
 {
-     BYTE     * pBits ;     
+     BYTE     * pBits ;
      DWORD      dwInfoSize, dwMaskSize, dwColorSize ;
      int        iBitCount ;
      PDIBSTRUCT pdib ;
 
           // Get the size of the information header and do validity check
-     
+
      dwInfoSize = pPackedDib->bmiHeader.biSize ;
 
      if (dwInfoSize != sizeof (BITMAPCOREHEADER) &&
@@ -930,7 +931,7 @@ HDIB DibCopyFromPackedDib (BITMAPINFO * pPackedDib)
           }
           else if (pPackedDib->bmiHeader.biBitCount <= 8)
           {
-               dwColorSize = (1 << pPackedDib->bmiHeader.biBitCount) * 
+               dwColorSize = (1 << pPackedDib->bmiHeader.biBitCount) *
                                                        sizeof (RGBQUAD) ;
           }
           else
@@ -968,7 +969,7 @@ HDIB DibFileLoad (const TCHAR * szFileName)
 
           // Open the file: read access, prohibit write access
 
-     hFile = CreateFile (szFileName, GENERIC_READ, FILE_SHARE_READ, NULL, 
+     hFile = CreateFile (szFileName, GENERIC_READ, FILE_SHARE_READ, NULL,
                          OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL) ;
 
      if (hFile == INVALID_HANDLE_VALUE)
@@ -976,10 +977,10 @@ HDIB DibFileLoad (const TCHAR * szFileName)
 
           // Read in the BITMAPFILEHEADER
 
-     bSuccess = ReadFile (hFile, &bmfh, sizeof (BITMAPFILEHEADER), 
+     bSuccess = ReadFile (hFile, &bmfh, sizeof (BITMAPFILEHEADER),
                           &dwBytesRead, NULL) ;
 
-     if (!bSuccess || (dwBytesRead != sizeof (BITMAPFILEHEADER))         
+     if (!bSuccess || (dwBytesRead != sizeof (BITMAPFILEHEADER))
                    || (bmfh.bfType != * (WORD *) "BM"))
      {
           CloseHandle (hFile) ;
@@ -1017,7 +1018,7 @@ HDIB DibFileLoad (const TCHAR * szFileName)
 
      dwBitsSize = bmfh.bfSize - bmfh.bfOffBits ;
 
-     bSuccess = ReadFile (hFile, ((PDIBSTRUCT) hDib)->pBits, 
+     bSuccess = ReadFile (hFile, ((PDIBSTRUCT) hDib)->pBits,
                           dwBitsSize, &dwBytesRead, NULL) ;
      CloseHandle (hFile) ;
 
@@ -1057,7 +1058,7 @@ BOOL DibFileSave (HDIB hdib, const TCHAR * szFileName)
 
           // Write the BITMAPFILEHEADER
 
-     bSuccess = WriteFile (hFile, &bmfh, sizeof (BITMAPFILEHEADER), 
+     bSuccess = WriteFile (hFile, &bmfh, sizeof (BITMAPFILEHEADER),
                            &dwBytesWritten, NULL) ;
 
      if (!bSuccess || (dwBytesWritten != sizeof (BITMAPFILEHEADER)))
@@ -1111,7 +1112,7 @@ HBITMAP DibCopyToDdb (HDIB hdib, HWND hwnd, HPALETTE hPalette)
           SelectPalette (hdc, hPalette, FALSE) ;
           RealizePalette (hdc) ;
      }
-     
+
      hBitmap = CreateDIBitmap (hdc, DibInfoHeaderPtr (hdib), CBM_INIT,
                                DibBitsPtr (hdib), pbmi, DIB_RGB_COLORS) ;
 

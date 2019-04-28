@@ -1,182 +1,188 @@
 /*-----------------------------------------
    SKETCH.C -- Shadow Bitmap Demonstration
-               (c) Charles Petzold, 1998
+			   (c) Charles Petzold, 1998
   -----------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <windowsx.h>
+#include <tchar.h>
 
-LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
-     static TCHAR szAppName [] = TEXT ("Sketch") ;
-     HWND         hwnd ;
-     MSG          msg ;
-     WNDCLASS     wndclass ;
+	static TCHAR szAppName[] = TEXT("Sketch");
+	HWND         hwnd;
+	MSG          msg;
+	WNDCLASS     wndclass;
 
-     wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
-     wndclass.lpfnWndProc   = WndProc ;
-     wndclass.cbClsExtra    = 0 ;
-     wndclass.cbWndExtra    = 0 ;
-     wndclass.hInstance     = hInstance ;
-     wndclass.hIcon         = LoadIcon (NULL, IDI_APPLICATION) ;
-     wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-     wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
-     wndclass.lpszMenuName  = NULL ;
-     wndclass.lpszClassName = szAppName ;
-     
-     if (!RegisterClass (&wndclass))
-     {
-          MessageBox (NULL, TEXT ("This program requires Windows NT!"),
-                      szAppName, MB_ICONERROR) ;
-          return 0 ;
-     }
-     
-     hwnd = CreateWindow (szAppName, TEXT ("Sketch"), 
-                          WS_OVERLAPPEDWINDOW, 
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          NULL, NULL, hInstance, NULL) ;
+	wndclass.style = CS_HREDRAW | CS_VREDRAW;
+	wndclass.lpfnWndProc = WndProc;
+	wndclass.cbClsExtra = 0;
+	wndclass.cbWndExtra = 0;
+	wndclass.hInstance = hInstance;
+	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wndclass.lpszMenuName = NULL;
+	wndclass.lpszClassName = szAppName;
 
-     if (hwnd == NULL)
-     {
-          MessageBox (NULL, TEXT ("Not enough memory to create bitmap!"),
-                      szAppName, MB_ICONERROR) ;
-          return 0 ;
-     }
+	if (!RegisterClass(&wndclass))
+	{
+		MessageBox(NULL, TEXT("This program requires Windows NT!"),
+			szAppName, MB_ICONERROR);
+		return 0;
+	}
 
-     ShowWindow (hwnd, nShowCmd) ;
-     UpdateWindow (hwnd) ;
+	hwnd = CreateWindow(szAppName, TEXT("Sketch"),
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		NULL, NULL, hInstance, NULL);
 
-     while (GetMessage (&msg, NULL, 0, 0))
-     {
-          TranslateMessage (&msg) ;
-          DispatchMessage (&msg) ;
-     }
-     return (int)msg.wParam;  // WM_QUIT
+	if (hwnd == NULL)
+	{
+		MessageBox(NULL, TEXT("Not enough memory to create bitmap!"),
+			szAppName, MB_ICONERROR);
+		return 0;
+	}
+
+	ShowWindow(hwnd, nShowCmd);
+	UpdateWindow(hwnd);
+
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	return (int)msg.wParam;  // WM_QUIT
 }
 
-void GetLargestDisplayMode (int * pcxBitmap, int * pcyBitmap)
+void GetLargestDisplayMode(int* pcxBitmap, int* pcyBitmap)
 {
-     DEVMODE devmode ;
-     int     iModeNum = 0 ;
+	DEVMODE devmode;
+	int     iModeNum = 0;
 
-     * pcxBitmap = * pcyBitmap = 0 ;
+	*pcxBitmap = *pcyBitmap = 0;
 
-     ZeroMemory (&devmode, sizeof (DEVMODE)) ;
-     devmode.dmSize = sizeof (DEVMODE) ;
-     
-     while (EnumDisplaySettings (NULL, iModeNum++, &devmode))
-     {
-          * pcxBitmap = max (* pcxBitmap, (int) devmode.dmPelsWidth) ;
-          * pcyBitmap = max (* pcyBitmap, (int) devmode.dmPelsHeight) ;
-     }
+	ZeroMemory(&devmode, sizeof(DEVMODE));
+	devmode.dmSize = sizeof(DEVMODE);
+
+	while (EnumDisplaySettings(NULL, iModeNum++, &devmode))
+	{
+		*pcxBitmap = max(*pcxBitmap, (int)devmode.dmPelsWidth);
+		*pcyBitmap = max(*pcyBitmap, (int)devmode.dmPelsHeight);
+	}
 }
 
-LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-     static BOOL    fLeftButtonDown, fRightButtonDown ;
-     static HBITMAP hBitmap ;
-     static HDC     hdcMem ;
-     static int     cxBitmap, cyBitmap, cxClient, cyClient, xMouse, yMouse ;
-     HDC            hdc ;
-     PAINTSTRUCT    ps ;
-     
-     switch (message)
-     {
-     case WM_CREATE:
-          GetLargestDisplayMode (&cxBitmap, &cyBitmap) ;
+	static BOOL    fLeftButtonDown, fRightButtonDown;
+	static HBITMAP hBitmap;
+	static HDC     hdcMem;
+	static int     cxBitmap, cyBitmap, cxClient, cyClient, xMouse, yMouse;
+	HDC            hdc;
+	PAINTSTRUCT    ps;
 
-          hdc = GetDC (hwnd) ;
-          hBitmap = CreateCompatibleBitmap (hdc, cxBitmap, cyBitmap) ;
-          hdcMem  = CreateCompatibleDC (hdc) ;
-          ReleaseDC (hwnd, hdc) ;
+	switch (message)
+	{
+	case WM_CREATE:
+		GetLargestDisplayMode(&cxBitmap, &cyBitmap);
 
-          if (!hBitmap)       // no memory for bitmap
-          {
-               DeleteDC (hdcMem) ;
-               return -1 ;
-          }
+		hdc = GetDC(hwnd);
+		hBitmap = CreateCompatibleBitmap(hdc, cxBitmap, cyBitmap);
+		hdcMem = CreateCompatibleDC(hdc);
+		ReleaseDC(hwnd, hdc);
 
-          SelectObject (hdcMem, hBitmap) ;
-          PatBlt (hdcMem, 0, 0, cxBitmap, cyBitmap, WHITENESS) ;
-          return 0 ;
+		if (!hBitmap)       // no memory for bitmap
+		{
+			DeleteDC(hdcMem);
+			return -1;
+		}
 
-     case WM_SIZE:
-          cxClient = GET_X_LPARAM (lParam) ;
-          cyClient = GET_Y_LPARAM (lParam) ;
-          return 0 ;
+		SelectObject(hdcMem, hBitmap);
+		PatBlt(hdcMem, 0, 0, cxBitmap, cyBitmap, WHITENESS);
+		return 0;
 
-     case WM_LBUTTONDOWN:
-          if (!fRightButtonDown)
-               SetCapture (hwnd) ;
+	case WM_SIZE:
+		cxClient = GET_X_LPARAM(lParam);
+		cyClient = GET_Y_LPARAM(lParam);
+		return 0;
 
-          xMouse = LOWORD (lParam) ;
-          yMouse = HIWORD (lParam) ;
-          fLeftButtonDown = TRUE ;
-          return 0 ;
+	case WM_LBUTTONDOWN:
+		if (!fRightButtonDown)
+			SetCapture(hwnd);
 
-     case WM_LBUTTONUP:
-          if (fLeftButtonDown)
-               SetCapture (NULL) ;
-          
-          fLeftButtonDown = FALSE ;
-          return 0 ;
-          
-     case WM_RBUTTONDOWN:
-          if (!fLeftButtonDown)
-               SetCapture (hwnd) ;
-          
-          xMouse = LOWORD (lParam) ;
-          yMouse = HIWORD (lParam) ;
-          fRightButtonDown = TRUE ;
-          return 0 ;
-          
-     case WM_RBUTTONUP:
-          if (fRightButtonDown) 
-               SetCapture (NULL) ;
-          
-          fRightButtonDown = FALSE ;
-          return 0 ;
+		xMouse = LOWORD(lParam);
+		yMouse = HIWORD(lParam);
+		fLeftButtonDown = TRUE;
+		return 0;
 
-     case WM_MOUSEMOVE:
-          if (!fLeftButtonDown && !fRightButtonDown)
-               return 0 ;
+	case WM_LBUTTONUP:
+		if (fLeftButtonDown)
+			SetCapture(NULL);
 
-          hdc = GetDC (hwnd) ;
+		fLeftButtonDown = FALSE;
+		return 0;
 
-          SelectObject (hdc, 
-               GetStockObject (fLeftButtonDown ? BLACK_PEN : WHITE_PEN)) ;
+	case WM_RBUTTONDOWN:
+		if (!fLeftButtonDown)
+			SetCapture(hwnd);
 
-          SelectObject (hdcMem,
-               GetStockObject (fLeftButtonDown ? BLACK_PEN : WHITE_PEN)) ;
+		xMouse = LOWORD(lParam);
+		yMouse = HIWORD(lParam);
+		fRightButtonDown = TRUE;
+		return 0;
 
-          MoveToEx (hdc,    xMouse, yMouse, NULL) ;
-          MoveToEx (hdcMem, xMouse, yMouse, NULL) ;
+	case WM_RBUTTONUP:
+		if (fRightButtonDown)
+			SetCapture(NULL);
 
-          xMouse = (short) LOWORD (lParam) ;
-          yMouse = (short) HIWORD (lParam) ;
+		fRightButtonDown = FALSE;
+		return 0;
 
-          LineTo (hdc,    xMouse, yMouse) ;
-          LineTo (hdcMem, xMouse, yMouse) ;
+	case WM_MOUSEMOVE:
+		if (!fLeftButtonDown && !fRightButtonDown)
+			return 0;
 
-          ReleaseDC (hwnd, hdc) ;
-          return 0 ;
+		hdc = GetDC(hwnd);
 
-     case WM_PAINT:
-          hdc = BeginPaint (hwnd, &ps) ;
+		SelectObject(hdc,
+			GetStockObject(fLeftButtonDown ? BLACK_PEN : WHITE_PEN));
 
-          BitBlt (hdc, 0, 0, cxClient, cyClient, hdcMem, 0, 0, SRCCOPY) ;
+		SelectObject(hdcMem,
+			GetStockObject(fLeftButtonDown ? BLACK_PEN : WHITE_PEN));
 
-          EndPaint (hwnd, &ps) ;
-          return 0 ;
+		MoveToEx(hdc, xMouse, yMouse, NULL);
+		MoveToEx(hdcMem, xMouse, yMouse, NULL);
 
-     case WM_DESTROY:
-          DeleteDC (hdcMem) ;
-          DeleteObject (hBitmap) ;
-          PostQuitMessage (0) ;
-          return 0 ;
-     }
-     return DefWindowProc (hwnd, message, wParam, lParam) ;
+		xMouse = (short)LOWORD(lParam);
+		yMouse = (short)HIWORD(lParam);
+
+		LineTo(hdc, xMouse, yMouse);
+		LineTo(hdcMem, xMouse, yMouse);
+
+		ReleaseDC(hwnd, hdc);
+		return 0;
+
+	case WM_PAINT:
+		hdc = BeginPaint(hwnd, &ps);
+
+		BitBlt(hdc, 0, 0, cxClient, cyClient, hdcMem, 0, 0, SRCCOPY);
+
+		EndPaint(hwnd, &ps);
+		return 0;
+
+	case WM_DESTROY:
+		DeleteDC(hdcMem);
+		DeleteObject(hBitmap);
+		PostQuitMessage(0);
+		return 0;
+	}
+	return DefWindowProc(hwnd, message, wParam, lParam);
 }

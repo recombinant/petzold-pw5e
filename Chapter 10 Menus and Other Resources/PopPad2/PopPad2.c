@@ -3,6 +3,8 @@
                 (c) Charles Petzold, 1998
   -----------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
 #include "Resource.h"
 
@@ -12,8 +14,11 @@ LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM);
 
 TCHAR szAppName[] = TEXT ("PopPad2") ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
      HACCEL   hAccel ;
      HWND     hwnd ;
@@ -30,14 +35,14 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = szAppName ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
           MessageBox (NULL, TEXT ("This program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
+
      hwnd = CreateWindow (szAppName, szAppName,
                           WS_OVERLAPPEDWINDOW,
                           GetSystemMetrics (SM_CXSCREEN) / 4,
@@ -45,12 +50,12 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
                           GetSystemMetrics (SM_CXSCREEN) / 2,
                           GetSystemMetrics (SM_CYSCREEN) / 2,
                           NULL, NULL, hInstance, NULL) ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
-     UpdateWindow (hwnd) ; 
-     
+     UpdateWindow (hwnd) ;
+
      hAccel = LoadAccelerators (hInstance, szAppName) ;
-     
+
      while (GetMessage (&msg, NULL, 0, 0))
      {
           if (!TranslateAccelerator (hwnd, hAccel, &msg))
@@ -72,7 +77,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
      static HWND hwndEdit ;
      int         iSelect, iEnable ;
-     
+
      switch (message)
      {
      case WM_CREATE:
@@ -83,40 +88,40 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                               0, 0, 0, 0, hwnd, (HMENU) ID_EDIT,
                               ((LPCREATESTRUCT) lParam)->hInstance, NULL) ;
           return 0 ;
-          
+
      case WM_SETFOCUS:
           SetFocus (hwndEdit) ;
           return 0 ;
-          
-     case WM_SIZE: 
+
+     case WM_SIZE:
           MoveWindow (hwndEdit, 0, 0, LOWORD (lParam), HIWORD (lParam), TRUE) ;
           return 0 ;
-          
+
      case WM_INITMENUPOPUP:
           if (lParam == 1)
           {
                EnableMenuItem ((HMENU) wParam, IDM_EDIT_UNDO,
                     SendMessage (hwndEdit, EM_CANUNDO, 0, 0) ?
                                    MF_ENABLED : MF_GRAYED) ;
-               
+
                EnableMenuItem ((HMENU) wParam, IDM_EDIT_PASTE,
                     IsClipboardFormatAvailable (CF_TEXT) ?
                                    MF_ENABLED : MF_GRAYED) ;
-               
+
                iSelect = SendMessage (hwndEdit, EM_GETSEL, 0, 0) ;
-               
+
                if (HIWORD (iSelect) == LOWORD (iSelect))
                     iEnable = MF_GRAYED ;
                else
                     iEnable = MF_ENABLED ;
-               
+
                EnableMenuItem ((HMENU) wParam, IDM_EDIT_CUT,   iEnable) ;
                EnableMenuItem ((HMENU) wParam, IDM_EDIT_COPY,  iEnable) ;
                EnableMenuItem ((HMENU) wParam, IDM_EDIT_CLEAR, iEnable) ;
                return 0 ;
           }
           break ;
-          
+
      case WM_COMMAND:
           if (lParam)
           {
@@ -136,7 +141,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
           case IDM_FILE_PRINT:
                MessageBeep (0) ;
                return 0 ;
-          
+
           case IDM_APP_EXIT:
                SendMessage (hwnd, WM_CLOSE, 0, 0) ;
                return 0 ;
@@ -144,50 +149,50 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
           case IDM_EDIT_UNDO:
                SendMessage (hwndEdit, WM_UNDO, 0, 0) ;
                return 0 ;
-          
+
           case IDM_EDIT_CUT:
                SendMessage (hwndEdit, WM_CUT, 0, 0) ;
                return 0 ;
-          
+
           case IDM_EDIT_COPY:
                SendMessage (hwndEdit, WM_COPY, 0, 0) ;
                return 0 ;
-          
+
           case IDM_EDIT_PASTE:
                SendMessage (hwndEdit, WM_PASTE, 0, 0) ;
                return 0 ;
-          
+
           case IDM_EDIT_CLEAR:
                SendMessage (hwndEdit, WM_CLEAR, 0, 0) ;
                return 0 ;
-          
+
           case IDM_EDIT_SELECT_ALL:
                SendMessage (hwndEdit, EM_SETSEL, 0, -1) ;
                return 0 ;
-          
+
           case IDM_HELP_HELP:
                MessageBox (hwnd, TEXT ("Help not yet implemented!"),
                            szAppName, MB_OK | MB_ICONEXCLAMATION) ;
                return 0 ;
-          
+
           case IDM_APP_ABOUT:
                MessageBox (hwnd, TEXT ("POPPAD2 (c) Charles Petzold, 1998"),
                            szAppName, MB_OK | MB_ICONINFORMATION) ;
                return 0 ;
           }
           break ;
-          
+
      case WM_CLOSE:
           if (IDYES == AskConfirmation (hwnd))
                DestroyWindow (hwnd) ;
           return 0 ;
-          
+
      case WM_QUERYENDSESSION:
           if (IDYES == AskConfirmation (hwnd))
                return 1 ;
           else
                return 0 ;
-          
+
      case WM_DESTROY:
           PostQuitMessage (0) ;
           return 0 ;

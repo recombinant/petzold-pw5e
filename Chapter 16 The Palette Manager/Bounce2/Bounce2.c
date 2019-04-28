@@ -3,6 +3,7 @@
                (c) Charles Petzold, 1998
   ---------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 #define ID_TIMER 1
@@ -72,7 +73,7 @@ void PaintRoutine (HDC hdc, int cxClient, int cyClient)
                y1 = (i - 16) * cyClient / 9 ;
                y2 = (i - 15) * cyClient / 9 ;
           }
-          else 
+          else
           {
                y1 = (32 - i) * cyClient / 9 ;
                y2 = (33 - i) * cyClient / 9 ;
@@ -122,4 +123,3 @@ void DestroyRoutine (HWND hwnd, HPALETTE hPalette)
      free (plp) ;
      return ;
 }
-

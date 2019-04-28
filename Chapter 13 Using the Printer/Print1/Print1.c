@@ -3,6 +3,7 @@
                (c) Charles Petzold, 1998
   ---------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 HDC  GetPrinterDC (void) ;              // in GETPRNDC.C
@@ -18,19 +19,19 @@ BOOL PrintMyPage (HWND hwnd)
      BOOL           bSuccess = TRUE ;
      HDC            hdcPrn ;
      int            xPage, yPage ;
-     
+
      if (NULL == (hdcPrn = GetPrinterDC ()))
           return FALSE ;
 
      xPage = GetDeviceCaps (hdcPrn, HORZRES) ;
      yPage = GetDeviceCaps (hdcPrn, VERTRES) ;
-     
+
      if (StartDoc (hdcPrn, &di) > 0)
      {
           if (StartPage (hdcPrn) > 0)
           {
                PageGDICalls (hdcPrn, xPage, yPage) ;
-               
+
                if (EndPage (hdcPrn) > 0)
                     EndDoc (hdcPrn) ;
                else
@@ -39,7 +40,7 @@ BOOL PrintMyPage (HWND hwnd)
      }
      else
           bSuccess = FALSE ;
-     
+
      DeleteDC (hdcPrn) ;
      return bSuccess ;
 }

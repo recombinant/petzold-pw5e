@@ -3,8 +3,10 @@
 				(c) Charles Petzold, 1998
   ---------------------------------------------------*/
 
-#include <Windows.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #include <windowsx.h>
+#include <tchar.h>
 #include "SysMets.h"  // from Chapter 04
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

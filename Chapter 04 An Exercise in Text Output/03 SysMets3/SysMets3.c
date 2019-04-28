@@ -216,7 +216,7 @@ LRESULT CALLBACK WndProc(_In_ HWND hwnd, _In_ UINT message, _In_ WPARAM wParam, 
 		SetScrollInfo(hwnd, SB_HORZ, &si, TRUE);
 		GetScrollInfo(hwnd, SB_HORZ, &si);
 
-		// If the position has changed, scroll the window 
+		// If the position has changed, scroll the window
 
 		if (si.nPos != iHorzPos)
 		{

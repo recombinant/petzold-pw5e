@@ -3,12 +3,15 @@
 				(c) Charles Petzold, 1998
   ------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <windowsx.h>
+#include <tchar.h>
 #include <wininet.h>
 #include <process.h>
 #include "Resource.h"
 
-// User-defined messages used in WndProc
+  // User-defined messages used in WndProc
 
 #define WM_USER_CHECKFILES (WM_USER + 1)
 #define WM_USER_GETFILES   (WM_USER + 2)
@@ -50,7 +53,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL    CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 VOID             FtpThread(PVOID);
 VOID             ButtonSwitch(HWND, HWND, TCHAR*);
-FILELIST* GetFileList(VOID);
+FILELIST*        GetFileList(VOID);
 int              Compare(const FILEINFO*, const FILEINFO*);
 
 // A couple globals
@@ -58,9 +61,15 @@ int              Compare(const FILEINFO*, const FILEINFO*);
 HINSTANCE hInst;
 TCHAR     szAppName[] = TEXT("UpdDemo");
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
+
 	HWND         hwnd;
 	MSG          msg;
 	WNDCLASS     wndclass;
@@ -184,7 +193,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			TEXT("Update information from Internet?"),
 			szAppName, MB_YESNO | MB_ICONQUESTION))
 
-			// Invoke dialog box 
+			// Invoke dialog box
 
 			DialogBox(hInst, szAppName, hwnd, DlgProc);
 
@@ -455,11 +464,11 @@ FILELIST* GetFileList(void)
 			CloseHandle(hFile);
 			continue;
 		}
-		// Realloc the FILELIST structure for a new entry 
+		// Realloc the FILELIST structure for a new entry
 
 		plist = realloc(plist, sizeof(FILELIST) + iNum * sizeof(FILEINFO));
 
-		// Allocate space and save the filename 
+		// Allocate space and save the filename
 
 		plist->info[iNum].szFilename = malloc(lstrlen(finddata.cFileName) +
 			sizeof(TCHAR));
@@ -494,4 +503,3 @@ int Compare(const FILEINFO * pinfo1, const FILEINFO * pinfo2)
 {
 	return lstrcmp(pinfo2->szFilename, pinfo1->szFilename);
 }
-

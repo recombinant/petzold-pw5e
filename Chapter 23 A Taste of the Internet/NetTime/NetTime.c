@@ -1,402 +1,411 @@
 /*-------------------------------------------------------
    NETTIME.C -- Sets System Clock from Internet Services
-                (c) Charles Petzold, 1998
+				(c) Charles Petzold, 1998
   -------------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
-#include "resource.h"
+#include <winsock.h>
+#include "./resource.h"
 
 #define WM_SOCKET_NOTIFY (WM_USER + 1)
 #define ID_TIMER         1
 
-LRESULT CALLBACK WndProc   (HWND, UINT, WPARAM, LPARAM) ;
-BOOL    CALLBACK MainDlg   (HWND, UINT, WPARAM, LPARAM) ;
-BOOL    CALLBACK ServerDlg (HWND, UINT, WPARAM, LPARAM) ;
+LRESULT  CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+UINT_PTR CALLBACK MainDlg(HWND, UINT, WPARAM, LPARAM);
+UINT_PTR CALLBACK ServerDlg(HWND, UINT, WPARAM, LPARAM);
 
-void ChangeSystemTime (HWND hwndEdit, ULONG ulTime) ;
-void FormatUpdatedTime (HWND hwndEdit, SYSTEMTIME * pstOld, 
-                                       SYSTEMTIME * pstNew) ;
-void EditPrintf (HWND hwndEdit, TCHAR * szFormat, ...) ;
+void ChangeSystemTime(HWND hwndEdit, ULONG ulTime);
+void FormatUpdatedTime(HWND hwndEdit, SYSTEMTIME* pstOld,
+	SYSTEMTIME* pstNew);
+void EditPrintf(HWND hwndEdit, TCHAR* szFormat, ...);
 
-HINSTANCE hInst ;
-HWND      hwndModeless ;
+HINSTANCE hInst;
+HWND      hwndModeless;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
-     static TCHAR szAppName[] = TEXT ("NetTime") ;
-     HWND         hwnd ;
-     MSG          msg ;
-     RECT         rect ;
-     WNDCLASS     wndclass ;
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
 
-     hInst = hInstance ;
+	static TCHAR szAppName[] = TEXT("NetTime");
+	HWND         hwnd;
+	MSG          msg;
+	RECT         rect;
+	WNDCLASS     wndclass;
 
-     wndclass.style         = 0 ;
-     wndclass.lpfnWndProc   = WndProc ;
-     wndclass.cbClsExtra    = 0 ;
-     wndclass.cbWndExtra    = 0 ;
-     wndclass.hInstance     = hInstance ;
-     wndclass.hIcon         = LoadIcon (NULL, IDI_APPLICATION) ;
-     wndclass.hCursor       = NULL ;
-     wndclass.hbrBackground = NULL ;
-     wndclass.lpszMenuName  = NULL ;
-     wndclass.lpszClassName = szAppName ;
+	hInst = hInstance;
 
-     if (!RegisterClass (&wndclass))
-     {
-          MessageBox (NULL, TEXT ("This program requires Windows NT!"), 
-                      szAppName, MB_ICONERROR) ;
-          return 0 ;
-     }
-     
-     hwnd = CreateWindow (szAppName, TEXT ("Set System Clock from Internet"),
-                          WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU |
-                               WS_BORDER | WS_MINIMIZEBOX,
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          NULL, NULL, hInstance, NULL) ;
+	wndclass.style = 0;
+	wndclass.lpfnWndProc = WndProc;
+	wndclass.cbClsExtra = 0;
+	wndclass.cbWndExtra = 0;
+	wndclass.hInstance = hInstance;
+	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wndclass.hCursor = NULL;
+	wndclass.hbrBackground = NULL;
+	wndclass.lpszMenuName = NULL;
+	wndclass.lpszClassName = szAppName;
 
-          // Create the modeless dialog box to go on top of the window
+	if (!RegisterClass(&wndclass))
+	{
+		MessageBox(NULL, TEXT("This program requires Windows NT!"),
+			szAppName, MB_ICONERROR);
+		return 0;
+	}
 
-     hwndModeless = CreateDialog (hInstance, szAppName, hwnd, MainDlg) ;
+	hwnd = CreateWindow(szAppName, TEXT("Set System Clock from Internet"),
+		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU |
+		WS_BORDER | WS_MINIMIZEBOX,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		NULL, NULL, hInstance, NULL);
 
-          // Size the main parent window to the size of the dialog box.  
-          //   Show both windows.
+	// Create the modeless dialog box to go on top of the window
 
-     GetWindowRect (hwndModeless, &rect) ;
-     AdjustWindowRect (&rect, WS_CAPTION | WS_BORDER, FALSE) ;
+	hwndModeless = CreateDialog(hInstance, szAppName, hwnd, MainDlg);
 
-     SetWindowPos (hwnd, NULL, 0, 0, rect.right - rect.left,
-                   rect.bottom - rect.top, SWP_NOMOVE) ;
+	// Size the main parent window to the size of the dialog box.
+	//   Show both windows.
 
-     ShowWindow (hwndModeless, SW_SHOW) ;     
-     ShowWindow (hwnd, nShowCmd) ;
-     UpdateWindow (hwnd) ;
+	GetWindowRect(hwndModeless, &rect);
+	AdjustWindowRect(&rect, WS_CAPTION | WS_BORDER, FALSE);
 
-          // Normal message loop when a modeless dialog box is used.
+	SetWindowPos(hwnd, NULL, 0, 0, rect.right - rect.left,
+		rect.bottom - rect.top, SWP_NOMOVE);
 
-     while (GetMessage (&msg, NULL, 0, 0))
-     {
-          if (hwndModeless == 0 || !IsDialogMessage (hwndModeless, &msg))
-          {
-               TranslateMessage (&msg) ;
-               DispatchMessage (&msg) ;
-          }
-     }
-     return (int)msg.wParam;  // WM_QUIT
+	ShowWindow(hwndModeless, SW_SHOW);
+	ShowWindow(hwnd, nShowCmd);
+	UpdateWindow(hwnd);
+
+	// Normal message loop when a modeless dialog box is used.
+
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		if (hwndModeless == 0 || !IsDialogMessage(hwndModeless, &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+	return (int)msg.wParam;  // WM_QUIT
 }
 
-LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-     switch (message)
-     {
-     case WM_SETFOCUS:
-          SetFocus (hwndModeless) ;
-          return 0 ;
+	switch (message)
+	{
+	case WM_SETFOCUS:
+		SetFocus(hwndModeless);
+		return 0;
 
-     case WM_DESTROY:
-          PostQuitMessage (0) ;
-          return 0 ;
-     }
-     return DefWindowProc (hwnd, message, wParam, lParam) ;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	}
+	return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
-BOOL CALLBACK MainDlg (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+UINT_PTR CALLBACK MainDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-     static char   szIPAddr[32] = { "132.163.135.130" } ;
-     static HWND   hwndButton, hwndEdit ;
-     static SOCKET sock ;
-     static struct sockaddr_in sa ;
-     static TCHAR  szOKLabel[32] ;
-     int           iError, iSize ;
-     unsigned long ulTime ;
-     WORD          wEvent, wError ;
-     WSADATA       WSAData ;     
- 
-     switch (message)
-     {
-     case WM_INITDIALOG:
-          hwndButton = GetDlgItem (hwnd, IDOK) ;
-          hwndEdit = GetDlgItem (hwnd, IDC_TEXTOUT) ;
-          return TRUE ;
+	static char   szIPAddr[32] = { "132.163.135.130" };
+	static HWND   hwndButton, hwndEdit;
+	static SOCKET sock;
+	static struct sockaddr_in sa;
+	static TCHAR  szOKLabel[32];
+	int           iError, iSize;
+	unsigned long ulTime;
+	WORD          wEvent, wError;
+	WSADATA       WSAData;
 
-     case WM_COMMAND:
-          switch (LOWORD (wParam))
-          {
-          case IDC_SERVER:
-               DialogBoxParam (hInst, TEXT ("Servers"), hwnd, ServerDlg, 
-                               (LPARAM) szIPAddr) ;
-               return TRUE ;
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		hwndButton = GetDlgItem(hwnd, IDOK);
+		hwndEdit = GetDlgItem(hwnd, IDC_TEXTOUT);
+		return TRUE;
 
-          case IDOK:
-                    // Call "WSAStartup" and display description text
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDC_SERVER:
+			DialogBoxParam(hInst, TEXT("Servers"), hwnd, ServerDlg,
+				(LPARAM)szIPAddr);
+			return TRUE;
 
-               if (iError = WSAStartup (MAKEWORD(2,0), &WSAData))
-               {
-                    EditPrintf (hwndEdit, TEXT ("Startup error #%i.\r\n"), 
-                                          iError) ;
-                    return TRUE ;
-               }
-               EditPrintf (hwndEdit, TEXT ("Started up %hs\r\n"), 
-                                     WSAData.szDescription);
+		case IDOK:
+			// Call "WSAStartup" and display description text
 
-                    // Call "socket"
+			if (iError = WSAStartup(MAKEWORD(2, 0), &WSAData))
+			{
+				EditPrintf(hwndEdit, TEXT("Startup error #%i.\r\n"),
+					iError);
+				return TRUE;
+			}
+			EditPrintf(hwndEdit, TEXT("Started up %hs\r\n"),
+				WSAData.szDescription);
 
-               sock = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP) ;
+			// Call "socket"
 
-               if (sock == INVALID_SOCKET)
-               {
-                    EditPrintf (hwndEdit, 
-                                TEXT ("Socket creation error #%i.\r\n"), 
-                                WSAGetLastError ()) ;
-                    WSACleanup () ;
-                    return TRUE ;
-               }
-               EditPrintf (hwndEdit, TEXT ("Socket %i created.\r\n"), sock) ;
+			sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-                    // Call "WSAAsyncSelect" 
+			if (sock == INVALID_SOCKET)
+			{
+				EditPrintf(hwndEdit,
+					TEXT("Socket creation error #%i.\r\n"),
+					WSAGetLastError());
+				WSACleanup();
+				return TRUE;
+			}
+			EditPrintf(hwndEdit, TEXT("Socket %i created.\r\n"), sock);
 
-               if (SOCKET_ERROR == WSAAsyncSelect (sock, hwnd, WM_SOCKET_NOTIFY, 
-                                                   FD_CONNECT | FD_READ))
-               {
-                    EditPrintf (hwndEdit, 
-                                TEXT ("WSAAsyncSelect error #%i.\r\n"),
-                                WSAGetLastError ()) ;
-                    closesocket (sock) ;
-                    WSACleanup () ;
-                    return TRUE ;
-               }
+			// Call "WSAAsyncSelect"
 
-                    // Call "connect" with IP address and time-server port
+			if (SOCKET_ERROR == WSAAsyncSelect(sock, hwnd, WM_SOCKET_NOTIFY,
+				FD_CONNECT | FD_READ))
+			{
+				EditPrintf(hwndEdit,
+					TEXT("WSAAsyncSelect error #%i.\r\n"),
+					WSAGetLastError());
+				closesocket(sock);
+				WSACleanup();
+				return TRUE;
+			}
 
-               sa.sin_family           = AF_INET ;
-               sa.sin_port             = htons (IPPORT_TIMESERVER) ; 
-               sa.sin_addr.S_un.S_addr = inet_addr (szIPAddr) ;
+			// Call "connect" with IP address and time-server port
 
-               connect(sock, (SOCKADDR *) &sa, sizeof (sa)) ;
+			sa.sin_family = AF_INET;
+			sa.sin_port = htons(IPPORT_TIMESERVER);
+			sa.sin_addr.S_un.S_addr = inet_addr(szIPAddr);
 
-                    // "connect" will return SOCKET_ERROR because even if it
-                    // succeeds, it will require blocking. The following only
-                    // reports unexpected errors.
+			connect(sock, (SOCKADDR*)& sa, sizeof(sa));
 
-               if (WSAEWOULDBLOCK != (iError = WSAGetLastError ()))
-               {
-                    EditPrintf (hwndEdit, TEXT ("Connect error #%i.\r\n"), 
-                                          iError) ;
-                    closesocket (sock) ;
-                    WSACleanup () ;
-                    return TRUE ;
-               }
-               EditPrintf (hwndEdit, TEXT ("Connecting to %hs..."), szIPAddr) ;
-     
-                    // The result of the "connect" call will be reported 
-                    // through the WM_SOCKET_NOTIFY message.
-                    // Set timer and change the button to "Cancel"
+			// "connect" will return SOCKET_ERROR because even if it
+			// succeeds, it will require blocking. The following only
+			// reports unexpected errors.
 
-               SetTimer (hwnd, ID_TIMER, 1000, NULL) ;
-               GetWindowText (hwndButton, szOKLabel, sizeof (szOKLabel) /
-                                                     sizeof (TCHAR)) ;
-               SetWindowText (hwndButton, TEXT ("Cancel")) ;
-               SetWindowLong (hwndButton, GWL_ID, IDCANCEL) ;
-               return TRUE ;
+			if (WSAEWOULDBLOCK != (iError = WSAGetLastError()))
+			{
+				EditPrintf(hwndEdit, TEXT("Connect error #%i.\r\n"),
+					iError);
+				closesocket(sock);
+				WSACleanup();
+				return TRUE;
+			}
+			EditPrintf(hwndEdit, TEXT("Connecting to %hs..."), szIPAddr);
 
-          case IDCANCEL:
-               closesocket (sock) ;
-               sock = 0 ;
-               WSACleanup () ;
-               SetWindowText (hwndButton, szOKLabel) ;
-               SetWindowLong (hwndButton, GWL_ID, IDOK) ;
+			// The result of the "connect" call will be reported
+			// through the WM_SOCKET_NOTIFY message.
+			// Set timer and change the button to "Cancel"
 
-               KillTimer (hwnd, ID_TIMER) ;
-               EditPrintf (hwndEdit, TEXT ("\r\nSocket closed.\r\n")) ;
-               return TRUE ;
+			SetTimer(hwnd, ID_TIMER, 1000, NULL);
+			GetWindowText(hwndButton, szOKLabel, sizeof(szOKLabel) /
+				sizeof(TCHAR));
+			SetWindowText(hwndButton, TEXT("Cancel"));
+			SetWindowLong(hwndButton, GWL_ID, IDCANCEL);
+			return TRUE;
 
-          case IDC_CLOSE:
-               if (sock)
-                    SendMessage (hwnd, WM_COMMAND, IDCANCEL, 0) ;
+		case IDCANCEL:
+			closesocket(sock);
+			sock = 0;
+			WSACleanup();
+			SetWindowText(hwndButton, szOKLabel);
+			SetWindowLong(hwndButton, GWL_ID, IDOK);
 
-               DestroyWindow (GetParent (hwnd)) ;
-               return TRUE ;
-          }
-          return FALSE ;
+			KillTimer(hwnd, ID_TIMER);
+			EditPrintf(hwndEdit, TEXT("\r\nSocket closed.\r\n"));
+			return TRUE;
 
-     case WM_TIMER:
-          EditPrintf (hwndEdit, TEXT (".")) ;
-          return TRUE ;
+		case IDC_CLOSE:
+			if (sock)
+				SendMessage(hwnd, WM_COMMAND, IDCANCEL, 0);
 
-     case WM_SOCKET_NOTIFY:
-          wEvent = WSAGETSELECTEVENT (lParam) ;   // ie, LOWORD
-          wError = WSAGETSELECTERROR (lParam) ;   // ie, HIWORD
+			DestroyWindow(GetParent(hwnd));
+			return TRUE;
+		}
+		return FALSE;
 
-               // Process two events specified in WSAAsyncSelect
+	case WM_TIMER:
+		EditPrintf(hwndEdit, TEXT("."));
+		return TRUE;
 
-          switch (wEvent)
-          {
-               // This event occurs as a result of the "connect" call
+	case WM_SOCKET_NOTIFY:
+		wEvent = WSAGETSELECTEVENT(lParam);   // ie, LOWORD
+		wError = WSAGETSELECTERROR(lParam);   // ie, HIWORD
 
-          case FD_CONNECT:
-               EditPrintf (hwndEdit, TEXT ("\r\n")) ;
+			 // Process two events specified in WSAAsyncSelect
 
-               if (wError)
-               {
-                    EditPrintf (hwndEdit, TEXT ("Connect error #%i."), 
-                                          wError) ;
-                    SendMessage (hwnd, WM_COMMAND, IDCANCEL, 0) ;
-                    return TRUE ;
-               }
-               EditPrintf (hwndEdit, TEXT ("Connected to %hs.\r\n"), szIPAddr) ;
+		switch (wEvent)
+		{
+			// This event occurs as a result of the "connect" call
 
-                    // Try to receive data. The call will generate an error
-                    // of WSAEWOULDBLOCK and an event of FD_READ
+		case FD_CONNECT:
+			EditPrintf(hwndEdit, TEXT("\r\n"));
 
-               recv (sock, (char *) &ulTime, 4, MSG_PEEK) ;
-               EditPrintf (hwndEdit, TEXT ("Waiting to receive...")) ;
-               return TRUE ;
+			if (wError)
+			{
+				EditPrintf(hwndEdit, TEXT("Connect error #%i."),
+					wError);
+				SendMessage(hwnd, WM_COMMAND, IDCANCEL, 0);
+				return TRUE;
+			}
+			EditPrintf(hwndEdit, TEXT("Connected to %hs.\r\n"), szIPAddr);
 
-                    // This even occurs when the "recv" call can be made
-               
-          case FD_READ:
-               KillTimer (hwnd, ID_TIMER) ;
-               EditPrintf (hwndEdit, TEXT ("\r\n")) ;
+			// Try to receive data. The call will generate an error
+			// of WSAEWOULDBLOCK and an event of FD_READ
 
-               if (wError)
-               {
-                    EditPrintf (hwndEdit, TEXT ("FD_READ error #%i."), 
-                                          wError) ;
-                    SendMessage (hwnd, WM_COMMAND, IDCANCEL, 0) ;
-                    return TRUE ;
-               }
-                    // Get the time and swap the bytes
+			recv(sock, (char*)& ulTime, 4, MSG_PEEK);
+			EditPrintf(hwndEdit, TEXT("Waiting to receive..."));
+			return TRUE;
 
-               iSize = recv (sock, (char *) &ulTime, 4, 0) ;
-               ulTime = ntohl (ulTime) ;
-               EditPrintf (hwndEdit, 
-                           TEXT ("Received current time of %u seconds ")
-                           TEXT ("since Jan. 1 1900.\r\n"), ulTime) ;
+			// This even occurs when the "recv" call can be made
 
-                    // Change the system time
-     
-               ChangeSystemTime (hwndEdit, ulTime) ;
-               SendMessage (hwnd, WM_COMMAND, IDCANCEL, 0) ;
-               return TRUE ;
-          }
-          return FALSE ;
-     }
-     return FALSE ;
+		case FD_READ:
+			KillTimer(hwnd, ID_TIMER);
+			EditPrintf(hwndEdit, TEXT("\r\n"));
+
+			if (wError)
+			{
+				EditPrintf(hwndEdit, TEXT("FD_READ error #%i."),
+					wError);
+				SendMessage(hwnd, WM_COMMAND, IDCANCEL, 0);
+				return TRUE;
+			}
+			// Get the time and swap the bytes
+
+			iSize = recv(sock, (char*)& ulTime, 4, 0);
+			ulTime = ntohl(ulTime);
+			EditPrintf(hwndEdit,
+				TEXT("Received current time of %u seconds ")
+				TEXT("since Jan. 1 1900.\r\n"), ulTime);
+
+			// Change the system time
+
+			ChangeSystemTime(hwndEdit, ulTime);
+			SendMessage(hwnd, WM_COMMAND, IDCANCEL, 0);
+			return TRUE;
+		}
+		return FALSE;
+	}
+	return FALSE;
 }
 
-BOOL CALLBACK ServerDlg (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+UINT_PTR CALLBACK ServerDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-     static char * szServer ;
-     static WORD   wServer = IDC_SERVER1 ;
-     char          szLabel [64] ;
+	static char* szServer;
+	static WORD   wServer = IDC_SERVER1;
+	char          szLabel[64];
 
-     switch (message)
-     {
-     case WM_INITDIALOG:
-          szServer = (char *) lParam ;
-          CheckRadioButton (hwnd, IDC_SERVER1, IDC_SERVER10, wServer) ;
-          return TRUE ;
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		szServer = (char*)lParam;
+		CheckRadioButton(hwnd, IDC_SERVER1, IDC_SERVER10, wServer);
+		return TRUE;
 
-     case WM_COMMAND:
-          switch (LOWORD (wParam))
-          {
-          case IDC_SERVER1:
-          case IDC_SERVER2:
-          case IDC_SERVER3:
-          case IDC_SERVER4:
-          case IDC_SERVER5:
-          case IDC_SERVER6:
-          case IDC_SERVER7:
-          case IDC_SERVER8:
-          case IDC_SERVER9:
-          case IDC_SERVER10:
-               wServer = LOWORD (wParam) ;
-               return TRUE ;
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDC_SERVER1:
+		case IDC_SERVER2:
+		case IDC_SERVER3:
+		case IDC_SERVER4:
+		case IDC_SERVER5:
+		case IDC_SERVER6:
+		case IDC_SERVER7:
+		case IDC_SERVER8:
+		case IDC_SERVER9:
+		case IDC_SERVER10:
+			wServer = LOWORD(wParam);
+			return TRUE;
 
-          case IDOK:
-               GetDlgItemTextA (hwnd, wServer, szLabel, sizeof (szLabel)) ;
-               strtok (szLabel, "(") ;
-               strcpy (szServer, strtok (NULL, ")")) ;
-               EndDialog (hwnd, TRUE) ;
-               return TRUE ;
+		case IDOK:
+			GetDlgItemTextA(hwnd, wServer, szLabel, sizeof(szLabel));
+			strtok(szLabel, "(");
+			strcpy(szServer, strtok(NULL, ")"));
+			EndDialog(hwnd, TRUE);
+			return TRUE;
 
-          case IDCANCEL:
-               EndDialog (hwnd, FALSE) ;
-               return TRUE ;
-          }
-          break ;
-     }
-     return FALSE ;
+		case IDCANCEL:
+			EndDialog(hwnd, FALSE);
+			return TRUE;
+		}
+		break;
+	}
+	return FALSE;
 }
 
-void ChangeSystemTime (HWND hwndEdit, ULONG ulTime)
+void ChangeSystemTime(HWND hwndEdit, ULONG ulTime)
 {
-     FILETIME      ftNew ;
-     LARGE_INTEGER li ;
-     SYSTEMTIME    stOld, stNew ;
+	FILETIME      ftNew;
+	LARGE_INTEGER li;
+	SYSTEMTIME    stOld, stNew;
 
-     GetLocalTime (&stOld) ;
+	GetLocalTime(&stOld);
 
-     stNew.wYear         = 1900 ;
-     stNew.wMonth        = 1 ;
-     stNew.wDay          = 1 ;
-     stNew.wHour         = 0 ;
-     stNew.wMinute       = 0 ;
-     stNew.wSecond       = 0 ;
-     stNew.wMilliseconds = 0 ;
+	stNew.wYear = 1900;
+	stNew.wMonth = 1;
+	stNew.wDay = 1;
+	stNew.wHour = 0;
+	stNew.wMinute = 0;
+	stNew.wSecond = 0;
+	stNew.wMilliseconds = 0;
 
-     SystemTimeToFileTime (&stNew, &ftNew) ;
-     li = * (LARGE_INTEGER *) &ftNew ;
-     li.QuadPart += (LONGLONG) 10000000 * ulTime ; 
-     ftNew = * (FILETIME *) &li ;
-     FileTimeToSystemTime (&ftNew, &stNew) ;
+	SystemTimeToFileTime(&stNew, &ftNew);
+	li = *(LARGE_INTEGER*)& ftNew;
+	li.QuadPart += (LONGLONG)10000000 * ulTime;
+	ftNew = *(FILETIME*)& li;
+	FileTimeToSystemTime(&ftNew, &stNew);
 
-     if (SetSystemTime (&stNew))
-     {
-          GetLocalTime (&stNew) ;
-          FormatUpdatedTime (hwndEdit, &stOld, &stNew) ;
-     }
-     else
-          EditPrintf (hwndEdit, TEXT ("Could NOT set new date and time.")) ;
+	if (SetSystemTime(&stNew))
+	{
+		GetLocalTime(&stNew);
+		FormatUpdatedTime(hwndEdit, &stOld, &stNew);
+	}
+	else
+		EditPrintf(hwndEdit, TEXT("Could NOT set new date and time."));
 }
 
-void FormatUpdatedTime (HWND hwndEdit, SYSTEMTIME * pstOld, SYSTEMTIME * pstNew)
+void FormatUpdatedTime(HWND hwndEdit, SYSTEMTIME * pstOld, SYSTEMTIME * pstNew)
 {
-     TCHAR szDateOld [64], szTimeOld [64], szDateNew [64], szTimeNew [64] ;
+	TCHAR szDateOld[64], szTimeOld[64], szDateNew[64], szTimeNew[64];
 
-     GetDateFormat (LOCALE_USER_DEFAULT, LOCALE_NOUSEROVERRIDE | DATE_SHORTDATE,
-                    pstOld, NULL, szDateOld, sizeof (szDateOld)) ;
-     
-     GetTimeFormat (LOCALE_USER_DEFAULT, LOCALE_NOUSEROVERRIDE | 
-                         TIME_NOTIMEMARKER | TIME_FORCE24HOURFORMAT,
-                    pstOld, NULL, szTimeOld, sizeof (szTimeOld)) ;
+	GetDateFormat(LOCALE_USER_DEFAULT, LOCALE_NOUSEROVERRIDE | DATE_SHORTDATE,
+		pstOld, NULL, szDateOld, sizeof(szDateOld));
 
-     GetDateFormat (LOCALE_USER_DEFAULT, LOCALE_NOUSEROVERRIDE | DATE_SHORTDATE,
-                    pstNew, NULL, szDateNew, sizeof (szDateNew)) ;
-     
-     GetTimeFormat (LOCALE_USER_DEFAULT, LOCALE_NOUSEROVERRIDE | 
-                         TIME_NOTIMEMARKER | TIME_FORCE24HOURFORMAT,
-                    pstNew, NULL, szTimeNew, sizeof (szTimeNew)) ;
+	GetTimeFormat(LOCALE_USER_DEFAULT, LOCALE_NOUSEROVERRIDE |
+		TIME_NOTIMEMARKER | TIME_FORCE24HOURFORMAT,
+		pstOld, NULL, szTimeOld, sizeof(szTimeOld));
 
-     EditPrintf (hwndEdit, 
-                 TEXT ("System date and time successfully changed ")
-                 TEXT ("from\r\n\t%s, %s.%03i to\r\n\t%s, %s.%03i."), 
-                 szDateOld, szTimeOld, pstOld->wMilliseconds,
-                 szDateNew, szTimeNew, pstNew->wMilliseconds) ;
+	GetDateFormat(LOCALE_USER_DEFAULT, LOCALE_NOUSEROVERRIDE | DATE_SHORTDATE,
+		pstNew, NULL, szDateNew, sizeof(szDateNew));
+
+	GetTimeFormat(LOCALE_USER_DEFAULT, LOCALE_NOUSEROVERRIDE |
+		TIME_NOTIMEMARKER | TIME_FORCE24HOURFORMAT,
+		pstNew, NULL, szTimeNew, sizeof(szTimeNew));
+
+	EditPrintf(hwndEdit,
+		TEXT("System date and time successfully changed ")
+		TEXT("from\r\n\t%s, %s.%03i to\r\n\t%s, %s.%03i."),
+		szDateOld, szTimeOld, pstOld->wMilliseconds,
+		szDateNew, szTimeNew, pstNew->wMilliseconds);
 }
 
-void EditPrintf (HWND hwndEdit, TCHAR * szFormat, ...)
+void EditPrintf(HWND hwndEdit, TCHAR * szFormat, ...)
 {
-     TCHAR   szBuffer [1024] ;
-     va_list pArgList ;
+	TCHAR   szBuffer[1024];
+	va_list pArgList;
 
-     va_start (pArgList, szFormat) ;
-     wvsprintf (szBuffer, szFormat, pArgList) ;
-     va_end (pArgList) ;
+	va_start(pArgList, szFormat);
+	wvsprintf(szBuffer, szFormat, pArgList);
+	va_end(pArgList);
 
-     SendMessage (hwndEdit, EM_SETSEL, (WPARAM) -1, (LPARAM) -1) ;
-     SendMessage (hwndEdit, EM_REPLACESEL, FALSE, (LPARAM) szBuffer) ;
-     SendMessage (hwndEdit, EM_SCROLLCARET, 0, 0) ;
+	SendMessage(hwndEdit, EM_SETSEL, (WPARAM)-1, (LPARAM)-1);
+	SendMessage(hwndEdit, EM_REPLACESEL, FALSE, (LPARAM)szBuffer);
+	SendMessage(hwndEdit, EM_SCROLLCARET, 0, 0);
 }

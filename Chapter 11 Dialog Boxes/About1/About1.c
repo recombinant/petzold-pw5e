@@ -3,20 +3,29 @@
                (c) Charles Petzold, 1998
    ------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <windowsx.h>
+#include <tchar.h>
 #include "Resource.h"
 
 LRESULT CALLBACK WndProc      (HWND, UINT, WPARAM, LPARAM) ;
 BOOL    CALLBACK AboutDlgProc (HWND, UINT, WPARAM, LPARAM) ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
+  UNREFERENCED_PARAMETER(hPrevInstance);
+  UNREFERENCED_PARAMETER(pCmdLine);
+
      static TCHAR szAppName[] = TEXT ("About1") ;
      MSG          msg ;
      HWND         hwnd ;
      WNDCLASS     wndclass ;
-     
+
      wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
      wndclass.lpfnWndProc   = WndProc ;
      wndclass.cbClsExtra    = 0 ;
@@ -27,23 +36,23 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = szAppName ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
           MessageBox (NULL, TEXT ("This program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
+
      hwnd = CreateWindow (szAppName, TEXT ("About Box Demo Program"),
                           WS_OVERLAPPEDWINDOW,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
-     UpdateWindow (hwnd) ; 
-     
+     UpdateWindow (hwnd) ;
+
      while (GetMessage (&msg, NULL, 0, 0))
      {
           TranslateMessage (&msg) ;
@@ -55,13 +64,13 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
      static HINSTANCE hInstance ;
-     
+
      switch (message)
      {
      case WM_CREATE :
           hInstance = ((LPCREATESTRUCT) lParam)->hInstance ;
           return 0 ;
-          
+
      case WM_COMMAND :
           switch (LOWORD (wParam))
           {
@@ -70,7 +79,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                break ;
           }
           return 0 ;
-          
+
      case WM_DESTROY :
           PostQuitMessage (0) ;
           return 0 ;
@@ -78,14 +87,14 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      return DefWindowProc (hwnd, message, wParam, lParam) ;
 }
 
-BOOL CALLBACK AboutDlgProc (HWND hDlg, UINT message, 
+BOOL CALLBACK AboutDlgProc (HWND hDlg, UINT message,
                             WPARAM wParam, LPARAM lParam)
 {
      switch (message)
      {
      case WM_INITDIALOG :
           return TRUE ;
-          
+
      case WM_COMMAND :
           switch (LOWORD (wParam))
           {

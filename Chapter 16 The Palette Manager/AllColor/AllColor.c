@@ -3,6 +3,7 @@
                  (c) Charles Petzold, 1998
   -----------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 #define ID_TIMER    1
@@ -26,20 +27,20 @@ HPALETTE CreateRoutine (HWND hwnd)
      ReleaseDC (hwnd, hdc) ;
 
           // Create the logical palette
-     
+
      lp.palVersion             = 0x0300 ;
      lp.palNumEntries          = 1 ;
      lp.palPalEntry[0].peRed   = 0 ;
      lp.palPalEntry[0].peGreen = 0 ;
      lp.palPalEntry[0].peBlue  = 0 ;
      lp.palPalEntry[0].peFlags = PC_RESERVED ;
-   
+
      hPalette = CreatePalette (&lp) ;
 
           // Save global for less typing
 
      pe = lp.palPalEntry[0] ;
-     
+
      SetTimer (hwnd, ID_TIMER, 10, NULL) ;
      return hPalette ;
 }
@@ -101,7 +102,7 @@ void TimerRoutine (HDC hdc, HPALETTE hPalette)
      }
 
           // Animate the palette
-     
+
      AnimatePalette (hPalette, 0, 1, &pe) ;
      DisplayRGB (hdc, &pe) ;
      return ;

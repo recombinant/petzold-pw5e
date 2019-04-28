@@ -3,6 +3,8 @@
                 (c) Charles Petzold, 1998
   ----------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
 #include <math.h>
 #include <process.h>
@@ -25,14 +27,17 @@ PARAMS, *PPARAMS ;
 
 LRESULT APIENTRY WndProc (HWND, UINT, WPARAM, LPARAM) ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
      static TCHAR szAppName[] = TEXT ("BigJob1") ;
      HWND         hwnd ;
      MSG          msg ;
      WNDCLASS     wndclass ;
-     
+
      wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
      wndclass.lpfnWndProc   = WndProc ;
      wndclass.cbClsExtra    = 0 ;
@@ -43,23 +48,23 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = NULL ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
           MessageBox (NULL, TEXT ("This program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
+
      hwnd = CreateWindow (szAppName, TEXT ("Multithreading Demo"),
                           WS_OVERLAPPEDWINDOW,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
-     
+
      while (GetMessage (&msg, NULL, 0, 0))
      {
           TranslateMessage (&msg) ;
@@ -74,14 +79,14 @@ void Thread (PVOID pvoid)
      INT              i ;
      LONG             lTime ;
      volatile PPARAMS pparams ;
-     
+
      pparams = (PPARAMS) pvoid ;
-     
+
      lTime = GetCurrentTime () ;
-     
+
      for (i = 0 ; i < REP && pparams->bContinue ; i++)
           A = tan (atan (exp (log (sqrt (A * A))))) + 1.0 ;
-     
+
      if (i == REP)
      {
           lTime = GetCurrentTime () - lTime ;
@@ -89,7 +94,7 @@ void Thread (PVOID pvoid)
      }
      else
           SendMessage (pparams->hwnd, WM_CALC_ABORTED, 0, 0) ;
-     
+
      _endthread () ;
 }
 
@@ -105,7 +110,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      PAINTSTRUCT    ps ;
      RECT           rect ;
      TCHAR          szBuffer[64] ;
-     
+
      switch (message)
      {
      case WM_LBUTTONDOWN:
@@ -114,44 +119,44 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                MessageBeep (0) ;
                return 0 ;
           }
-          
+
           iStatus = STATUS_WORKING ;
-          
+
           params.hwnd = hwnd ;
           params.bContinue = TRUE ;
-          
+
           _beginthread (Thread, 0, &params) ;
-          
+
           InvalidateRect (hwnd, NULL, TRUE) ;
           return 0 ;
-          
+
      case WM_RBUTTONDOWN:
           params.bContinue = FALSE ;
           return 0 ;
-          
+
      case WM_CALC_DONE:
           lTime = lParam ;
           iStatus = STATUS_DONE ;
           InvalidateRect (hwnd, NULL, TRUE) ;
           return 0 ;
-          
+
      case WM_CALC_ABORTED:
           iStatus = STATUS_READY ;
           InvalidateRect (hwnd, NULL, TRUE) ;
           return 0 ;
-          
+
      case WM_PAINT:
           hdc = BeginPaint (hwnd, &ps) ;
-          
+
           GetClientRect (hwnd, &rect) ;
-          
+
           wsprintf (szBuffer, szMessage[iStatus], REP, lTime) ;
           DrawText (hdc, szBuffer, -1, &rect,
                     DT_SINGLELINE | DT_CENTER | DT_VCENTER) ;
-          
+
           EndPaint (hwnd, &ps) ;
           return 0 ;
-          
+
      case WM_DESTROY:
           PostQuitMessage (0) ;
           return 0 ;

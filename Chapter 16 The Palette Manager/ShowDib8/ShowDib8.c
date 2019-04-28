@@ -1,231 +1,240 @@
 /*--------------------------------------------------
    SHOWDIB8.C -- Shows DIB converted to DIB section
-                 (c) Charles Petzold, 1998
+				 (c) Charles Petzold, 1998
   --------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include "..\\ShowDib3\\PackeDib.h"
-#include "Resource.h"
+#include <windowsx.h>
+#include <tchar.h>
+#include <commdlg.h>
+#include "PackeDib.h"  // ../ShowDib3
+#include ".\Resource.h"
 
-LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-TCHAR szAppName[] = TEXT ("ShowDib8") ;
+TCHAR szAppName[] = TEXT("ShowDib8");
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
-     HWND     hwnd ;
-     MSG      msg ;
-     WNDCLASS wndclass ;
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
 
-     wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
-     wndclass.lpfnWndProc   = WndProc ;
-     wndclass.cbClsExtra    = 0 ;
-     wndclass.cbWndExtra    = 0 ;
-     wndclass.hInstance     = hInstance ;
-     wndclass.hIcon         = LoadIcon (NULL, IDI_APPLICATION) ;
-     wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-     wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
-     wndclass.lpszMenuName  = szAppName ;
-     wndclass.lpszClassName = szAppName ;
+	HWND     hwnd;
+	MSG      msg;
+	WNDCLASS wndclass;
 
-     if (!RegisterClass (&wndclass))
-     {
-          MessageBox (NULL, TEXT ("This program requires Windows NT!"), 
-                      szAppName, MB_ICONERROR) ;
-          return 0 ;
-     }
+	wndclass.style = CS_HREDRAW | CS_VREDRAW;
+	wndclass.lpfnWndProc = WndProc;
+	wndclass.cbClsExtra = 0;
+	wndclass.cbWndExtra = 0;
+	wndclass.hInstance = hInstance;
+	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wndclass.lpszMenuName = szAppName;
+	wndclass.lpszClassName = szAppName;
 
-     hwnd = CreateWindow (szAppName, TEXT ("Show DIB #8: DIB Section"),
-                          WS_OVERLAPPEDWINDOW,
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          CW_USEDEFAULT, CW_USEDEFAULT, 
-                          NULL, NULL, hInstance, NULL) ;
+	if (!RegisterClass(&wndclass))
+	{
+		MessageBox(NULL, TEXT("This program requires Windows NT!"),
+			szAppName, MB_ICONERROR);
+		return 0;
+	}
 
-     ShowWindow (hwnd, nShowCmd) ;
-     UpdateWindow (hwnd) ;
+	hwnd = CreateWindow(szAppName, TEXT("Show DIB #8: DIB Section"),
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		NULL, NULL, hInstance, NULL);
 
-     while (GetMessage (&msg, NULL, 0, 0))
-     {
-          TranslateMessage (&msg) ;
-          DispatchMessage (&msg) ;
-     }
-     return (int)msg.wParam;  // WM_QUIT
+	ShowWindow(hwnd, nShowCmd);
+	UpdateWindow(hwnd);
+
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	return (int)msg.wParam;  // WM_QUIT
 }
 
-LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-     static HBITMAP      hBitmap ;
-     static HPALETTE     hPalette ;
-     static int          cxClient, cyClient ;
-     static OPENFILENAME ofn ;
-     static PBYTE        pBits ;
-     static TCHAR        szFileName [MAX_PATH], szTitleName [MAX_PATH] ;
-     static TCHAR        szFilter[] = TEXT ("Bitmap Files (*.BMP)\0*.bmp\0")
-                                      TEXT ("All Files (*.*)\0*.*\0\0") ;
-     BITMAP              bitmap ;
-     BITMAPINFO        * pPackedDib ;
-     HDC                 hdc, hdcMem ;
-     PAINTSTRUCT         ps ;
+	static HBITMAP      hBitmap;
+	static HPALETTE     hPalette;
+	static int          cxClient, cyClient;
+	static OPENFILENAME ofn;
+	static PBYTE        pBits;
+	static TCHAR        szFileName[MAX_PATH], szTitleName[MAX_PATH];
+	static TCHAR        szFilter[] = TEXT("Bitmap Files (*.BMP)\0*.bmp\0")
+		TEXT("All Files (*.*)\0*.*\0\0");
+	BITMAP              bitmap;
+	BITMAPINFO* pPackedDib;
+	HDC                 hdc, hdcMem;
+	PAINTSTRUCT         ps;
 
-     switch (message)
-     {
-     case WM_CREATE:
-          ofn.lStructSize       = sizeof (OPENFILENAME) ;
-          ofn.hwndOwner         = hwnd ;
-          ofn.hInstance         = NULL ;
-          ofn.lpstrFilter       = szFilter ;
-          ofn.lpstrCustomFilter = NULL ;
-          ofn.nMaxCustFilter    = 0 ;
-          ofn.nFilterIndex      = 0 ;
-          ofn.lpstrFile         = szFileName ;
-          ofn.nMaxFile          = MAX_PATH ;
-          ofn.lpstrFileTitle    = szTitleName ;
-          ofn.nMaxFileTitle     = MAX_PATH ;
-          ofn.lpstrInitialDir   = NULL ;
-          ofn.lpstrTitle        = NULL ;
-          ofn.Flags             = 0 ;
-          ofn.nFileOffset       = 0 ;
-          ofn.nFileExtension    = 0 ;
-          ofn.lpstrDefExt       = TEXT ("bmp") ;
-          ofn.lCustData         = 0 ;
-          ofn.lpfnHook          = NULL ;
-          ofn.lpTemplateName    = NULL ;
+	switch (message)
+	{
+	case WM_CREATE:
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = hwnd;
+		ofn.hInstance = NULL;
+		ofn.lpstrFilter = szFilter;
+		ofn.lpstrCustomFilter = NULL;
+		ofn.nMaxCustFilter = 0;
+		ofn.nFilterIndex = 0;
+		ofn.lpstrFile = szFileName;
+		ofn.nMaxFile = MAX_PATH;
+		ofn.lpstrFileTitle = szTitleName;
+		ofn.nMaxFileTitle = MAX_PATH;
+		ofn.lpstrInitialDir = NULL;
+		ofn.lpstrTitle = NULL;
+		ofn.Flags = 0;
+		ofn.nFileOffset = 0;
+		ofn.nFileExtension = 0;
+		ofn.lpstrDefExt = TEXT("bmp");
+		ofn.lCustData = 0;
+		ofn.lpfnHook = NULL;
+		ofn.lpTemplateName = NULL;
 
-          return 0 ;
+		return 0;
 
-     case WM_SIZE:
-       cxClient = GET_X_LPARAM(lParam);
-         cyClient = GET_Y_LPARAM(lParam);
-         return 0 ;
+	case WM_SIZE:
+		cxClient = GET_X_LPARAM(lParam);
+		cyClient = GET_Y_LPARAM(lParam);
+		return 0;
 
-     case WM_COMMAND:
-          switch (LOWORD (wParam))
-          {
-          case IDM_FILE_OPEN:
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDM_FILE_OPEN:
 
-                    // Show the File Open dialog box
+			// Show the File Open dialog box
 
-               if (!GetOpenFileName (&ofn))
-                    return 0 ;
-               
-                    // If there's an existing packed DIB, free the memory
+			if (!GetOpenFileName(&ofn))
+				return 0;
 
-               if (hBitmap)
-               {
-                    DeleteObject (hBitmap) ;
-                    hBitmap = NULL ;
-               }
-               
-                    // If there's an existing logical palette, delete it
+			// If there's an existing packed DIB, free the memory
 
-               if (hPalette)
-               {
-                    DeleteObject (hPalette) ;
-                    hPalette = NULL ;
-               }
-               
-                    // Load the packed DIB into memory
+			if (hBitmap)
+			{
+				DeleteObject(hBitmap);
+				hBitmap = NULL;
+			}
 
-               SetCursor (LoadCursor (NULL, IDC_WAIT)) ;
-               ShowCursor (TRUE) ;
+			// If there's an existing logical palette, delete it
 
-               pPackedDib = PackedDibLoad (szFileName) ;
+			if (hPalette)
+			{
+				DeleteObject(hPalette);
+				hPalette = NULL;
+			}
 
-               ShowCursor (FALSE) ;
-               SetCursor (LoadCursor (NULL, IDC_ARROW)) ;
+			// Load the packed DIB into memory
 
-               if (pPackedDib)
-               {
-                         // Create the DIB section from the DIB
+			SetCursor(LoadCursor(NULL, IDC_WAIT));
+			ShowCursor(TRUE);
 
-                    hBitmap = CreateDIBSection (NULL,
-                                             pPackedDib, 
-                                             DIB_RGB_COLORS,
-                                             &pBits, 
-                                             NULL, 0) ;
+			pPackedDib = PackedDibLoad(szFileName);
 
-                         // Copy the bits
+			ShowCursor(FALSE);
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
 
-                    CopyMemory (pBits, PackedDibGetBitsPtr  (pPackedDib),
-                                       PackedDibGetBitsSize (pPackedDib)) ;
+			if (pPackedDib)
+			{
+				// Create the DIB section from the DIB
 
-                         // Create palette from the DIB
+				hBitmap = CreateDIBSection(NULL,
+					pPackedDib,
+					DIB_RGB_COLORS,
+					&pBits,
+					NULL, 0);
 
-                    hPalette = PackedDibCreatePalette (pPackedDib) ;
+				// Copy the bits
 
-                         // Free the packed-DIB memory
+				CopyMemory(pBits, PackedDibGetBitsPtr(pPackedDib),
+					PackedDibGetBitsSize(pPackedDib));
 
-                    free (pPackedDib) ;
-               }
-               else
-               {
-                    MessageBox (hwnd, TEXT ("Cannot load DIB file"), 
-                                szAppName, 0) ;
-               }
-               InvalidateRect (hwnd, NULL, TRUE) ;
-               return 0 ;
-          }
-          break ;
+				// Create palette from the DIB
 
-     case WM_PAINT:
-          hdc = BeginPaint (hwnd, &ps) ;
+				hPalette = PackedDibCreatePalette(pPackedDib);
 
-          if (hPalette)
-          {
-               SelectPalette (hdc, hPalette, FALSE) ;
-               RealizePalette (hdc) ;
-          }
-          if (hBitmap)
-          {
-               GetObject (hBitmap, sizeof (BITMAP), &bitmap) ;
+				// Free the packed-DIB memory
 
-               hdcMem = CreateCompatibleDC (hdc) ;
-               SelectObject (hdcMem, hBitmap) ;
+				free(pPackedDib);
+			}
+			else
+			{
+				MessageBox(hwnd, TEXT("Cannot load DIB file"),
+					szAppName, 0);
+			}
+			InvalidateRect(hwnd, NULL, TRUE);
+			return 0;
+		}
+		break;
 
-               BitBlt (hdc,    0, 0, bitmap.bmWidth, bitmap.bmHeight, 
-                       hdcMem, 0, 0, SRCCOPY) ;
+	case WM_PAINT:
+		hdc = BeginPaint(hwnd, &ps);
 
-               DeleteDC (hdcMem) ;
-          }
-          EndPaint (hwnd, &ps) ;
-          return 0 ;
+		if (hPalette)
+		{
+			SelectPalette(hdc, hPalette, FALSE);
+			RealizePalette(hdc);
+		}
+		if (hBitmap)
+		{
+			GetObject(hBitmap, sizeof(BITMAP), &bitmap);
 
-     case WM_QUERYNEWPALETTE:
-          if (!hPalette)
-               return FALSE ;
+			hdcMem = CreateCompatibleDC(hdc);
+			SelectObject(hdcMem, hBitmap);
 
-          hdc = GetDC (hwnd) ;
-          SelectPalette (hdc, hPalette, FALSE) ;
-          RealizePalette (hdc) ;
-          InvalidateRect (hwnd, NULL, TRUE) ;
+			BitBlt(hdc, 0, 0, bitmap.bmWidth, bitmap.bmHeight,
+				hdcMem, 0, 0, SRCCOPY);
 
-          ReleaseDC (hwnd, hdc) ;
-          return TRUE ;
+			DeleteDC(hdcMem);
+		}
+		EndPaint(hwnd, &ps);
+		return 0;
 
-     case WM_PALETTECHANGED:
-          if (!hPalette || (HWND) wParam == hwnd)
-               break ;
+	case WM_QUERYNEWPALETTE:
+		if (!hPalette)
+			return FALSE;
 
-          hdc = GetDC (hwnd) ;
-          SelectPalette (hdc, hPalette, FALSE) ;
-          RealizePalette (hdc) ;
-          UpdateColors (hdc) ;
+		hdc = GetDC(hwnd);
+		SelectPalette(hdc, hPalette, FALSE);
+		RealizePalette(hdc);
+		InvalidateRect(hwnd, NULL, TRUE);
 
-          ReleaseDC (hwnd, hdc) ;
-          break ;
+		ReleaseDC(hwnd, hdc);
+		return TRUE;
 
-          
-     case WM_DESTROY:
-          if (hBitmap)
-               DeleteObject (hBitmap) ;
+	case WM_PALETTECHANGED:
+		if (!hPalette || (HWND)wParam == hwnd)
+			break;
 
-          if (hPalette)
-               DeleteObject (hPalette) ;
+		hdc = GetDC(hwnd);
+		SelectPalette(hdc, hPalette, FALSE);
+		RealizePalette(hdc);
+		UpdateColors(hdc);
 
-          PostQuitMessage (0) ;
-          return 0 ;
-     }
-     return DefWindowProc (hwnd, message, wParam, lParam) ;
+		ReleaseDC(hwnd, hdc);
+		break;
+
+
+	case WM_DESTROY:
+		if (hBitmap)
+			DeleteObject(hBitmap);
+
+		if (hPalette)
+			DeleteObject(hPalette);
+
+		PostQuitMessage(0);
+		return 0;
+	}
+	return DefWindowProc(hwnd, message, wParam, lParam);
 }
-

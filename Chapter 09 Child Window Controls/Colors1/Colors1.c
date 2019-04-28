@@ -3,6 +3,7 @@
 				(c) Charles Petzold, 1998
   ----------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
@@ -85,7 +86,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		hInstance = GetWindowInstance(hwnd);
 
-		// Create the white-rectangle window against which the 
+		// Create the white-rectangle window against which the
 		// scroll bars will be positioned. The child window ID is 9.
 
 		hwndRect = CreateWindow(TEXT("static"), NULL,
@@ -107,7 +108,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetScrollRange(hwndScroll[i], SB_CTL, 0, 255, FALSE);
 			SetScrollPos(hwndScroll[i], SB_CTL, 0, FALSE);
 
-			// The three color-name labels have IDs 3, 4, and 5, 
+			// The three color-name labels have IDs 3, 4, and 5,
 			// and text strings "Red", "Green", and "Blue".
 
 			hwndLabel[i] = CreateWindow(TEXT("static"), szColorLabel[i],
@@ -116,7 +117,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				hwnd, (HMENU)(i + N),
 				hInstance, NULL);
 
-			// The three color-value text fields have IDs 6, 7, 
+			// The three color-value text fields have IDs 6, 7,
 			// and 8, and initial text strings of "0".
 
 			hwndValue[i] = CreateWindow(TEXT("static"), TEXT("0"),

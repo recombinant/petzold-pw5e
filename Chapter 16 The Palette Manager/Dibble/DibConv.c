@@ -3,6 +3,7 @@
                 (c) Charles Petzold, 1998
   -------------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include "DibHelp.h"
 #include "DibPal.h"
@@ -65,7 +66,7 @@ HDIB DibConvert (HDIB hdibSrc, int iBitCountDst)
           GetObject (hPalette, sizeof (WORD), &wNumEntries) ;
 
           hdibDst = DibCreate (cx, cy, 8, wNumEntries) ;
-          
+
           for (i = 0 ; i < (int) wNumEntries ; i++)
           {
                GetPaletteEntries (hPalette, i, 1, &pe) ;
@@ -84,7 +85,7 @@ HDIB DibConvert (HDIB hdibSrc, int iBitCountDst)
                DibGetPixelColor (hdibSrc, x, y, &rgb) ;
 
                DibSetPixel (hdibDst, x, y,
-                    GetNearestPaletteIndex (hPalette, 
+                    GetNearestPaletteIndex (hPalette,
                          RGB (rgb.rgbRed, rgb.rgbGreen, rgb.rgbBlue))) ;
           }
           DeleteObject (hPalette) ;
@@ -114,7 +115,7 @@ HDIB DibConvert (HDIB hdibSrc, int iBitCountDst)
                DibGetPixelColor (hdibSrc, x, y, &rgb) ;
 
                DibSetPixel (hdibDst, x, y,
-                    GetNearestPaletteIndex (hPalette, 
+                    GetNearestPaletteIndex (hPalette,
                          RGB (rgb.rgbRed, rgb.rgbGreen, rgb.rgbBlue))) ;
           }
           DeleteObject (hPalette) ;
@@ -144,7 +145,7 @@ HDIB DibConvert (HDIB hdibSrc, int iBitCountDst)
                DibGetPixelColor (hdibSrc, x, y, &rgb) ;
 
                DibSetPixel (hdibDst, x, y,
-                    GetNearestPaletteIndex (hPalette, 
+                    GetNearestPaletteIndex (hPalette,
                          RGB (rgb.rgbRed, rgb.rgbGreen, rgb.rgbBlue))) ;
           }
           DeleteObject (hPalette) ;

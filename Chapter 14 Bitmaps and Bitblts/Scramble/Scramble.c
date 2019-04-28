@@ -3,14 +3,19 @@
                  (c) Charles Petzold, 1998
   ------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
 
 #define NUM 300
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
      static int iKeep [NUM][4] ;
      HDC        hdcScr, hdcMem ;
@@ -26,11 +31,11 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
           cx      = GetSystemMetrics (SM_CXSCREEN) / 10 ;
           cy      = GetSystemMetrics (SM_CYSCREEN) / 10 ;
           hBitmap = CreateCompatibleBitmap (hdcScr, cx, cy) ;
-         
+
           SelectObject (hdcMem, hBitmap) ;
 
           srand ((int) GetCurrentTime ()) ;
-          
+
           for (i = 0 ; i < 2   ; i++)
           for (j = 0 ; j < NUM ; j++)
           {
@@ -51,14 +56,14 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
                BitBlt (hdcMem,  0,  0, cx, cy, hdcScr, x1, y1, SRCCOPY) ;
                BitBlt (hdcScr, x1, y1, cx, cy, hdcScr, x2, y2, SRCCOPY) ;
                BitBlt (hdcScr, x2, y2, cx, cy, hdcMem,  0,  0, SRCCOPY) ;
-                    
+
                Sleep (10) ;
           }
-               
+
           DeleteDC (hdcMem) ;
           ReleaseDC (hwnd, hdcScr) ;
           DeleteObject (hBitmap) ;
-             
+
           LockWindowUpdate (NULL) ;
      }
      return FALSE ;

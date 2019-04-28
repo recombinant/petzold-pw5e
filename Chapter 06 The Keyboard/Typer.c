@@ -3,6 +3,7 @@
 			  (c) Charles Petzold, 1998
   --------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
@@ -87,7 +88,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		DeleteObject(SelectObject(hdc, GetStockObject(SYSTEM_FONT)));
 		ReleaseDC(hwnd, hdc);
-		// fall through                
+		// fall through
 	case WM_SIZE:
 		// obtain window size in pixels
 

@@ -3,6 +3,8 @@
                (c) Charles Petzold, 1998
   ------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <windows.h>
 #include "Resource.h"
 
@@ -10,8 +12,11 @@ LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 BOOL    CALLBACK AboutDlgProc (HWND, UINT, WPARAM, LPARAM) ;
 LRESULT CALLBACK EllipPushWndProc (HWND, UINT, WPARAM, LPARAM) ;
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int iCmdShow)
+int WINAPI _tWinMain(
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
      static TCHAR szAppName[] = TEXT ("About3") ;
      MSG          msg ;
@@ -28,14 +33,14 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = szAppName ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
           MessageBox (NULL, TEXT ("This program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
+
      wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
      wndclass.lpfnWndProc   = EllipPushWndProc ;
      wndclass.cbClsExtra    = 0 ;
@@ -48,16 +53,16 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      wndclass.lpszClassName = TEXT ("EllipPush") ;
 
      RegisterClass (&wndclass) ;
-     
+
      hwnd = CreateWindow (szAppName, TEXT ("About Box Demo Program"),
                           WS_OVERLAPPEDWINDOW,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
-     UpdateWindow (hwnd) ; 
-     
+     UpdateWindow (hwnd) ;
+
      while (GetMessage (&msg, NULL, 0, 0))
      {
           TranslateMessage (&msg) ;
@@ -69,13 +74,13 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
      static HINSTANCE hInstance ;
-     
+
      switch (message)
      {
      case WM_CREATE :
           hInstance = ((LPCREATESTRUCT) lParam)->hInstance ;
           return 0 ;
-          
+
      case WM_COMMAND :
           switch (LOWORD (wParam))
           {
@@ -84,7 +89,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                return 0 ;
           }
           break ;
-          
+
      case WM_DESTROY :
           PostQuitMessage (0) ;
           return 0 ;
@@ -92,14 +97,14 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      return DefWindowProc (hwnd, message, wParam, lParam) ;
 }
 
-BOOL CALLBACK AboutDlgProc (HWND hDlg, UINT message, 
+BOOL CALLBACK AboutDlgProc (HWND hDlg, UINT message,
                             WPARAM wParam, LPARAM lParam)
 {
      switch (message)
      {
      case WM_INITDIALOG :
           return TRUE ;
-          
+
      case WM_COMMAND :
           switch (LOWORD (wParam))
           {
@@ -112,7 +117,7 @@ BOOL CALLBACK AboutDlgProc (HWND hDlg, UINT message,
      return FALSE ;
 }
 
-LRESULT CALLBACK EllipPushWndProc (HWND hwnd, UINT message, 
+LRESULT CALLBACK EllipPushWndProc (HWND hwnd, UINT message,
                                    WPARAM wParam, LPARAM lParam)
 {
      TCHAR       szText[40] ;
@@ -120,29 +125,29 @@ LRESULT CALLBACK EllipPushWndProc (HWND hwnd, UINT message,
      HDC         hdc ;
      PAINTSTRUCT ps ;
      RECT        rect ;
-     
+
      switch (message)
      {
      case WM_PAINT :
           GetClientRect (hwnd, &rect) ;
           GetWindowText (hwnd, szText, sizeof (szText)) ;
-          
+
           hdc = BeginPaint (hwnd, &ps) ;
-          
+
           hBrush = CreateSolidBrush (GetSysColor (COLOR_WINDOW)) ;
           hBrush = (HBRUSH) SelectObject (hdc, hBrush) ;
           SetBkColor (hdc, GetSysColor (COLOR_WINDOW)) ;
           SetTextColor (hdc, GetSysColor (COLOR_WINDOWTEXT)) ;
-          
+
           Ellipse (hdc, rect.left, rect.top, rect.right, rect.bottom) ;
           DrawText (hdc, szText, -1, &rect,
                     DT_SINGLELINE | DT_CENTER | DT_VCENTER) ;
-          
+
           DeleteObject (SelectObject (hdc, hBrush)) ;
-          
+
           EndPaint (hwnd, &ps) ;
           return 0 ;
-          
+
      case WM_KEYUP :
           if (wParam != VK_SPACE)
                break ;

@@ -3,6 +3,7 @@
                  (c) Charles Petzold, 1998
   -------------------------------------------------*/
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <tchar.h>
 
@@ -23,7 +24,7 @@ int WINAPI _tWinMain(
      HWND         hwnd ;
      MSG          msg ;
      WNDCLASS     wndclass ;
-     
+
      wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
      wndclass.lpfnWndProc   = WndProc ;
      wndclass.cbClsExtra    = 0 ;
@@ -34,23 +35,23 @@ int WINAPI _tWinMain(
      wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
      wndclass.lpszMenuName  = NULL ;
      wndclass.lpszClassName = szAppName ;
-     
+
      if (!RegisterClass (&wndclass))
      {
-          MessageBox (NULL, TEXT ("Program requires Windows NT!"), 
+          MessageBox (NULL, TEXT ("Program requires Windows NT!"),
                       szAppName, MB_ICONERROR) ;
           return 0 ;
      }
-     
+
      hwnd = CreateWindow (szAppName, TEXT ("Checker1 Mouse Hit-Test Demo"),
                           WS_OVERLAPPEDWINDOW,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
-     
+
      ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
-     
+
      while (GetMessage (&msg, NULL, 0, 0))
      {
           TranslateMessage (&msg) ;
@@ -67,42 +68,42 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      int         x, y ;
      PAINTSTRUCT ps ;
      RECT        rect ;
-     
+
      switch (message)
      {
      case WM_SIZE :
           cxBlock = LOWORD (lParam) / DIVISIONS ;
           cyBlock = HIWORD (lParam) / DIVISIONS ;
           return 0 ;
-          
+
      case WM_LBUTTONDOWN :
           x = LOWORD (lParam) / cxBlock ;
           y = HIWORD (lParam) / cyBlock ;
-          
+
           if (x < DIVISIONS && y < DIVISIONS)
           {
                fState [x][y] ^= 1 ;
-               
+
                rect.left   = x * cxBlock ;
                rect.top    = y * cyBlock ;
                rect.right  = (x + 1) * cxBlock ;
                rect.bottom = (y + 1) * cyBlock ;
-               
+
                InvalidateRect (hwnd, &rect, FALSE) ;
           }
           else
                MessageBeep (0) ;
           return 0 ;
-          
+
      case WM_PAINT :
           hdc = BeginPaint (hwnd, &ps) ;
-          
+
           for (x = 0 ; x < DIVISIONS ; x++)
           for (y = 0 ; y < DIVISIONS ; y++)
           {
                Rectangle (hdc, x * cxBlock, y * cyBlock,
                          (x + 1) * cxBlock, (y + 1) * cyBlock) ;
-                    
+
                if (fState [x][y])
                {
                     MoveToEx (hdc,  x    * cxBlock,  y    * cyBlock, NULL) ;
@@ -113,7 +114,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
           }
           EndPaint (hwnd, &ps) ;
           return 0 ;
-               
+
      case WM_DESTROY :
           PostQuitMessage (0) ;
           return 0 ;
