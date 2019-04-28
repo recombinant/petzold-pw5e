@@ -25,3 +25,5 @@
 *.bmp binary
 *.wav binary
 *.ico binary
+*.emf binary
+
