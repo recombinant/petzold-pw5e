@@ -6,12 +6,13 @@
 *.c text
 *.h text
 *.rc text
+*.dlg text
+*.txt text
 
 # Declare files that will always have CRLF line endings on checkout.
 *.sln text eol=crlf
 *.vcxproj eol=crlf
 *.vcxproj.filters eol=crlf
-
 
 # Declare files that will always have LF line endings on checkout.
 *.md eol=lf
@@ -22,3 +23,5 @@
 *.png binary
 *.jpg binary
 *.bmp binary
+*.wav binary
+*.ico binary
