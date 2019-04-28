@@ -42,3 +42,8 @@ Programming Windows
 *.sdf
 *.opensdf
 *.vcxproj.user
+
+cmake-build-debug/
+cmake-build-release/
+.vs/
+.idea/
