@@ -25,8 +25,8 @@ void ShowError (HWND hwnd, DWORD dwError)
 {
      TCHAR szErrorStr [1024] ;
      
-     mciGetErrorString (dwError, szErrorStr, 
-                        sizeof (szErrorStr) / sizeof (TCHAR)) ;
+     mciGetErrorString (dwError, szErrorStr,
+                        _countof(szErrorStr)) ;
      MessageBeep (MB_ICONEXCLAMATION) ;
      MessageBox (hwnd, szErrorStr, szAppName, MB_OK | MB_ICONEXCLAMATION) ;
 }

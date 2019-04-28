@@ -148,7 +148,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      DestroyMenu (hMenuHello) ;
      DestroyMenu (hMenuRect) ;
      
-     return msg.wParam ;
+     return (int)msg.wParam;  // WM_QUIT
      }
      
 LRESULT CALLBACK FrameWndProc (HWND hwnd, UINT message, 
@@ -436,9 +436,9 @@ LRESULT CALLBACK RectWndProc (HWND hwnd, UINT message,
           if (wParam != SIZE_MINIMIZED)
           {
                pRectData = (PRECTDATA) GetWindowLong (hwnd, 0) ;
-               
-               pRectData->cxClient = LOWORD (lParam) ;
-               pRectData->cyClient = HIWORD (lParam) ;
+
+               pRectData->cxClient = GET_X_LPARAM(lParam) ;
+               pRectData->cyClient = GET_Y_LPARAM(lParam) ;
           }
           
           break ;        // WM_SIZE must be processed by DefMDIChildProc

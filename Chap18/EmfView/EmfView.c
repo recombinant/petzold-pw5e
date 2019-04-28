@@ -43,7 +43,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
                           CW_USEDEFAULT, CW_USEDEFAULT, 
                           NULL, NULL, hInstance, NULL) ;
 
-     ShowWindow (hwnd, iCmdShow) ;
+     ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
 
      hAccel = LoadAccelerators (hInstance, szAppName) ;
@@ -56,7 +56,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
                DispatchMessage (&msg) ;
           }
      }
-     return msg.wParam ;
+     return (int)msg.wParam;  // WM_QUIT
 }
 
 HPALETTE CreatePaletteFromMetaFile (HENHMETAFILE hemf)

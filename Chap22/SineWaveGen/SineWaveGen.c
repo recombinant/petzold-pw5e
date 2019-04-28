@@ -12,7 +12,6 @@
 #define FREQ_MAX         5000
 #define FREQ_INIT         440
 #define OUT_BUFFER_SIZE  4096
-#define PI                  3.14159
 
 BOOL CALLBACK DlgProc (HWND, UINT, WPARAM, LPARAM) ;
 
@@ -38,10 +37,10 @@ VOID FillBuffer (PBYTE pBuffer, int iFreq)
      {
           pBuffer [i] = (BYTE) (127 + 127 * sin (fAngle)) ;
 
-          fAngle += 2 * PI * iFreq / SAMPLE_RATE ;
+          fAngle += 2 * M_PI * iFreq / SAMPLE_RATE ;
 
-          if (fAngle > 2 * PI)
-               fAngle -= 2 * PI ;
+          if (fAngle > 2 * M_PI)
+               fAngle -= 2 * M_PI ;
      }
 }
 

@@ -71,7 +71,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
                    rect.bottom - rect.top, SWP_NOMOVE) ;
 
      ShowWindow (hwndModeless, SW_SHOW) ;     
-     ShowWindow (hwnd, iCmdShow) ;
+     ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
 
           // Normal message loop when a modeless dialog box is used.
@@ -84,7 +84,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
                DispatchMessage (&msg) ;
           }
      }
-     return msg.wParam ;
+     return (int)msg.wParam;  // WM_QUIT
 }
 
 LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)

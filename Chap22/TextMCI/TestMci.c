@@ -65,7 +65,7 @@ BOOL CALLBACK DlgProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                {
                          // Get the line and terminate it; ignore if blank
 
-                    * (WORD *) szCommand = sizeof (szCommand) / sizeof (TCHAR) ;
+                    * (WORD *) szCommand = _countof(szCommand)  ;
 
                     iLength = SendMessage (hwndEdit, EM_GETLINE, iLine, 
                                                      (LPARAM) szCommand) ;
@@ -77,7 +77,7 @@ BOOL CALLBACK DlgProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                          // Send the MCI command
 
                     error = mciSendString (szCommand, szReturn, 
-                              sizeof (szReturn) / sizeof (TCHAR), hwnd) ;
+                              _countof(szReturn) , hwnd) ;
 
                          // Set the Return String field
 
@@ -85,8 +85,8 @@ BOOL CALLBACK DlgProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                          // Set the Error String field (even if no error)
 
-                    mciGetErrorString (error, szError, 
-                                       sizeof (szError) / sizeof (TCHAR)) ;
+                    mciGetErrorString (error, szError,
+                                       _countof(szError) ) ;
 
                     SetDlgItemText (hwnd, IDC_ERROR_STRING, szError) ;
                }

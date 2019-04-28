@@ -11,7 +11,6 @@
 #define ID_TIMER             1
 #define SAMPLE_RATE      22050
 #define MAX_PARTIALS        21
-#define PI             3.14159
 
 BOOL CALLBACK DlgProc (HWND, UINT, WPARAM, LPARAM) ;
 
@@ -25,10 +24,10 @@ double SineGenerator (double dFreq, double * pdAngle)
      double dAmp ;
      
      dAmp = sin (* pdAngle) ;
-     * pdAngle += 2 * PI * dFreq / SAMPLE_RATE ;
+     * pdAngle += 2 * M_PI * dFreq / SAMPLE_RATE ;
      
-     if (* pdAngle >= 2 * PI)
-          * pdAngle -= 2 * PI ;
+     if (* pdAngle >= 2 * M_PI)
+          * pdAngle -= 2 * M_PI ;
      
      return dAmp ;
 }

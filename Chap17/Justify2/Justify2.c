@@ -44,7 +44,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
      
-     ShowWindow (hwnd, iCmdShow) ;
+     ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
      
      while (GetMessage (&msg, NULL, 0, 0))
@@ -52,7 +52,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
           TranslateMessage (&msg) ;
           DispatchMessage (&msg) ;
      }
-     return msg.wParam ;
+     return (int)msg.wParam;  // WM_QUIT
 }
 
 void DrawRuler (HDC hdc, RECT * prc)

@@ -28,8 +28,8 @@ BOOL mciExecute (LPCTSTR szCommand)
 
      if (error = mciSendString (szCommand, NULL, 0, NULL))
      {
-          mciGetErrorString (error, szErrorStr, 
-                             sizeof (szErrorStr) / sizeof (TCHAR)) ;
+          mciGetErrorString (error, szErrorStr,
+                             _countof(szErrorStr) ) ;
           MessageBeep (MB_ICONEXCLAMATION) ;
           MessageBox (NULL, szErrorStr, TEXT ("MCI Error"), 
                       MB_OK | MB_ICONEXCLAMATION) ;

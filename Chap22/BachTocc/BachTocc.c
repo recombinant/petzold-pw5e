@@ -46,7 +46,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
      if (!hwnd)
           return 0 ;
      
-     ShowWindow (hwnd, iCmdShow) ;
+     ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
      
      while (GetMessage (&msg, NULL, 0, 0))
@@ -54,7 +54,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
           TranslateMessage (&msg) ;
           DispatchMessage (&msg) ;
      }
-     return msg.wParam ;
+     return (int)msg.wParam;  // WM_QUIT
 }
 
 DWORD MidiOutMessage (HMIDIOUT hMidi, int iStatus, int iChannel,
@@ -115,7 +115,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                }
                     // Note On messages for new note
                
-               if (iIndex != sizeof (noteseq) / sizeof (noteseq[0]) &&
+               if (iIndex != _countof(noteseq)  &&
                     noteseq[iIndex].iNote[i] != -1)
                {
                     MidiOutMessage (hMidiOut, 0x90,  0,
@@ -123,7 +123,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                }
           }
           
-          if (iIndex != sizeof (noteseq) / sizeof (noteseq[0]))
+          if (iIndex != _countof(noteseq))
           {
                SetTimer (hwnd, ID_TIMER, noteseq[iIndex++].iDur - 1, NULL) ;
           }

@@ -51,7 +51,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
                           CW_USEDEFAULT, CW_USEDEFAULT,
                           NULL, NULL, hInstance, NULL) ;
      
-     ShowWindow (hwnd, iCmdShow) ;
+     ShowWindow (hwnd, nShowCmd) ;
      UpdateWindow (hwnd) ;
      
      while (GetMessage (&msg, NULL, 0, 0))
@@ -59,7 +59,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
           TranslateMessage (&msg) ;
           DispatchMessage (&msg) ;
      }
-     return msg.wParam ;
+     return (int)msg.wParam;  // WM_QUIT
 }
 
 int CheckBottom (HWND hwnd, int cyClient, int cyChar, int iLine)
@@ -118,7 +118,7 @@ LRESULT APIENTRY WndProc1 (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
           return 0 ;
           
      case WM_SIZE:
-          params.cyClient = HIWORD (lParam) ;
+          params.cyClient = GET_Y_LPARAM (lParam) ;
           return 0 ;
           
      case WM_DESTROY:
@@ -183,7 +183,7 @@ LRESULT APIENTRY WndProc2 (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
           return 0 ;
           
      case WM_SIZE:
-          params.cyClient = HIWORD (lParam) ;
+          params.cyClient = GET_Y_LPARAM (lParam) ;
           return 0 ;
           
      case WM_DESTROY:
@@ -242,7 +242,7 @@ LRESULT APIENTRY WndProc3 (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
           return 0 ;
           
      case WM_SIZE:
-          params.cyClient = HIWORD (lParam) ;
+          params.cyClient = GET_Y_LPARAM (lParam) ;
           return 0 ;
           
      case WM_DESTROY:
@@ -297,8 +297,8 @@ LRESULT APIENTRY WndProc4 (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
           return 0 ;
           
      case WM_SIZE:
-          params.cxClient = LOWORD (lParam) ;
-          params.cyClient = HIWORD (lParam) ;
+          params.cxClient = GET_X_LPARAM(lParam);
+          params.cyClient = GET_Y_LPARAM(lParam);
           return 0 ;
           
      case WM_DESTROY:
@@ -352,8 +352,8 @@ LRESULT APIENTRY WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
           return 0 ;
           
      case WM_SIZE:
-          cxClient = LOWORD (lParam) ;
-          cyClient = HIWORD (lParam) ;
+          cxClient = GET_X_LPARAM(lParam);
+          cyClient = GET_Y_LPARAM(lParam);
           
           for (i = 0 ; i < 4 ; i++)
                MoveWindow (hwndChild[i], (i % 2) * cxClient / 2,
