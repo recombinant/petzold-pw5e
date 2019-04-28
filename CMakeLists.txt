@@ -65,6 +65,7 @@ add_executable(006_SysMets3 WIN32
         "Chapter 04 An Exercise in Text Output/01 SysMets1/SysMets.h")
 target_include_directories(006_SysMets3 PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
 
+# ================================================================== Chapter 05
 # -------------------------------------------------------------- 05/01 DevCaps1
 
 add_executable(007_DevCaps1 WIN32
@@ -72,18 +73,58 @@ add_executable(007_DevCaps1 WIN32
 
 # -----------------------------------------------------------------------------
 
-add_executable(008_SineWave WIN32 "Chap05/SineWave/SineWave.c")
-add_executable(009_LineDemo WIN32 "Chap05/LineDemo/LineDemo.c")
-add_executable(010_Bezier WIN32 "Chap05/Bezier/Bezier.c")
-add_executable(011_AltWind WIN32 "Chap05/AltWind/AltWind.c")
-add_executable(012_WhatSize WIN32 "Chap05/WhatSize/WhatSize.c")
-add_executable(013_RandRect WIN32 "Chap05/RandRect/RandRect.c")
-add_executable(014_Clover WIN32 "Chap05/Clover/Clover.c")
+add_executable(008_SineWave WIN32 "Chapter 05 Basic Drawing/SineWave.c")
+add_executable(009_LineDemo WIN32 "Chapter 05 Basic Drawing/LineDemo.c")
+add_executable(010_Bezier WIN32 "Chapter 05 Basic Drawing/Bezier.c")
+add_executable(011_AltWind WIN32 "Chapter 05 Basic Drawing/AltWind.c")
+add_executable(012_WhatSize WIN32 "Chapter 05 Basic Drawing/WhatSize.c")
+add_executable(013_RandRect WIN32 "Chapter 05 Basic Drawing/RandRect.c")
+add_executable(014_Clover WIN32 "Chapter 05 Basic Drawing/Clover.c")
 
-add_executable(015_SysMets4 WIN32 "Chap06/SysMets4/SysMets4.c")
+# ================================================================== Chapter 06
+
+add_executable(015_SysMets4 WIN32 "Chapter 06 The Keyboard/SysMets4.c")
 target_include_directories(015_SysMets4 PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
 
-add_executable(016_KeyView1 WIN32 "Chap06/KeyView1/KeyView1.c")
-add_executable(017_StokFont WIN32 "Chap06/StokFont/StokFont.c")
-add_executable(018_KeyView2 WIN32 "Chap06/KeyView2/KeyView2.c")
-add_executable(019_Typer WIN32 "Chap06/Typer/Typer.c")
+add_executable(016_KeyView1 WIN32 "Chapter 06 The Keyboard/KeyView1.c")
+add_executable(017_StokFont WIN32 "Chapter 06 The Keyboard/StokFont.c")
+add_executable(018_KeyView2 WIN32 "Chapter 06 The Keyboard/KeyView2.c")
+add_executable(019_Typer WIN32 "Chapter 06 The Keyboard/Typer.c")
+
+
+# ================================================================== Chapter 07
+add_executable(BlokOut1 WIN32 "Chapter 07 The Mouse/BlokOut1.c")
+add_executable(BlokOut2 WIN32 "Chapter 07 The Mouse/BlokOut2.c")
+add_executable(Checker1 WIN32 "Chapter 07 The Mouse/Checker1.c")
+add_executable(Checker2 WIN32 "Chapter 07 The Mouse/Checker2.c")
+
+# TODO: SetWindowLongPtr()
+# TODO: add_executable(Checker3 WIN32 "Chapter 07 The Mouse/Checker3.c")
+# TODO: add_executable(Checker4 WIN32 "Chapter 07 The Mouse/Checker4.c")
+
+add_executable(Connect WIN32 "Chapter 07 The Mouse/Connect.c")
+
+add_executable(SysMets WIN32 "Chapter 07 The Mouse/SysMets.c")
+target_include_directories(SysMets PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
+
+add_executable(SysMets5 WIN32 "Chapter 07 The Mouse/SysMets5.c")
+target_include_directories(SysMets5 PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
+
+add_executable(Beeper1 WIN32 "Chapter 08 The Timer/Beeper1.c")
+add_executable(Beeper2 WIN32 "Chapter 08 The Timer/Beeper2.c")
+add_executable(Clock WIN32 "Chapter 08 The Timer/Clock.c")
+add_executable(DigClock WIN32 "Chapter 08 The Timer/DigClock.c")
+add_executable(WhatClr WIN32 "Chapter 08 The Timer/WhatClr.c")
+
+add_executable(BtnLook WIN32 "Chapter 09 Child Window Controls/BtnLook/BtnLook.c")
+
+add_executable(Colors1 WIN32 "Chapter 09 Child Window Controls/Colors1/Colors1.c")
+target_link_libraries(Colors1 Comctl32.lib)
+
+add_executable(Environ WIN32 "Chapter 09 Child Window Controls/Environ/Environ.c")
+
+add_executable(Head WIN32 "Chapter 09 Child Window Controls/Head/Head.c")
+target_link_libraries(Head Comctl32.lib)
+
+add_executable(OwnDraw WIN32 "Chapter 09 Child Window Controls/OwnDraw/OwnDraw.c")
+add_executable(PopPad1 WIN32 "Chapter 09 Child Window Controls/PopPad1/PopPad1.c")
