@@ -1,6 +1,6 @@
 /*-----------------------------------------
    DIGCLOCK.c -- Digital Clock
-                 (c) Charles Petzold, 1998
+				 (c) Charles Petzold, 1998
   -----------------------------------------*/
 
 #define WIN32_LEAN_AND_MEAN
@@ -10,182 +10,182 @@
 
 #define ID_TIMER    1
 
-LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI _tWinMain(
-    _In_ HINSTANCE hInstance,
-    _In_opt_ HINSTANCE hPrevInstance,
-    _In_ PTSTR pCmdLine,
-    _In_ int nShowCmd)
+	_In_     HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_     PTSTR     pCmdLine,
+	_In_     int       nShowCmd)
 {
-  UNREFERENCED_PARAMETER(hPrevInstance);
-  UNREFERENCED_PARAMETER(pCmdLine);
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
 
-     static TCHAR szAppName[] = TEXT ("DigClock") ;
-     HWND         hwnd ;
-     MSG          msg ;
-     WNDCLASS     wndclass ;
+	static TCHAR szAppName[] = TEXT("DigClock");
+	HWND         hwnd;
+	MSG          msg;
+	WNDCLASS     wndclass;
 
-     wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
-     wndclass.lpfnWndProc   = WndProc ;
-     wndclass.cbClsExtra    = 0 ;
-     wndclass.cbWndExtra    = 0 ;
-     wndclass.hInstance     = hInstance ;
-     wndclass.hIcon         = LoadIcon (NULL, IDI_APPLICATION) ;
-     wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-     wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
-     wndclass.lpszMenuName  = NULL ;
-     wndclass.lpszClassName = szAppName ;
+	wndclass.style = CS_HREDRAW | CS_VREDRAW;
+	wndclass.lpfnWndProc = WndProc;
+	wndclass.cbClsExtra = 0;
+	wndclass.cbWndExtra = 0;
+	wndclass.hInstance = hInstance;
+	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wndclass.lpszMenuName = NULL;
+	wndclass.lpszClassName = szAppName;
 
-     if (!RegisterClass (&wndclass))
-     {
-          MessageBox (NULL, TEXT ("Program requires Windows NT!"),
-                      szAppName, MB_ICONERROR) ;
-          return 0 ;
-     }
+	if (!RegisterClass(&wndclass))
+	{
+		MessageBox(NULL, TEXT("Program requires Windows NT!"),
+			szAppName, MB_ICONERROR);
+		return 0;
+	}
 
-     hwnd = CreateWindow (szAppName, TEXT ("Digital Clock"),
-                          WS_OVERLAPPEDWINDOW,
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          NULL, NULL, hInstance, NULL) ;
+	hwnd = CreateWindow(szAppName, TEXT("Digital Clock"),
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		NULL, NULL, hInstance, NULL);
 
-     ShowWindow (hwnd, nShowCmd) ;
-     UpdateWindow (hwnd) ;
+	ShowWindow(hwnd, nShowCmd);
+	UpdateWindow(hwnd);
 
-     while (GetMessage (&msg, NULL, 0, 0))
-          {
-          TranslateMessage (&msg) ;
-          DispatchMessage (&msg) ;
-          }
-     return (int)msg.wParam;  // WM_QUIT
-     }
-
-void DisplayDigit (HDC hdc, int iNumber)
-{
-     static BOOL  fSevenSegment [10][7] = {
-                         {1, 1, 1, 0, 1, 1, 1},     // 0
-                         {0, 0, 1, 0, 0, 1, 0},     // 1
-                         {1, 0, 1, 1, 1, 0, 1},     // 2
-                         {1, 0, 1, 1, 0, 1, 1},     // 3
-                         {0, 1, 1, 1, 0, 1, 0},     // 4
-                         {1, 1, 0, 1, 0, 1, 1},     // 5
-                         {1, 1, 0, 1, 1, 1, 1},     // 6
-                         {1, 0, 1, 0, 0, 1, 0},     // 7
-                         {1, 1, 1, 1, 1, 1, 1},     // 8
-                         {1, 1, 1, 1, 0, 1, 1} } ;  // 9
-     static POINT ptSegment [7][6] = {
-         {{   7,  6},  {11,  2},  {31,  2},  {35,  6},  {31, 10},  {11, 10}},
-         {{   6,  7},  {10, 11},  {10, 31},   {6, 35},   {2, 31},   {2, 11}},
-         {{  36,  7},  {40, 11},  {40, 31},  {36, 35},  {32, 31},  {32, 11}},
-         {{   7, 36},  {11, 32},  {31, 32},  {35, 36},  {31, 40},  {11, 40}},
-         {{   6, 37},  {10, 41},  {10, 61},   {6, 65},   {2, 61},   {2, 41}},
-         {{  36, 37},  {40, 41},  {40, 61},  {36, 65},  {32, 61},  {32, 41}},
-         {{   7, 66},  {11, 62},  {31, 62},  {35, 66},  {31, 70},  {11, 70 } }};
-     int          iSeg ;
-
-     for (iSeg = 0 ; iSeg < 7 ; iSeg++)
-          if (fSevenSegment [iNumber][iSeg])
-               Polygon (hdc, ptSegment [iSeg], 6) ;
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	return (int)msg.wParam;  // WM_QUIT
 }
 
-void DisplayTwoDigits (HDC hdc, int iNumber, BOOL fSuppress)
+void DisplayDigit(HDC hdc, int iNumber)
 {
-     if (!fSuppress || (iNumber / 10 != 0))
-          DisplayDigit (hdc, iNumber / 10) ;
+	static BOOL  fSevenSegment[10][7] = {
+						{1, 1, 1, 0, 1, 1, 1},     // 0
+						{0, 0, 1, 0, 0, 1, 0},     // 1
+						{1, 0, 1, 1, 1, 0, 1},     // 2
+						{1, 0, 1, 1, 0, 1, 1},     // 3
+						{0, 1, 1, 1, 0, 1, 0},     // 4
+						{1, 1, 0, 1, 0, 1, 1},     // 5
+						{1, 1, 0, 1, 1, 1, 1},     // 6
+						{1, 0, 1, 0, 0, 1, 0},     // 7
+						{1, 1, 1, 1, 1, 1, 1},     // 8
+						{1, 1, 1, 1, 0, 1, 1} };  // 9
+	static POINT ptSegment[7][6] = {
+		{{   7,  6},  {11,  2},  {31,  2},  {35,  6},  {31, 10},  {11, 10}},
+		{{   6,  7},  {10, 11},  {10, 31},   {6, 35},   {2, 31},   {2, 11}},
+		{{  36,  7},  {40, 11},  {40, 31},  {36, 35},  {32, 31},  {32, 11}},
+		{{   7, 36},  {11, 32},  {31, 32},  {35, 36},  {31, 40},  {11, 40}},
+		{{   6, 37},  {10, 41},  {10, 61},   {6, 65},   {2, 61},   {2, 41}},
+		{{  36, 37},  {40, 41},  {40, 61},  {36, 65},  {32, 61},  {32, 41}},
+		{{   7, 66},  {11, 62},  {31, 62},  {35, 66},  {31, 70},  {11, 70 } } };
+	int          iSeg;
 
-     OffsetWindowOrgEx (hdc, -42, 0, NULL) ;
-     DisplayDigit (hdc, iNumber % 10) ;
-     OffsetWindowOrgEx (hdc, -42, 0, NULL) ;
+	for (iSeg = 0; iSeg < 7; iSeg++)
+		if (fSevenSegment[iNumber][iSeg])
+			Polygon(hdc, ptSegment[iSeg], 6);
 }
 
-void DisplayColon (HDC hdc)
+void DisplayTwoDigits(HDC hdc, int iNumber, BOOL fSuppress)
 {
-     POINT ptColon [2][4] = {{ {2,  21},  {6,  17},  {10, 21},  {6, 25},},
-                             {  {2,  51},  {6,  47},  {10, 51},  {6, 55 }}} ;
+	if (!fSuppress || (iNumber / 10 != 0))
+		DisplayDigit(hdc, iNumber / 10);
 
-     Polygon (hdc, ptColon [0], 4) ;
-     Polygon (hdc, ptColon [1], 4) ;
-
-     OffsetWindowOrgEx (hdc, -12, 0, NULL) ;
+	OffsetWindowOrgEx(hdc, -42, 0, NULL);
+	DisplayDigit(hdc, iNumber % 10);
+	OffsetWindowOrgEx(hdc, -42, 0, NULL);
 }
 
-void DisplayTime (HDC hdc, BOOL f24Hour, BOOL fSuppress)
+void DisplayColon(HDC hdc)
 {
-     SYSTEMTIME st ;
+	POINT ptColon[2][4] = { { {2,  21},  {6,  17},  {10, 21},  {6, 25},},
+							{  {2,  51},  {6,  47},  {10, 51},  {6, 55 }} };
 
-     GetLocalTime (&st) ;
+	Polygon(hdc, ptColon[0], 4);
+	Polygon(hdc, ptColon[1], 4);
 
-     if (f24Hour)
-          DisplayTwoDigits (hdc, st.wHour, fSuppress) ;
-     else
-          DisplayTwoDigits (hdc, (st.wHour %= 12) ? st.wHour : 12, fSuppress) ;
-
-     DisplayColon (hdc) ;
-     DisplayTwoDigits (hdc, st.wMinute, FALSE) ;
-     DisplayColon (hdc) ;
-     DisplayTwoDigits (hdc, st.wSecond, FALSE) ;
+	OffsetWindowOrgEx(hdc, -12, 0, NULL);
 }
 
-LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+void DisplayTime(HDC hdc, BOOL f24Hour, BOOL fSuppress)
 {
-     static BOOL   f24Hour, fSuppress ;
-     static HBRUSH hBrushRed ;
-     static int    cxClient, cyClient ;
-     HDC           hdc ;
-     PAINTSTRUCT   ps ;
-     TCHAR         szBuffer [2] ;
+	SYSTEMTIME st;
 
-     switch (message)
-     {
-     case WM_CREATE:
-          hBrushRed = CreateSolidBrush (RGB (255, 0, 0)) ;
-          SetTimer (hwnd, ID_TIMER, 1000, NULL) ;
+	GetLocalTime(&st);
 
-                                                  // fall through
+	if (f24Hour)
+		DisplayTwoDigits(hdc, st.wHour, fSuppress);
+	else
+		DisplayTwoDigits(hdc, (st.wHour %= 12) ? st.wHour : 12, fSuppress);
 
-     case WM_SETTINGCHANGE:
-          GetLocaleInfo (LOCALE_USER_DEFAULT, LOCALE_ITIME, szBuffer, 2) ;
-          f24Hour = (szBuffer[0] == '1') ;
+	DisplayColon(hdc);
+	DisplayTwoDigits(hdc, st.wMinute, FALSE);
+	DisplayColon(hdc);
+	DisplayTwoDigits(hdc, st.wSecond, FALSE);
+}
 
-          GetLocaleInfo (LOCALE_USER_DEFAULT, LOCALE_ITLZERO, szBuffer, 2) ;
-          fSuppress = (szBuffer[0] == '0') ;
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	static BOOL   f24Hour, fSuppress;
+	static HBRUSH hBrushRed;
+	static int    cxClient, cyClient;
+	HDC           hdc;
+	PAINTSTRUCT   ps;
+	TCHAR         szBuffer[2];
 
-          InvalidateRect (hwnd, NULL, TRUE) ;
-          return 0 ;
+	switch (message)
+	{
+	case WM_CREATE:
+		hBrushRed = CreateSolidBrush(RGB(255, 0, 0));
+		SetTimer(hwnd, ID_TIMER, 1000, NULL);
 
-     case WM_SIZE:
-       cxClient = GET_X_LPARAM(lParam);
-         cyClient = GET_Y_LPARAM(lParam);
-          return 0 ;
+		// fall through
 
-     case WM_TIMER:
-          InvalidateRect (hwnd, NULL, TRUE) ;
-          return 0 ;
+	case WM_SETTINGCHANGE:
+		GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_ITIME, szBuffer, 2);
+		f24Hour = (szBuffer[0] == '1');
 
-     case WM_PAINT:
-          hdc = BeginPaint (hwnd, &ps) ;
+		GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_ITLZERO, szBuffer, 2);
+		fSuppress = (szBuffer[0] == '0');
 
-          SetMapMode (hdc, MM_ISOTROPIC) ;
-          SetWindowExtEx (hdc, 276, 72, NULL) ;
-          SetViewportExtEx (hdc, cxClient, cyClient, NULL) ;
+		InvalidateRect(hwnd, NULL, TRUE);
+		return 0;
 
-          SetWindowOrgEx (hdc, 138, 36, NULL) ;
-          SetViewportOrgEx (hdc, cxClient / 2, cyClient / 2, NULL) ;
+	case WM_SIZE:
+		cxClient = GET_X_LPARAM(lParam);
+		cyClient = GET_Y_LPARAM(lParam);
+		return 0;
 
-          SelectObject (hdc, GetStockObject (NULL_PEN)) ;
-          SelectObject (hdc, hBrushRed) ;
+	case WM_TIMER:
+		InvalidateRect(hwnd, NULL, TRUE);
+		return 0;
 
-          DisplayTime (hdc, f24Hour, fSuppress) ;
+	case WM_PAINT:
+		hdc = BeginPaint(hwnd, &ps);
 
-          EndPaint (hwnd, &ps) ;
-          return 0 ;
+		SetMapMode(hdc, MM_ISOTROPIC);
+		SetWindowExtEx(hdc, 276, 72, NULL);
+		SetViewportExtEx(hdc, cxClient, cyClient, NULL);
 
-     case WM_DESTROY:
-          KillTimer (hwnd, ID_TIMER) ;
-          DeleteObject (hBrushRed) ;
-          PostQuitMessage (0) ;
-          return 0 ;
-     }
-     return DefWindowProc (hwnd, message, wParam, lParam) ;
+		SetWindowOrgEx(hdc, 138, 36, NULL);
+		SetViewportOrgEx(hdc, cxClient / 2, cyClient / 2, NULL);
+
+		SelectObject(hdc, GetStockObject(NULL_PEN));
+		SelectObject(hdc, hBrushRed);
+
+		DisplayTime(hdc, f24Hour, fSuppress);
+
+		EndPaint(hwnd, &ps);
+		return 0;
+
+	case WM_DESTROY:
+		KillTimer(hwnd, ID_TIMER);
+		DeleteObject(hBrushRed);
+		PostQuitMessage(0);
+		return 0;
+	}
+	return DefWindowProc(hwnd, message, wParam, lParam);
 }
