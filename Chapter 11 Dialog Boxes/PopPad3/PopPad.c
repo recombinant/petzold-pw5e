@@ -445,7 +445,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-  UNREFERENCED_PARAMETER(lParam);
+	UNREFERENCED_PARAMETER(lParam);
 
 	switch (message)
 	{
