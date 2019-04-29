@@ -9,7 +9,7 @@
 #include <tchar.h>
 #include "SysMets.h"
 
-LRESULT CALLBACK WndProc(_In_ HWND, _In_ UINT, _In_ WPARAM, _In_ LPARAM);
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 int WINAPI _tWinMain(
 	_In_     HINSTANCE hInstance,

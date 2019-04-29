@@ -39,7 +39,7 @@ devcaps[] =
 	{COLORRES,      TEXT("COLORRES"),     TEXT("Actual color resolution:"})
 };
 
-LRESULT CALLBACK WndProc(_In_ HWND, _In_ UINT, _In_ WPARAM, _In_ LPARAM);
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 int WINAPI _tWinMain(
 	_In_     HINSTANCE hInstance,
@@ -90,7 +90,7 @@ int WINAPI _tWinMain(
 	return (int)msg.wParam;  // WM_QUIT
 }
 
-LRESULT CALLBACK WndProc(_In_ HWND hwnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static int  cxChar, cxCaps, cyChar;
 	TCHAR       szBuffer[10];
