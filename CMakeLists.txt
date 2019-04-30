@@ -66,20 +66,15 @@ add_executable(006_SysMets3 WIN32
 target_include_directories(006_SysMets3 PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
 
 # ================================================================== Chapter 05
-# -------------------------------------------------------------- 05/01 DevCaps1
 
-add_executable(007_DevCaps1 WIN32
-        "Chapter 05 Basic Drawing/01 DevCaps1/DevCaps1.c")
-
-# -----------------------------------------------------------------------------
-
-add_executable(008_SineWave WIN32 "Chapter 05 Basic Drawing/SineWave.c")
-add_executable(009_LineDemo WIN32 "Chapter 05 Basic Drawing/LineDemo.c")
-add_executable(010_Bezier WIN32 "Chapter 05 Basic Drawing/Bezier.c")
-add_executable(011_AltWind WIN32 "Chapter 05 Basic Drawing/AltWind.c")
-add_executable(012_WhatSize WIN32 "Chapter 05 Basic Drawing/WhatSize.c")
-add_executable(013_RandRect WIN32 "Chapter 05 Basic Drawing/RandRect.c")
-add_executable(014_Clover WIN32 "Chapter 05 Basic Drawing/Clover.c")
+add_executable(007_DevCaps1 WIN32 "Chapter 05 Basic Drawing/01 DevCaps1/DevCaps1.c")
+add_executable(008_SineWave WIN32 "Chapter 05 Basic Drawing/02 SineWave/SineWave.c")
+add_executable(009_LineDemo WIN32 "Chapter 05 Basic Drawing/03 LineDemo/LineDemo.c")
+add_executable(010_Bezier   WIN32 "Chapter 05 Basic Drawing/04 Bezier/Bezier.c")
+add_executable(011_AltWind  WIN32 "Chapter 05 Basic Drawing/05 AltWind/AltWind.c")
+add_executable(012_WhatSize WIN32 "Chapter 05 Basic Drawing/06 WhatSize/WhatSize.c")
+add_executable(013_RandRect WIN32 "Chapter 05 Basic Drawing/07 RandRect/RandRect.c")
+add_executable(014_Clover   WIN32 "Chapter 05 Basic Drawing/08 Clover/Clover.c")
 
 # ================================================================== Chapter 06
 
