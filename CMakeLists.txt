@@ -47,7 +47,7 @@ add_dependencies(003_HelloWin custom_target_003)
 add_executable(004_SysMets1 WIN32
         "Chapter 04 An Exercise in Text Output/01 SysMets1/SysMets1.c"
         "Chapter 04 An Exercise in Text Output/01 SysMets1/SysMets.h")
-target_include_directories(004_SysMets1 PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
+target_include_directories(004_SysMets1 PRIVATE "Chapter 04 An Exercise in Text Output/01 SysMets1")
 
 # -------------------------------------------------------------- 04/02 SysMets2
 #                                                uses header file from SysMets1
@@ -55,7 +55,7 @@ target_include_directories(004_SysMets1 PUBLIC "Chapter 04 An Exercise in Text O
 add_executable(005_SysMets2 WIN32
         "Chapter 04 An Exercise in Text Output/02 SysMets2/SysMets2.c"
         "Chapter 04 An Exercise in Text Output/01 SysMets1/SysMets.h")
-target_include_directories(005_SysMets2 PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
+target_include_directories(005_SysMets2 PRIVATE "Chapter 04 An Exercise in Text Output/01 SysMets1")
 
 # -------------------------------------------------------------- 04/03 SysMets3
 #                                                uses header file from SysMets1
@@ -63,7 +63,7 @@ target_include_directories(005_SysMets2 PUBLIC "Chapter 04 An Exercise in Text O
 add_executable(006_SysMets3 WIN32
         "Chapter 04 An Exercise in Text Output/03 SysMets3/SysMets3.c"
         "Chapter 04 An Exercise in Text Output/01 SysMets1/SysMets.h")
-target_include_directories(006_SysMets3 PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
+target_include_directories(006_SysMets3 PRIVATE "Chapter 04 An Exercise in Text Output/01 SysMets1")
 
 # ================================================================== Chapter 05
 
@@ -80,7 +80,7 @@ add_executable(014_Clover WIN32 "Chapter 05 Basic Drawing/08 Clover/Clover.c")
 
 add_executable(015_SysMets4 WIN32 "Chapter 06 The Keyboard/01 SysMets4/SysMets4.c"
         "Chapter 04 An Exercise in Text Output/01 SysMets1/SysMets.h")
-target_include_directories(015_SysMets4 PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
+target_include_directories(015_SysMets4 PRIVATE "Chapter 04 An Exercise in Text Output/01 SysMets1")
 
 add_executable(016_KeyView1 WIN32 "Chapter 06 The Keyboard/02 KeyView1/KeyView1.c")
 add_executable(017_StokFont WIN32 "Chapter 06 The Keyboard/03 StokFont/StokFont.c")
@@ -99,7 +99,7 @@ add_executable(026_BlokOut2 WIN32 "Chapter 07 The Mouse/07 BlockOut2/BlokOut2.c"
 
 add_executable(027_SysMets WIN32 "Chapter 07 The Mouse/08 SysMets/SysMets.c"
         "Chapter 04 An Exercise in Text Output/01 SysMets1/SysMets.h")
-target_include_directories(027_SysMets PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
+target_include_directories(027_SysMets PRIVATE "Chapter 04 An Exercise in Text Output/01 SysMets1")
 
 # ================================================================== Chapter 08
 
@@ -186,7 +186,7 @@ add_executable(Stretch WIN32 "Chapter 14 Bitmaps and Bitblts/Stretch/Stretch.c")
 
 add_executable(Apollo11 WIN32 "Chapter 15 The Device Independent Bitmap/Apollo11/Apollo11.c"
         "Chapter 15 The Device Independent Bitmap/ShowDib1/DibFile.c")
-target_include_directories(Apollo11 PUBLIC "Chapter 15 The Device Independent Bitmap/ShowDib1")
+target_include_directories(Apollo11 PRIVATE "Chapter 15 The Device Independent Bitmap/ShowDib1")
 
 add_executable(DibConv WIN32 "Chapter 15 The Device Independent Bitmap/DibConv/DibConv.c")
 add_executable(DibHeads WIN32 "Chapter 15 The Device Independent Bitmap/DibHeads/DibHeads.c")
@@ -198,7 +198,7 @@ add_executable(ShowDib1 WIN32 "Chapter 15 The Device Independent Bitmap/ShowDib1
 
 add_executable(ShowDib2 WIN32 "Chapter 15 The Device Independent Bitmap/ShowDib2/Showdib2.c"
         "Chapter 15 The Device Independent Bitmap/ShowDib1/DibFile.c")
-target_include_directories(ShowDib2 PUBLIC "Chapter 15 The Device Independent Bitmap/ShowDib1")
+target_include_directories(ShowDib2 PRIVATE "Chapter 15 The Device Independent Bitmap/ShowDib1")
 
 # TODO: "Chapter 16 The Palette Manager/AllColor/AllColor.c"
 add_executable(Bounce2 WIN32 "Chapter 16 The Palette Manager/Bounce2/Bounce2.c"
@@ -218,23 +218,23 @@ add_executable(ShowDib3 WIN32 "Chapter 16 The Palette Manager/ShowDib3/ShowDib3.
 
 add_executable(ShowDib4 WIN32 "Chapter 16 The Palette Manager/ShowDib4/ShowDib4.c"
         "Chapter 16 The Palette Manager/ShowDib3/PackeDib.c")
-target_include_directories(ShowDib4 PUBLIC "Chapter 16 The Palette Manager/ShowDib3")
+target_include_directories(ShowDib4 PRIVATE "Chapter 16 The Palette Manager/ShowDib3")
 
 add_executable(ShowDib5 WIN32 "Chapter 16 The Palette Manager/ShowDib5/ShowDib5.c"
         "Chapter 16 The Palette Manager/ShowDib3/PackeDib.c")
-target_include_directories(ShowDib5 PUBLIC "Chapter 16 The Palette Manager/ShowDib3")
+target_include_directories(ShowDib5 PRIVATE "Chapter 16 The Palette Manager/ShowDib3")
 
 add_executable(ShowDib6 WIN32 "Chapter 16 The Palette Manager/ShowDib6/ShowDib6.c"
         "Chapter 16 The Palette Manager/ShowDib3/PackeDib.c")
-target_include_directories(ShowDib6 PUBLIC "Chapter 16 The Palette Manager/ShowDib3")
+target_include_directories(ShowDib6 PRIVATE "Chapter 16 The Palette Manager/ShowDib3")
 
 add_executable(ShowDib7 WIN32 "Chapter 16 The Palette Manager/ShowDib7/ShowDib7.c"
         "Chapter 16 The Palette Manager/ShowDib3/PackeDib.c")
-target_include_directories(ShowDib7 PUBLIC "Chapter 16 The Palette Manager/ShowDib3")
+target_include_directories(ShowDib7 PRIVATE "Chapter 16 The Palette Manager/ShowDib3")
 
 add_executable(ShowDib8 WIN32 "Chapter 16 The Palette Manager/ShowDib8/ShowDib8.c"
         "Chapter 16 The Palette Manager/ShowDib3/PackeDib.c")
-target_include_directories(ShowDib8 PUBLIC "Chapter 16 The Palette Manager/ShowDib3")
+target_include_directories(ShowDib8 PRIVATE "Chapter 16 The Palette Manager/ShowDib3")
 
 add_executable(SysPal1 WIN32 "Chapter 16 The Palette Manager/SysPal1/SysPal1.c")
 add_executable(SysPal2 WIN32 "Chapter 16 The Palette Manager/SysPal2/SysPal2.c")
@@ -252,25 +252,25 @@ add_executable(FontClip WIN32 "Chapter 17 Text and Fonts/FontClip/FontClip.c"
         "Chapter 17 Text and Fonts/EZTest/FontDemo.c"
         "Chapter 17 Text and Fonts/EZTest/EZFont.c"
         "Chapter 17 Text and Fonts/EZTest/EZFont.h")
-target_include_directories(FontClip PUBLIC "Chapter 17 Text and Fonts/EZTest")
+target_include_directories(FontClip PRIVATE "Chapter 17 Text and Fonts/EZTest")
 
 add_executable(FontFill WIN32 "Chapter 17 Text and Fonts/FontFill/FontFill.c"
         "Chapter 17 Text and Fonts/EZTest/FontDemo.c"
         "Chapter 17 Text and Fonts/EZTest/EZFont.c"
         "Chapter 17 Text and Fonts/EZTest/EZFont.h")
-target_include_directories(FontFill PUBLIC "Chapter 17 Text and Fonts/EZTest")
+target_include_directories(FontFill PRIVATE "Chapter 17 Text and Fonts/EZTest")
 
 add_executable(FontOut1 WIN32 "Chapter 17 Text and Fonts/FontOut1/FontOut1.c"
         "Chapter 17 Text and Fonts/EZTest/FontDemo.c"
         "Chapter 17 Text and Fonts/EZTest/EZFont.c"
         "Chapter 17 Text and Fonts/EZTest/EZFont.h")
-target_include_directories(FontOut1 PUBLIC "Chapter 17 Text and Fonts/EZTest")
+target_include_directories(FontOut1 PRIVATE "Chapter 17 Text and Fonts/EZTest")
 
 add_executable(FontOut2 WIN32 "Chapter 17 Text and Fonts/FontOut2/FontOut2.c"
         "Chapter 17 Text and Fonts/EZTest/FontDemo.c"
         "Chapter 17 Text and Fonts/EZTest/EZFont.c"
         "Chapter 17 Text and Fonts/EZTest/EZFont.h")
-target_include_directories(FontOut2 PUBLIC "Chapter 17 Text and Fonts/EZTest")
+target_include_directories(FontOut2 PRIVATE "Chapter 17 Text and Fonts/EZTest")
 
 add_executable(FontRot WIN32 "Chapter 17 Text and Fonts/FontRot/FontRot.c"
         "Chapter 17 Text and Fonts/EZTest/FontDemo.c"
@@ -291,27 +291,27 @@ add_executable(Emf07 WIN32 "Chapter 18 Metafiles/Emf07/Emf07.c")
 
 add_executable(Emf08 WIN32 "Chapter 18 Metafiles/Emf08/Emf08.c"
         "Chapter 18 Metafiles/Emf08/Emf.c")
-target_include_directories(Emf08 PUBLIC "Chapter 18 Metafiles/Emf08")
+target_include_directories(Emf08 PRIVATE "Chapter 18 Metafiles/Emf08")
 
 add_executable(Emf09 WIN32 "Chapter 18 Metafiles/Emf09/Emf09.c"
         "Chapter 18 Metafiles/Emf08/Emf.c")
-target_include_directories(Emf09 PUBLIC "Chapter 18 Metafiles/Emf08")
+target_include_directories(Emf09 PRIVATE "Chapter 18 Metafiles/Emf08")
 
 add_executable(Emf10 WIN32 "Chapter 18 Metafiles/Emf10/Emf10.c"
         "Chapter 18 Metafiles/Emf08/Emf.c")
-target_include_directories(Emf10 PUBLIC "Chapter 18 Metafiles/Emf08")
+target_include_directories(Emf10 PRIVATE "Chapter 18 Metafiles/Emf08")
 
 add_executable(Emf11 WIN32 "Chapter 18 Metafiles/Emf11/Emf11.c"
         "Chapter 18 Metafiles/Emf08/Emf.c")
-target_include_directories(Emf11 PUBLIC "Chapter 18 Metafiles/Emf08")
+target_include_directories(Emf11 PRIVATE "Chapter 18 Metafiles/Emf08")
 
 add_executable(Emf12 WIN32 "Chapter 18 Metafiles/Emf12/Emf12.c"
         "Chapter 18 Metafiles/Emf08/Emf.c")
-target_include_directories(Emf12 PUBLIC "Chapter 18 Metafiles/Emf08")
+target_include_directories(Emf12 PRIVATE "Chapter 18 Metafiles/Emf08")
 
 add_executable(Emf13 WIN32 "Chapter 18 Metafiles/Emf13/Emf13.c"
         "Chapter 18 Metafiles/Emf08/Emf.c")
-target_include_directories(Emf13 PUBLIC "Chapter 18 Metafiles/Emf08")
+target_include_directories(Emf13 PRIVATE "Chapter 18 Metafiles/Emf08")
 
 add_executable(EmfView WIN32 "Chapter 18 Metafiles/EmfView/EmfView.c")
 add_executable(Metafile WIN32 "Chapter 18 Metafiles/MetaFile/Metafile.c")
@@ -350,11 +350,11 @@ add_executable(Record1 WIN32 "Chapter 22 Sound and Music/Record1/Record1.c")
 target_link_libraries(Record1 winmm.lib)
 
 add_executable(Record2 WIN32 "Chapter 22 Sound and Music/Record2/Record2.c")
-target_include_directories(Record2 PUBLIC "Chapter 22 Sound and Music/Record1/")
+target_include_directories(Record2 PRIVATE "Chapter 22 Sound and Music/Record1/")
 target_link_libraries(Record2 winmm.lib)
 
 add_executable(Record3 WIN32 "Chapter 22 Sound and Music/Record3/Record3.c")
-target_include_directories(Record3 PUBLIC "Chapter 22 Sound and Music/Record1/")
+target_include_directories(Record3 PRIVATE "Chapter 22 Sound and Music/Record1/")
 target_link_libraries(Record3 winmm.lib)
 
 add_executable(SineWaveGen WIN32 "Chapter 22 Sound and Music/SineWaveGen/SineWaveGen.c")
