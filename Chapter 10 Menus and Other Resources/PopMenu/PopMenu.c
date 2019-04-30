@@ -6,6 +6,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <tchar.h>
 #include <windows.h>
+#include <windowsx.h>
 #include "Resource.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -70,6 +71,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 								 DKGRAY_BRUSH, BLACK_BRUSH };
 	static int   iSelection = IDM_BKGND_WHITE;
 	POINT        point;
+	int          id;
 
 	switch (message)
 	{
@@ -88,7 +90,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_COMMAND:
-		switch (LOWORD(wParam))
+		id = GET_WM_COMMAND_ID(wParam, lParam);
+		switch (id)
 		{
 		case IDM_FILE_NEW:
 		case IDM_FILE_OPEN:
@@ -109,12 +112,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case IDM_BKGND_BLACK:         //   the order shown here.
 
 			CheckMenuItem(hMenu, iSelection, MF_UNCHECKED);
-			iSelection = LOWORD(wParam);
+			iSelection = id;
 			CheckMenuItem(hMenu, iSelection, MF_CHECKED);
 
-			SetClassLong(hwnd, GCL_HBRBACKGROUND, (LONG)
-				GetStockObject
-				(idColor[LOWORD(wParam) - IDM_BKGND_WHITE]));
+			SetClassLongPtr(hwnd,
+				GCLP_HBRBACKGROUND,
+				(LONG_PTR)GetStockObject(idColor[id - IDM_BKGND_WHITE]));
 
 			InvalidateRect(hwnd, NULL, TRUE);
 			return 0;

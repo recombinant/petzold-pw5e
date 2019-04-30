@@ -53,7 +53,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL    CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 VOID             FtpThread(PVOID);
 VOID             ButtonSwitch(HWND, HWND, TCHAR*);
-FILELIST*        GetFileList(VOID);
+FILELIST* GetFileList(VOID);
 int              Compare(const FILEINFO*, const FILEINFO*);
 
 // A couple globals
@@ -424,7 +424,7 @@ VOID ButtonSwitch(HWND hwndStatus, HWND hwndButton, TCHAR * szText)
 		SetWindowText(hwndStatus, TEXT("Internet Session Cancelled"));
 
 	SetWindowText(hwndButton, TEXT("OK"));
-	SetWindowLong(hwndButton, GWL_ID, IDOK);
+	SetWindowLongPtr(hwndButton, GWLP_ID, IDOK);
 }
 
 /*-----------------------------------------------------------------------

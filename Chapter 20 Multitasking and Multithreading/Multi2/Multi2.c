@@ -330,7 +330,7 @@ LRESULT APIENTRY WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_CREATE:
-		hInstance = (HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE);
+		hInstance = (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
 
 		wndclass.style = CS_HREDRAW | CS_VREDRAW;
 		wndclass.cbClsExtra = 0;

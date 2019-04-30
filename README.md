@@ -18,12 +18,6 @@ This projects is being tweaked to use CMake. This works with both
 - Microsoft Visual Studio 2019 
 - JetBrains CLion with MinGW
 
-Samples that require `Get/GetWindowLong()` do not work yet. These need to
- be refactored to use `Get/GetWindowLongPtr().`
- 
-Samples that require resources (anything in a `.rc` file) do not work yet.
- The resource files need to be added to `CMakeLists.txt`
-
 
 Updating C source code
 ----------------------

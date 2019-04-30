@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 project(petzold_pw5e C)
-
+#
+# NOTE:
+# Microsft Visual Studio requires MFC to be installed to compile .rc resources.
+#
+#
 set(CMAKE_C_STANDARD 11)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSTRICT -DCMAKE_GENERATOR_PLATFORM=x64")
@@ -123,32 +127,75 @@ target_link_libraries(Head Comctl32.lib)
 add_executable(OwnDraw WIN32 "Chapter 09 Child Window Controls/OwnDraw/OwnDraw.c")
 add_executable(PopPad1 WIN32 "Chapter 09 Child Window Controls/PopPad1/PopPad1.c")
 
+add_executable(IconDemo WIN32 "Chapter 10 Menus and Other Resources/IconDemo/IconDemo.c"
+        "Chapter 10 Menus and Other Resources/IconDemo/Resource.h"
+        "Chapter 10 Menus and Other Resources/IconDemo/IconDemo.rc"
+        "Chapter 10 Menus and Other Resources/IconDemo/IconDemo.ico")
 
-add_executable(IconDemo WIN32 "Chapter 10 Menus and Other Resources/IconDemo/IconDemo.c")
+add_executable(MenuDemo WIN32 "Chapter 10 Menus and Other Resources/MenuDemo/MenuDemo.c"
+        "Chapter 10 Menus and Other Resources/MenuDemo/Resource.h"
+        "Chapter 10 Menus and Other Resources/MenuDemo/MenuDemo.rc")
 
-# TODO: GetWindowLongPtr()
-# add_executable(MenuDemo WIN32 "Chapter 10 Menus and Other Resources/MenuDemo/MenuDemo.c")
-# add_executable(NoPopups WIN32 "Chapter 10 Menus and Other Resources/NoPopups/NoPopups.c")
-# add_executable(PopMenu WIN32 "Chapter 10 Menus and Other Resources/PopMenu/PopMenu.c")
+add_executable(NoPopups WIN32 "Chapter 10 Menus and Other Resources/NoPopups/NoPopups.c"
+        "Chapter 10 Menus and Other Resources/NoPopups/Resource.h"
+        "Chapter 10 Menus and Other Resources/NoPopups/NoPopups.rc")
 
-add_executable(PoePoem WIN32 "Chapter 10 Menus and Other Resources/PoePoem/PoePoem.c")
+add_executable(PopMenu WIN32 "Chapter 10 Menus and Other Resources/PopMenu/PopMenu.c"
+        "Chapter 10 Menus and Other Resources/PopMenu/Resource.h"
+        "Chapter 10 Menus and Other Resources/PopMenu/PopMenu.rc")
+
+add_executable(PoePoem WIN32 "Chapter 10 Menus and Other Resources/PoePoem/PoePoem.c"
+        "Chapter 10 Menus and Other Resources/PoePoem/Resource.h"
+        "Chapter 10 Menus and Other Resources/PoePoem/PoePoem.rc"
+        "Chapter 10 Menus and Other Resources/PoePoem/PoePoem.ico"
+        "Chapter 10 Menus and Other Resources/PoePoem/PoePoem.txt")
+
 add_executable(PoorMenu WIN32 "Chapter 10 Menus and Other Resources/PoorMenu/PoorMenu.c")
-add_executable(PopPad2 WIN32 "Chapter 10 Menus and Other Resources/PopPad2/PopPad2.c")
-add_executable(About1 WIN32 "Chapter 11 Dialog Boxes/About1/About1.c")
-add_executable(About2 WIN32 "Chapter 11 Dialog Boxes/About2/About2.c")
-add_executable(About3 WIN32 "Chapter 11 Dialog Boxes/About3/About3.c")
 
-# TODO: GetWindowLongPtr()
-# add_executable(Colors2 WIN32 "Chapter 11 Dialog Boxes/Colors2/Colors2.c")
+add_executable(PopPad2 WIN32 "Chapter 10 Menus and Other Resources/PopPad2/PopPad2.c"
+        "Chapter 10 Menus and Other Resources/PopMenu/Resource.h"
+        "Chapter 10 Menus and Other Resources/PopMenu/PopMenu.rc")
 
-add_executable(Colors3 WIN32 "Chapter 11 Dialog Boxes/Colors3/Colors3.c")
-add_executable(HexCalc WIN32 "Chapter 11 Dialog Boxes/HexCalc/HexCalc.c")
+add_executable(About1 WIN32 "Chapter 11 Dialog Boxes/About1/About1.c"
+        "Chapter 11 Dialog Boxes/About1/Resource.h"
+        "Chapter 11 Dialog Boxes/About1/About1.rc"
+        "Chapter 11 Dialog Boxes/About1/About1.ico")
 
-add_executable(PopPad WIN32 "Chapter 11 Dialog Boxes/PopPad3/PopPad.c"
-        "Chapter 11 Dialog Boxes/PopPad3/PopFile.c"
-        "Chapter 11 Dialog Boxes/PopPad3/PopFind.c"
-        "Chapter 11 Dialog Boxes/PopPad3/PopFont.c"
-        "Chapter 11 Dialog Boxes/PopPad3/PopPrntNull.c")
+add_executable(About2 WIN32 "Chapter 11 Dialog Boxes/About2/About2.c"
+        "Chapter 11 Dialog Boxes/About2/Resource.h"
+        "Chapter 11 Dialog Boxes/About2/About2.rc"
+        "Chapter 11 Dialog Boxes/About2/About2.ico")
+
+add_executable(About3 WIN32 "Chapter 11 Dialog Boxes/About3/About3.c"
+        "Chapter 11 Dialog Boxes/About3/Resource.h"
+        "Chapter 11 Dialog Boxes/About3/About3.rc"
+        "Chapter 11 Dialog Boxes/About3/About3.ico")
+
+add_executable(Colors2 WIN32 "Chapter 11 Dialog Boxes/Colors2/Colors2.c"
+        "Chapter 11 Dialog Boxes/Colors2/Resource.h"
+        "Chapter 11 Dialog Boxes/Colors2/Colors2.rc")
+
+add_executable(Colors3 WIN32 "Chapter 11 Dialog Boxes/Colors3/Colors3.c"
+        "Chapter 11 Dialog Boxes/HexCalc/Resource.h"
+        "Chapter 11 Dialog Boxes/HexCalc/HexCalc.rc"
+        "Chapter 11 Dialog Boxes/HexCalc/HexCalc.dlg"
+        "Chapter 11 Dialog Boxes/HexCalc/HexCalc.ico")
+
+add_executable(HexCalc WIN32 "Chapter 11 Dialog Boxes/HexCalc/HexCalc.c"
+        "Chapter 11 Dialog Boxes/HexCalc/Resource.h"
+        "Chapter 11 Dialog Boxes/HexCalc/HexCalc.rc"
+        "Chapter 11 Dialog Boxes/HexCalc/HexCalc.dlg"
+        "Chapter 11 Dialog Boxes/HexCalc/HexCalc.ico")
+
+add_executable(PopPad WIN32 "Chapter 11 Dialog Boxes/PopPad/PopPad.c"
+        "Chapter 11 Dialog Boxes/PopPad/PopFile.c"
+        "Chapter 11 Dialog Boxes/PopPad/PopFind.c"
+        "Chapter 11 Dialog Boxes/PopPad/PopFont.c"
+        "Chapter 11 Dialog Boxes/PopPad/PopPrntNull.c"
+        "Chapter 11 Dialog Boxes/PopPad/PopPad.h"
+        "Chapter 11 Dialog Boxes/PopPad/Resource.h"
+        "Chapter 11 Dialog Boxes/PopPad/PopPad.rc"
+        "Chapter 11 Dialog Boxes/PopPad/PopPad.ico")
 
 add_executable(ClipText WIN32 "Chapter 12 The Clipboard/ClipText/ClipText.c")
 add_executable(ClipView WIN32 "Chapter 12 The Clipboard/ClipView/ClipView.c")
@@ -156,10 +203,10 @@ add_executable(DevCaps2 WIN32 "Chapter 13 Using the Printer/DevCaps2/DevCaps2.c"
 add_executable(FormFeed WIN32 "Chapter 13 Using the Printer/FormFeed/FormFeed.c"
         "Chapter 13 Using the Printer/FormFeed/GetPrnDC.c")
 
-add_executable(PopPrnt WIN32 "Chapter 11 Dialog Boxes/PopPad3/PopPad.c"
-        "Chapter 11 Dialog Boxes/PopPad3/PopFile.c"
-        "Chapter 11 Dialog Boxes/PopPad3/PopFind.c"
-        "Chapter 11 Dialog Boxes/PopPad3/PopFont.c"
+add_executable(PopPrnt WIN32 "Chapter 11 Dialog Boxes/PopPad/PopPad.c"
+        "Chapter 11 Dialog Boxes/PopPad/PopFile.c"
+        "Chapter 11 Dialog Boxes/PopPad/PopFind.c"
+        "Chapter 11 Dialog Boxes/PopPad/PopFont.c"
         "Chapter 13 Using the Printer/PopPad/PopPrnt.c")
 
 add_executable(Print1 WIN32 "Chapter 13 Using the Printer/Print1/Print1.c"
@@ -171,6 +218,7 @@ add_executable(Print2 WIN32 "Chapter 13 Using the Printer/Print2/Print2.c"
 add_executable(Print3 WIN32 "Chapter 13 Using the Printer/Print3/Print3.c"
         "Chapter 13 Using the Printer/Print1/Print.c"
         "Chapter 13 Using the Printer/FormFeed/GetPrnDC.c")
+
 add_executable(BitBlt WIN32 "Chapter 14 Bitmaps and Bitblts/BitBlt/BitBlt.c")
 add_executable(BitMask WIN32 "Chapter 14 Bitmaps and Bitblts/BitMask/BitMask.c")
 add_executable(Blowup WIN32 "Chapter 14 Bitmaps and Bitblts/Blowup/Blowup.c")
@@ -321,9 +369,8 @@ add_executable(MDIDemo WIN32 "Chapter 19 The Multiple-Document Interface/MDIDemo
 add_executable(BigJob1 WIN32 "Chapter 20 Multitasking and Multithreading/BigJob1/BigJob1.c")
 add_executable(BigJob2 WIN32 "Chapter 20 Multitasking and Multithreading/BigJob2/BigJob2.c")
 
-# TODO: GetWindowLong()
-# add_executable(Multi1 WIN32 "Chapter 20 Multitasking and Multithreading/Multi1/Multi1.c")
-# add_executable(Multi2 WIN32 "Chapter 20 Multitasking and Multithreading/Multi2/Multi2.c")
+add_executable(Multi1 WIN32 "Chapter 20 Multitasking and Multithreading/Multi1/Multi1.c")
+add_executable(Multi2 WIN32 "Chapter 20 Multitasking and Multithreading/Multi2/Multi2.c")
 
 add_executable(RndRctMT WIN32 "Chapter 20 Multitasking and Multithreading/RndRectMT/RndRctMT.c")
 add_executable(EdrTest WIN32 "Chapter 21 Dynamic-Link Libraries/EdrTest/EdrTest.c"
@@ -363,8 +410,8 @@ target_link_libraries(SineWaveGen winmm.lib)
 add_executable(TestMci WIN32 "Chapter 22 Sound and Music/TextMCI/TestMci.c")
 target_link_libraries(TestMci winmm.lib)
 
-# TODO: GetWindowLong()
-# add_executable(WakeUp WIN32 "Chapter 22 Sound and Music/WakeUp/WakeUp.c")
+add_executable(WakeUp WIN32 "Chapter 22 Sound and Music/WakeUp/WakeUp.c")
+target_link_libraries(WakeUp winmm.lib comctl32.lib)
 
 add_executable(NetTime WIN32 "Chapter 23 A Taste of the Internet/NetTime/NetTime.c")
 target_link_libraries(NetTime Ws2_32.lib)

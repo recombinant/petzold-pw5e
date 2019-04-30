@@ -4,8 +4,8 @@
   -------------------------------------------------------*/
 
 #define WIN32_LEAN_AND_MEAN
-#include <tchar.h>
 #include <windows.h>
+#include <tchar.h>
 #include <winsock.h>
 #include "./resource.h"
 
@@ -207,7 +207,7 @@ UINT_PTR CALLBACK MainDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			GetWindowText(hwndButton, szOKLabel, sizeof(szOKLabel) /
 				sizeof(TCHAR));
 			SetWindowText(hwndButton, TEXT("Cancel"));
-			SetWindowLong(hwndButton, GWL_ID, IDCANCEL);
+			SetWindowLongPtr(hwndButton, GWLP_ID, IDCANCEL);
 			return TRUE;
 
 		case IDCANCEL:
@@ -215,7 +215,7 @@ UINT_PTR CALLBACK MainDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			sock = 0;
 			WSACleanup();
 			SetWindowText(hwndButton, szOKLabel);
-			SetWindowLong(hwndButton, GWL_ID, IDOK);
+			SetWindowLongPtr(hwndButton, GWLP_ID, IDOK);
 
 			KillTimer(hwnd, ID_TIMER);
 			EditPrintf(hwndEdit, TEXT("\r\nSocket closed.\r\n"));

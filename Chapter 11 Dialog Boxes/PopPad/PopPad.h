@@ -1,7 +1,7 @@
 #pragma once
 /*---------------------------------------
-    POPPAD.H -- Popup Editor
-    (c) Charles Petzold, 1998
+	POPPAD.H -- Popup Editor
+	(c) Charles Petzold, 1998
   ---------------------------------------*/
 
 #include <windows.h>
@@ -19,9 +19,9 @@ BOOL PopFileWrite(HWND, PTSTR);
 
 HWND PopFindFindDlg(HWND);
 HWND PopFindReplaceDlg(HWND);
-BOOL PopFindFindText(HWND, int *, LPFINDREPLACE);
-BOOL PopFindReplaceText(HWND, int *, LPFINDREPLACE);
-BOOL PopFindNextText(HWND, int *);
+BOOL PopFindFindText(HWND, int*, LPFINDREPLACE);
+BOOL PopFindReplaceText(HWND, int*, LPFINDREPLACE);
+BOOL PopFindNextText(HWND, int*);
 BOOL PopFindValidFind(void);
 
 // Functions in POPFONT.C

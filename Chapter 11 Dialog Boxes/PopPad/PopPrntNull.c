@@ -5,8 +5,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-BOOL PopPrntPrintFile (HINSTANCE hInst, HWND hwnd, HWND hwndEdit,
-                       PTSTR pstrTitleName)
+BOOL PopPrntPrintFile(HINSTANCE hInst, HWND hwnd, HWND hwndEdit, PTSTR pstrTitleName)
 {
-     return FALSE ;
+	return FALSE;
 }

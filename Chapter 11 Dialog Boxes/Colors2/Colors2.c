@@ -1,16 +1,16 @@
 /*------------------------------------------------
    COLORS2.C -- Version using Modeless Dialog Box
-                (c) Charles Petzold, 1998
+				(c) Charles Petzold, 1998
   ------------------------------------------------*/
 
 #define WIN32_LEAN_AND_MEAN
-#include <tchar.h>
 #include <windows.h>
+#include <tchar.h>
 
-LRESULT CALLBACK WndProc     (HWND, UINT, WPARAM, LPARAM) ;
-BOOL    CALLBACK ColorScrDlg (HWND, UINT, WPARAM, LPARAM) ;
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+BOOL    CALLBACK ColorScrDlg(HWND, UINT, WPARAM, LPARAM);
 
-HWND hDlgModeless ;
+HWND hDlgModeless;
 
 int WINAPI _tWinMain(
 	_In_     HINSTANCE hInstance,
@@ -18,123 +18,131 @@ int WINAPI _tWinMain(
 	_In_     PTSTR     pCmdLine,
 	_In_     int       nShowCmd)
 {
-     static TCHAR szAppName[] = TEXT ("Colors2") ;
-     HWND         hwnd ;
-     MSG          msg ;
-     WNDCLASS     wndclass ;
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(pCmdLine);
 
-     wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
-     wndclass.lpfnWndProc   = WndProc ;
-     wndclass.cbClsExtra    = 0 ;
-     wndclass.cbWndExtra    = 0 ;
-     wndclass.hInstance     = hInstance ;
-     wndclass.hIcon         = LoadIcon (NULL, IDI_APPLICATION) ;
-     wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-     wndclass.hbrBackground = CreateSolidBrush (0L) ;
-     wndclass.lpszMenuName  = NULL ;
-     wndclass.lpszClassName = szAppName ;
+	static TCHAR szAppName[] = TEXT("Colors2");
+	HWND         hwnd;
+	MSG          msg;
+	WNDCLASS     wndclass;
 
-     if (!RegisterClass (&wndclass))
-     {
-          MessageBox (NULL, TEXT ("This program requires Windows NT!"),
-                      szAppName, MB_ICONERROR) ;
-          return 0 ;
-     }
+	wndclass.style = CS_HREDRAW | CS_VREDRAW;
+	wndclass.lpfnWndProc = WndProc;
+	wndclass.cbClsExtra = 0;
+	wndclass.cbWndExtra = 0;
+	wndclass.hInstance = hInstance;
+	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wndclass.hbrBackground = CreateSolidBrush(0L);
+	wndclass.lpszMenuName = NULL;
+	wndclass.lpszClassName = szAppName;
 
-     hwnd = CreateWindow (szAppName, TEXT ("Color Scroll"),
-                          WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          CW_USEDEFAULT, CW_USEDEFAULT,
-                          NULL, NULL, hInstance, NULL) ;
+	if (!RegisterClass(&wndclass))
+	{
+		MessageBox(NULL, TEXT("This program requires Windows NT!"),
+			szAppName, MB_ICONERROR);
+		return 0;
+	}
 
-     ShowWindow (hwnd, nShowCmd) ;
-     UpdateWindow (hwnd) ;
+	hwnd = CreateWindow(szAppName, TEXT("Color Scroll"),
+		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		NULL, NULL, hInstance, NULL);
 
-     hDlgModeless = CreateDialog (hInstance, TEXT ("ColorScrDlg"),
-                                  hwnd, ColorScrDlg) ;
+	ShowWindow(hwnd, nShowCmd);
+	UpdateWindow(hwnd);
 
-     while (GetMessage (&msg, NULL, 0, 0))
-     {
-          if (hDlgModeless == 0 || !IsDialogMessage (hDlgModeless, &msg))
-          {
-               TranslateMessage (&msg) ;
-               DispatchMessage  (&msg) ;
-          }
-     }
-     return (int)msg.wParam;  // WM_QUIT
+	hDlgModeless = CreateDialog(hInstance, TEXT("ColorScrDlg"),
+		hwnd, ColorScrDlg);
+
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		if (hDlgModeless == 0 || !IsDialogMessage(hDlgModeless, &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+	return (int)msg.wParam;  // WM_QUIT
 }
 
-LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-     switch (message)
-     {
-     case WM_DESTROY :
-          DeleteObject ((HGDIOBJ) SetClassLong (hwnd, GCL_HBRBACKGROUND,
-                              (LONG) GetStockObject (WHITE_BRUSH))) ;
-          PostQuitMessage (0) ;
-          return 0 ;
-     }
-     return DefWindowProc (hwnd, message, wParam, lParam) ;
+	switch (message)
+	{
+	case WM_DESTROY:
+		DeleteObject(
+			(HGDIOBJ)SetClassLongPtr(
+				hwnd,
+				GCLP_HBRBACKGROUND,
+				(LONG_PTR)GetStockObject(WHITE_BRUSH)));
+		PostQuitMessage(0);
+		return 0;
+	}
+	return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
-BOOL CALLBACK ColorScrDlg (HWND hDlg, UINT message,
-                           WPARAM wParam, LPARAM lParam)
+BOOL CALLBACK ColorScrDlg(HWND hDlg, UINT message,
+	WPARAM wParam, LPARAM lParam)
 {
-     static int iColor[3] ;
-     HWND       hwndParent, hCtrl ;
-     int        iCtrlID, iIndex ;
+	static int iColor[3];
+	HWND       hwndParent, hCtrl;
+	int        iCtrlID, iIndex;
 
-     switch (message)
-     {
-     case WM_INITDIALOG :
-          for (iCtrlID = 10 ; iCtrlID < 13 ; iCtrlID++)
-          {
-               hCtrl = GetDlgItem (hDlg, iCtrlID) ;
-               SetScrollRange (hCtrl, SB_CTL, 0, 255, FALSE) ;
-               SetScrollPos   (hCtrl, SB_CTL, 0, FALSE) ;
-          }
-          return TRUE ;
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		for (iCtrlID = 10; iCtrlID < 13; iCtrlID++)
+		{
+			hCtrl = GetDlgItem(hDlg, iCtrlID);
+			SetScrollRange(hCtrl, SB_CTL, 0, 255, FALSE);
+			SetScrollPos(hCtrl, SB_CTL, 0, FALSE);
+		}
+		return TRUE;
 
-     case WM_VSCROLL :
-          hCtrl   = (HWND) lParam ;
-          iCtrlID = GetWindowLong (hCtrl, GWL_ID) ;
-          iIndex  = iCtrlID - 10 ;
-          hwndParent = GetParent (hDlg) ;
+	case WM_VSCROLL:
+		hCtrl = (HWND)lParam;
+		iCtrlID = GetWindowLongPtr(hCtrl, GWLP_ID);
+		iIndex = iCtrlID - 10;
+		hwndParent = GetParent(hDlg);
 
-          switch (LOWORD (wParam))
-          {
-          case SB_PAGEDOWN :
-               iColor[iIndex] += 15 ;        // fall through
-          case SB_LINEDOWN :
-               iColor[iIndex] = min (255, iColor[iIndex] + 1) ;
-               break ;
-          case SB_PAGEUP :
-               iColor[iIndex] -= 15 ;        // fall through
-          case SB_LINEUP :
-               iColor[iIndex] = max (0, iColor[iIndex] - 1) ;
-               break ;
-          case SB_TOP :
-               iColor[iIndex] = 0 ;
-               break ;
-          case SB_BOTTOM :
-               iColor[iIndex] = 255 ;
-               break ;
-          case SB_THUMBPOSITION :
-          case SB_THUMBTRACK :
-               iColor[iIndex] = HIWORD (wParam) ;
-               break ;
-          default :
-               return FALSE ;
-          }
-          SetScrollPos  (hCtrl, SB_CTL,      iColor[iIndex], TRUE) ;
-          SetDlgItemInt (hDlg,  iCtrlID + 3, iColor[iIndex], FALSE) ;
+		switch (LOWORD(wParam))
+		{
+		case SB_PAGEDOWN:
+			iColor[iIndex] += 15;        // fall through
+		case SB_LINEDOWN:
+			iColor[iIndex] = min(255, iColor[iIndex] + 1);
+			break;
+		case SB_PAGEUP:
+			iColor[iIndex] -= 15;        // fall through
+		case SB_LINEUP:
+			iColor[iIndex] = max(0, iColor[iIndex] - 1);
+			break;
+		case SB_TOP:
+			iColor[iIndex] = 0;
+			break;
+		case SB_BOTTOM:
+			iColor[iIndex] = 255;
+			break;
+		case SB_THUMBPOSITION:
+		case SB_THUMBTRACK:
+			iColor[iIndex] = HIWORD(wParam);
+			break;
+		default:
+			return FALSE;
+		}
+		SetScrollPos(hCtrl, SB_CTL, iColor[iIndex], TRUE);
+		SetDlgItemInt(hDlg, iCtrlID + 3, iColor[iIndex], FALSE);
 
-          DeleteObject ((HGDIOBJ) SetClassLong (hwndParent, GCL_HBRBACKGROUND,
-                              (LONG) CreateSolidBrush (
-                                   RGB (iColor[0], iColor[1], iColor[2])))) ;
+		DeleteObject(
+			(HGDIOBJ)SetClassLongPtr(
+				hwndParent,
+				GCLP_HBRBACKGROUND,
+				(LONG_PTR)CreateSolidBrush(RGB(iColor[0], iColor[1], iColor[2]))));
 
-          InvalidateRect (hwndParent, NULL, TRUE) ;
-          return TRUE ;
-     }
-     return FALSE ;
+		InvalidateRect(hwndParent, NULL, TRUE);
+		return TRUE;
+	}
+	return FALSE;
 }

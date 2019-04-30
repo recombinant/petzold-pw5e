@@ -120,11 +120,11 @@ LRESULT CALLBACK ChildWndProc(HWND hwnd, UINT message,
 	switch (message)
 	{
 	case WM_CREATE:
-		SetWindowLong(hwnd, 0, 0);       // on/off flag
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, 0);       // on/off flag
 		return 0;
 
 	case WM_LBUTTONDOWN:
-		SetWindowLong(hwnd, 0, 1 ^ GetWindowLong(hwnd, 0));
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, 1 ^ GetWindowLongPtr(hwnd, GWLP_USERDATA));
 		InvalidateRect(hwnd, NULL, FALSE);
 		return 0;
 
@@ -134,7 +134,7 @@ LRESULT CALLBACK ChildWndProc(HWND hwnd, UINT message,
 		GetClientRect(hwnd, &rect);
 		Rectangle(hdc, 0, 0, rect.right, rect.bottom);
 
-		if (GetWindowLong(hwnd, 0))
+		if (GetWindowLongPtr(hwnd, GWLP_USERDATA))
 		{
 			MoveToEx(hdc, 0, 0, NULL);
 			LineTo(hdc, rect.right, rect.bottom);
