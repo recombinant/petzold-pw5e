@@ -8,7 +8,7 @@
 #include <windows.h>
 #include <mmsystem.h>
 #include <stdlib.h>
-#include "Resource.h"  // ../record1
+#include "../Record1/Resource.h"
 
 UINT_PTR CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 

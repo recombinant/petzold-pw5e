@@ -31,7 +31,7 @@ void PaintRoutine(HWND hwnd, HDC hdc, int cxArea, int cyArea)
 
 	DPtoLP(hdc, &pt, 1);
 
-	hemf = GetEnhMetaFile(TEXT("..\\emf11\\emf11.emf"));
+	hemf = GetEnhMetaFile(TEXT("Emf11.emf"));
 
 	GetEnhMetaFileHeader(hemf, sizeof(emh), &emh);
 

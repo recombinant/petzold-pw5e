@@ -68,7 +68,7 @@ void CreateRoutine(HWND hwnd)
 	HDC          hdcEMF;
 	HENHMETAFILE hemf;
 
-	hdcEMF = CreateEnhMetaFile(NULL, TEXT("emf11.emf"), NULL,
+	hdcEMF = CreateEnhMetaFile(NULL, TEXT("Emf11.emf"), NULL,
 		TEXT("EMF11\0EMF Demo #11\0"));
 
 	SetMapMode(hdcEMF, MM_LOENGLISH);
@@ -92,7 +92,7 @@ void PaintRoutine(HWND hwnd, HDC hdc, int cxArea, int cyArea)
 	cxPix = GetDeviceCaps(hdc, HORZRES);
 	cyPix = GetDeviceCaps(hdc, VERTRES);
 
-	hemf = GetEnhMetaFile(TEXT("emf11.emf"));
+	hemf = GetEnhMetaFile(TEXT("Emf11.emf"));
 
 	GetEnhMetaFileHeader(hemf, sizeof(emh), &emh);
 

@@ -68,7 +68,7 @@ void CreateRoutine(HWND hwnd)
 	HENHMETAFILE hemf;
 	int          cxMms, cyMms, cxPix, cyPix, xDpi, yDpi;
 
-	hdcEMF = CreateEnhMetaFile(NULL, TEXT("emf8.emf"), NULL,
+	hdcEMF = CreateEnhMetaFile(NULL, TEXT("Emf8.emf"), NULL,
 		TEXT("EMF8\0EMF Demo #8\0"));
 	if (hdcEMF == NULL)
 		return;
@@ -95,7 +95,7 @@ void PaintRoutine(HWND hwnd, HDC hdc, int cxArea, int cyArea)
 	int           cxImage, cyImage;
 	RECT          rect;
 
-	hemf = GetEnhMetaFile(TEXT("emf8.emf"));
+	hemf = GetEnhMetaFile(TEXT("Emf8.emf"));
 
 	GetEnhMetaFileHeader(hemf, sizeof(emh), &emh);
 

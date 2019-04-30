@@ -68,7 +68,7 @@ void CreateRoutine(HWND hwnd)
 	HENHMETAFILE hemf;
 	int          cxMms, cyMms, cxPix, cyPix, xDpi, yDpi;
 
-	hdcEMF = CreateEnhMetaFile(NULL, TEXT("emf12.emf"), NULL,
+	hdcEMF = CreateEnhMetaFile(NULL, TEXT("Emf12.emf"), NULL,
 		TEXT("EMF13\0EMF Demo #12\0"));
 
 	cxMms = GetDeviceCaps(hdcEMF, HORZSIZE);
@@ -103,7 +103,7 @@ void PaintRoutine(HWND hwnd, HDC hdc, int cxArea, int cyArea)
 
 	DPtoLP(hdc, &pt, 1);
 
-	hemf = GetEnhMetaFile(TEXT("emf12.emf"));
+	hemf = GetEnhMetaFile(TEXT("Emf12.emf"));
 
 	GetEnhMetaFileHeader(hemf, sizeof(emh), &emh);
 

@@ -8,7 +8,7 @@
 #include <windowsx.h>
 #include <tchar.h>
 #include <commdlg.h>
-#include "Resource.h"  // ../emf8
+#include "Resource.h"
 
 extern void CreateRoutine(HWND);
 extern void PaintRoutine(HWND, HDC, int, int);

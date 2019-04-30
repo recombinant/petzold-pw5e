@@ -4,8 +4,8 @@
   ---------------------------------------*/
 
 #define WIN32_LEAN_AND_MEAN
-#include <tchar.h>
 #include <windows.h>
+#include <tchar.h>
 #include <windowsx.h>
 #include <commdlg.h>
 #include "Resource.h"

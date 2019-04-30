@@ -86,7 +86,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		rect.top = rect.bottom / 4;
 		rect.bottom = 3 * rect.bottom / 4;
 
-		hemf = GetEnhMetaFile(TEXT("..\\emf3\\emf3.emf"));
+		hemf = GetEnhMetaFile(TEXT("Emf3.emf"));
 
 		EnumEnhMetaFile(hdc, hemf, EnhMetaFileProc, NULL, &rect);
 		DeleteEnhMetaFile(hemf);

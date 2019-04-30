@@ -58,14 +58,14 @@ FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,66,80,50,14
     ICON            "POPPAD",IDC_STATIC,7,7,20,20
-    CTEXT           "PopPad",IDC_STATIC,40,12,100,8
+    CTEXT           "PopPad3",IDC_STATIC,40,12,100,8
     CTEXT           "Popup Editor for Windows",IDC_STATIC,7,40,166,8
     CTEXT           "(c) Charles Petzold, 1998",IDC_STATIC,7,52,166,8
 END
 
 PRINTDLGBOX DIALOG DISCARDABLE  32, 32, 186, 95
 STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "PopPad"
+CAPTION "PopPad3"
 FONT 8, "MS Sans Serif"
 BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,67,74,50,14
@@ -117,7 +117,7 @@ BEGIN
     POPUP "&Help"
     BEGIN
         MENUITEM "&Help",                       IDM_HELP
-        MENUITEM "&About PopPad...",            IDM_APP_ABOUT
+        MENUITEM "&About PopPad3...",            IDM_APP_ABOUT
     END
 END
 

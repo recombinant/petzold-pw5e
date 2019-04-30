@@ -8,8 +8,8 @@
 #include <windowsx.h>
 #include <commdlg.h>
 #include <tchar.h>
-#include "dibfile.h"
-#include "./Resource.h"
+#include "../ShowDib1/DibFile.h"
+#include "Resource.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 

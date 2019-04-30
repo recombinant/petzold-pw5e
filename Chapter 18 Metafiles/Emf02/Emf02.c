@@ -68,7 +68,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_CREATE:
-		hdcEMF = CreateEnhMetaFile(NULL, TEXT("emf2.emf"), NULL,
+		hdcEMF = CreateEnhMetaFile(NULL, TEXT("Emf2.emf"), NULL,
 			TEXT("EMF2\0EMF Demo #2\0"));
 
 		if (!hdcEMF)
@@ -97,7 +97,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		rect.top = rect.bottom / 4;
 		rect.bottom = 3 * rect.bottom / 4;
 
-		if (hemf = GetEnhMetaFile(TEXT("emf2.emf")))
+		if (hemf = GetEnhMetaFile(TEXT("Emf2.emf")))
 		{
 			PlayEnhMetaFile(hdc, hemf, &rect);
 			DeleteEnhMetaFile(hemf);

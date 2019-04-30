@@ -27,7 +27,7 @@ void PaintRoutine(HWND hwnd, HDC hdc, int cxArea, int cyArea)
 	cxPix = GetDeviceCaps(hdc, HORZRES);
 	cyPix = GetDeviceCaps(hdc, VERTRES);
 
-	hemf = GetEnhMetaFile(TEXT("..\\emf8\\emf8.emf"));
+	hemf = GetEnhMetaFile(TEXT("Emf8.emf"));
 
 	GetEnhMetaFileHeader(hemf, sizeof(emh), &emh);
 

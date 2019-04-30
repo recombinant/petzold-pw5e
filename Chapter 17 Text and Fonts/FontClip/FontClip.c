@@ -5,7 +5,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include "ezfont.h"  // ../eztest
+#include "../EZTest/EZFont.h"
 
 TCHAR szAppName [] = TEXT ("FontClip") ;
 TCHAR szTitle [] = TEXT ("FontClip: Using Path for Clipping on Font") ;

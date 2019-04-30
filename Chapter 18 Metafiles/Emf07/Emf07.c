@@ -103,13 +103,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		// Retrieve existing metafile and header
 
-		hemfOld = GetEnhMetaFile(TEXT("..\\emf3\\emf3.emf"));
+		hemfOld = GetEnhMetaFile(TEXT("Emf3.emf"));
 
 		GetEnhMetaFileHeader(hemfOld, sizeof(ENHMETAHEADER), &emh);
 
 		// Create a new metafile DC
 
-		hdcEMF = CreateEnhMetaFile(NULL, TEXT("emf7.emf"), NULL,
+		hdcEMF = CreateEnhMetaFile(NULL, TEXT("Emf7.emf"), NULL,
 			TEXT("EMF7\0EMF Demo #7\0"));
 
 		// Enumerate the existing metafile
@@ -135,7 +135,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		rect.top = rect.bottom / 4;
 		rect.bottom = 3 * rect.bottom / 4;
 
-		hemf = GetEnhMetaFile(TEXT("emf7.emf"));
+		hemf = GetEnhMetaFile(TEXT("Emf7.emf"));
 
 		PlayEnhMetaFile(hdc, hemf, &rect);
 		DeleteEnhMetaFile(hemf);

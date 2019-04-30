@@ -8,8 +8,8 @@
 #include <windowsx.h>
 #include <tchar.h>
 #include <commdlg.h>
-#include "PackeDib.h" // ../ShowDib3
-#include "./Resource.h"
+#include "../ShowDib3/PackeDib.h"
+#include "Resource.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
