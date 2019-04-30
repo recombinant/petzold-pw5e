@@ -7,7 +7,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
-#include "SysMets.h"
+#include "SysMets.h"  // from Chapter 04
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -32,7 +32,7 @@ int WINAPI _tWinMain(
 	wndclass.hInstance = hInstance;
 	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wndclass.hbrBackground = GetStockBrush(WHITE_BRUSH);
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = szAppName;
 
@@ -88,8 +88,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		iMaxWidth = 40 * cxChar + 22 * cxCaps;
 
-		// Fall through for mouse wheel information
-
+		// for mousewheel information
+		// falls through
 	case WM_SETTINGCHANGE:
 		SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, &ulScrollLines, 0);
 
@@ -131,10 +131,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		si.cbSize = sizeof(si);
 		si.fMask = SIF_ALL;
-		GetScrollInfo(hwnd, SB_VERT, &si);
 
 		// Save the position for comparison later on
-
+		GetScrollInfo(hwnd, SB_VERT, &si);
 		iVertPos = si.nPos;
 
 		switch (LOWORD(wParam))

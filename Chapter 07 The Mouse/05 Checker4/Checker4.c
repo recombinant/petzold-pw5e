@@ -4,8 +4,8 @@
   -------------------------------------------------*/
 
 #define WIN32_LEAN_AND_MEAN
-#include <tchar.h>
 #include <windows.h>
+#include <tchar.h>
 
 #define DIVISIONS 5
 
@@ -85,7 +85,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 					WS_CHILDWINDOW | WS_VISIBLE,
 					0, 0, 0, 0,
 					hwnd, (HMENU)(y << 8 | x),
-					(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),
+					(HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
 					NULL);
 		return 0;
 
@@ -163,8 +163,8 @@ LRESULT CALLBACK ChildWndProc(HWND hwnd, UINT message,
 			SendMessage(GetParent(hwnd), message, wParam, lParam);
 			return 0;
 		}
-		// For Return and Space, fall through to toggle the square
-
+		// For Return and Space, to toggle the square
+		// falls through
 	case WM_LBUTTONDOWN:
 		SetWindowLong(hwnd, 0, 1 ^ GetWindowLong(hwnd, 0));
 		SetFocus(hwnd);
