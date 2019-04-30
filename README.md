@@ -1,4 +1,8 @@
-### Work in progress. Samples up to and including Chapter 9 are working.
+### Work in progress. 
+
+- Examples up to and including Chapter 18 are compiling and "running". 
+- Some examples in *"Chapter 16 The Palette Manager"* expect 256 bit color 
+  displays - hardware that was ubiquitous in the Window98 era. 
 
 -------------------------------------------------------------------------------
 
