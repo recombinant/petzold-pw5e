@@ -88,22 +88,21 @@ add_executable(018_KeyView2 WIN32 "Chapter 06 The Keyboard/04 KeyView2/KeyView2.
 add_executable(019_Typer WIN32 "Chapter 06 The Keyboard/05 Typer/Typer.c")
 
 # ================================================================== Chapter 07
-add_executable(BlokOut1 WIN32 "Chapter 07 The Mouse/BlokOut1.c")
-add_executable(BlokOut2 WIN32 "Chapter 07 The Mouse/BlokOut2.c")
-add_executable(Checker1 WIN32 "Chapter 07 The Mouse/Checker1.c")
-add_executable(Checker2 WIN32 "Chapter 07 The Mouse/Checker2.c")
 
-# TODO: SetWindowLongPtr()
-# TODO: add_executable(Checker3 WIN32 "Chapter 07 The Mouse/Checker3.c")
-# TODO: add_executable(Checker4 WIN32 "Chapter 07 The Mouse/Checker4.c")
+add_executable(020_Connect WIN32 "Chapter 07 The Mouse/01 Connect/Connect.c")
+add_executable(021_Checker1 WIN32 "Chapter 07 The Mouse/02 Checker1/Checker1.c")
+add_executable(022_Checker2 WIN32 "Chapter 07 The Mouse/03 Checker2/Checker2.c")
+add_executable(023_Checker3 WIN32 "Chapter 07 The Mouse/04 Checker3/Checker3.c")
+add_executable(024_Checker4 WIN32 "Chapter 07 The Mouse/05 Checker4/Checker4.c")
+add_executable(025_BlokOut1 WIN32 "Chapter 07 The Mouse/06 BlokOut1/BlokOut1.c")
+add_executable(026_BlokOut2 WIN32 "Chapter 07 The Mouse/07 BlockOut2/BlokOut2.c")
 
-add_executable(Connect WIN32 "Chapter 07 The Mouse/Connect.c")
+add_executable(027_SysMets WIN32 "Chapter 07 The Mouse/08 SysMets/SysMets.c"
+        "Chapter 04 An Exercise in Text Output/01 SysMets1/SysMets.h")
+target_include_directories(027_SysMets PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
 
-add_executable(SysMets WIN32 "Chapter 07 The Mouse/SysMets.c")
-target_include_directories(SysMets PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
+# ================================================================== Chapter 08
 
-add_executable(SysMets5 WIN32 "Chapter 07 The Mouse/SysMets5.c")
-target_include_directories(SysMets5 PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
 
 add_executable(Beeper1 WIN32 "Chapter 08 The Timer/Beeper1.c")
 add_executable(Beeper2 WIN32 "Chapter 08 The Timer/Beeper2.c")
@@ -113,9 +112,8 @@ add_executable(WhatClr WIN32 "Chapter 08 The Timer/WhatClr.c")
 
 add_executable(BtnLook WIN32 "Chapter 09 Child Window Controls/BtnLook/BtnLook.c")
 
-# TODO: GetWindowLongPtr()
-# add_executable(Colors1 WIN32 "Chapter 09 Child Window Controls/Colors1/Colors1.c")
-# target_link_libraries(Colors1 Comctl32.lib)
+add_executable(Colors1 WIN32 "Chapter 09 Child Window Controls/Colors1/Colors1.c")
+target_link_libraries(Colors1 Comctl32.lib)
 
 add_executable(Environ WIN32 "Chapter 09 Child Window Controls/Environ/Environ.c")
 
