@@ -70,22 +70,22 @@ target_include_directories(006_SysMets3 PUBLIC "Chapter 04 An Exercise in Text O
 add_executable(007_DevCaps1 WIN32 "Chapter 05 Basic Drawing/01 DevCaps1/DevCaps1.c")
 add_executable(008_SineWave WIN32 "Chapter 05 Basic Drawing/02 SineWave/SineWave.c")
 add_executable(009_LineDemo WIN32 "Chapter 05 Basic Drawing/03 LineDemo/LineDemo.c")
-add_executable(010_Bezier   WIN32 "Chapter 05 Basic Drawing/04 Bezier/Bezier.c")
-add_executable(011_AltWind  WIN32 "Chapter 05 Basic Drawing/05 AltWind/AltWind.c")
+add_executable(010_Bezier WIN32 "Chapter 05 Basic Drawing/04 Bezier/Bezier.c")
+add_executable(011_AltWind WIN32 "Chapter 05 Basic Drawing/05 AltWind/AltWind.c")
 add_executable(012_WhatSize WIN32 "Chapter 05 Basic Drawing/06 WhatSize/WhatSize.c")
 add_executable(013_RandRect WIN32 "Chapter 05 Basic Drawing/07 RandRect/RandRect.c")
-add_executable(014_Clover   WIN32 "Chapter 05 Basic Drawing/08 Clover/Clover.c")
+add_executable(014_Clover WIN32 "Chapter 05 Basic Drawing/08 Clover/Clover.c")
 
 # ================================================================== Chapter 06
 
-add_executable(015_SysMets4 WIN32 "Chapter 06 The Keyboard/SysMets4.c")
+add_executable(015_SysMets4 WIN32 "Chapter 06 The Keyboard/01 SysMets4/SysMets4.c"
+        "Chapter 04 An Exercise in Text Output/01 SysMets1/SysMets.h")
 target_include_directories(015_SysMets4 PUBLIC "Chapter 04 An Exercise in Text Output/01 SysMets1")
 
-add_executable(016_KeyView1 WIN32 "Chapter 06 The Keyboard/KeyView1.c")
-add_executable(017_StokFont WIN32 "Chapter 06 The Keyboard/StokFont.c")
-add_executable(018_KeyView2 WIN32 "Chapter 06 The Keyboard/KeyView2.c")
-add_executable(019_Typer WIN32 "Chapter 06 The Keyboard/Typer.c")
-
+add_executable(016_KeyView1 WIN32 "Chapter 06 The Keyboard/02 KeyView1/KeyView1.c")
+add_executable(017_StokFont WIN32 "Chapter 06 The Keyboard/03 StokFont/StokFont.c")
+add_executable(018_KeyView2 WIN32 "Chapter 06 The Keyboard/04 KeyView2/KeyView2.c")
+add_executable(019_Typer WIN32 "Chapter 06 The Keyboard/05 Typer/Typer.c")
 
 # ================================================================== Chapter 07
 add_executable(BlokOut1 WIN32 "Chapter 07 The Mouse/BlokOut1.c")
