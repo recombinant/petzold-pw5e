@@ -125,7 +125,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				if (*pWorking == '\n')
 					iNumLines++;
-				pWorking = AnsiNext(pText);
+				pWorking = AnsiNext(pWorking);
 			}
 			*pWorking = '\0';
 		
