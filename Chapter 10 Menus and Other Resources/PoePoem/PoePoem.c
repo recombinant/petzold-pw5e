@@ -128,7 +128,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				pWorking = AnsiNext(pWorking);
 			}
 			*pWorking = '\0';
-		
+		}
 
 		SetScrollRange(hScroll, SB_CTL, 0, iNumLines, FALSE);
 		SetScrollPos(hScroll, SB_CTL, 0, FALSE);
