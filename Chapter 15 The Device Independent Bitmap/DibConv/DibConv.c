@@ -8,6 +8,7 @@
 #include <commdlg.h>
 #include <windowsx.h>
 #include <tchar.h>
+#include <malloc.h>
 #include "./Resource.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

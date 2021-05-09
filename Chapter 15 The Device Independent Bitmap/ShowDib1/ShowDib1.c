@@ -8,6 +8,8 @@
 #include <windowsx.h>
 #include <tchar.h>
 #include <commdlg.h>
+#include <malloc.h>
+#include <math.h>
 #include "DibFile.h"
 #include "./Resource.h"
 

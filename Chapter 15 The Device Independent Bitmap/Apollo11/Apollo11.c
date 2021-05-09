@@ -7,6 +7,8 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
+#include <math.h>
+#include <malloc.h>
 #include "../ShowDib1/DibFile.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

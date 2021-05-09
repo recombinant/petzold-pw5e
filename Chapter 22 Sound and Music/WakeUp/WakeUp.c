@@ -8,6 +8,7 @@
 #include <tchar.h>
 #include <mmsystem.h>
 #include <commctrl.h>
+#include <malloc.h>
 
   // ID values for 3 child windows
 

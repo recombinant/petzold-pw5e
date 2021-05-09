@@ -8,6 +8,7 @@
 #include <windowsx.h>
 #include <tchar.h>
 #include <math.h>
+#include <stdlib.h>
 #include <process.h>
 
 typedef struct

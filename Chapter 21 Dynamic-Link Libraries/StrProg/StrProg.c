@@ -73,7 +73,7 @@ int WINAPI _tWinMain(
      return (int)msg.wParam;  // WM_QUIT
 }
 
-BOOL CALLBACK DlgProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK DlgProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
      switch (message)
      {
@@ -97,7 +97,7 @@ BOOL CALLBACK DlgProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
      return FALSE ;
 }
 
-BOOL CALLBACK GetStrCallBack (PTSTR pString, CBPARAM * pcbp)
+INT_PTR CALLBACK GetStrCallBack (PTSTR pString, CBPARAM * pcbp)
 {
      TextOut (pcbp->hdc, pcbp->xText, pcbp->yText,
               pString, lstrlen (pString)) ;

@@ -5,6 +5,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <winspool.h>
+#include <malloc.h>
 
 HDC GetPrinterDC(void)
 {

@@ -6,6 +6,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <wchar.h>       // for wide-character string functions
+#include <malloc.h>
 #include "StrLib.h"
 
      // shared memory section (requires /SECTION:shared,RWS in link options)

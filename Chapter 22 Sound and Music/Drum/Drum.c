@@ -14,7 +14,7 @@
 #include "Resource.h"
 
 LRESULT CALLBACK WndProc   (HWND, UINT, WPARAM, LPARAM) ;
-BOOL    CALLBACK AboutProc (HWND, UINT, WPARAM, LPARAM) ;
+INT_PTR CALLBACK AboutProc (HWND, UINT, WPARAM, LPARAM) ;
 
 void  DrawRectangle (HDC, int, int, DWORD *, DWORD *) ;
 void  ErrorMessage  (HWND, TCHAR *, TCHAR *) ;
@@ -456,7 +456,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
      return DefWindowProc (hwnd, message, wParam, lParam) ;
 }
 
-BOOL CALLBACK AboutProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK AboutProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
      switch (message)
      {

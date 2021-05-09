@@ -8,6 +8,7 @@
 #include <windowsx.h>
 #include <tchar.h>
 #include <commdlg.h>
+#include <malloc.h>
 #include "../ShowDib3/PackeDib.h"
 #include "Resource.h"
 

@@ -9,7 +9,7 @@
 #include "Resource.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-BOOL    CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK EllipPushWndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI _tWinMain(
@@ -100,7 +100,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
-BOOL CALLBACK AboutDlgProc(HWND hDlg, UINT message,
+INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 	WPARAM wParam, LPARAM lParam)
 {
 	switch (message)

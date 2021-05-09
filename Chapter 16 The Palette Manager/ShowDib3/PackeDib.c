@@ -5,6 +5,8 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <malloc.h>
+#include <math.h>
 
 /*---------------------------------------------------------
    PackedDibLoad: Load DIB File as Packed-Dib Memory Block

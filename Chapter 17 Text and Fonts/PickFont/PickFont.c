@@ -38,7 +38,7 @@ TCHAR szAppName[] = TEXT("PickFont");
 // Forward declarations of functions
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-BOOL    CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 void SetLogFontFromFields(HWND hdlg, DLGPARAMS* pdp);
 void SetFieldsFromTextMetric(HWND hdlg, DLGPARAMS* pdp);
 void MySetMapMode(HDC hdc, int iMapMode);
@@ -176,7 +176,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
-BOOL CALLBACK DlgProc(HWND hdlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK DlgProc(HWND hdlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static DLGPARAMS* pdp;
 	static PRINTDLG    pd = { sizeof(PRINTDLG) };

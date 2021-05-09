@@ -7,7 +7,8 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <tchar.h>
-#include "./Resource.h"
+#include <stdlib.h>
+#include "Resource.h"
 
 #define INIT_MENU_POS    0
 #define HELLO_MENU_POS   2

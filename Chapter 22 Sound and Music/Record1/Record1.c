@@ -7,11 +7,12 @@
 #include <tchar.h>
 #include <windows.h>
 #include <mmsystem.h>
+#include <malloc.h>
 #include "Resource.h"
 
 #define INP_BUFFER_SIZE 16384
 
-BOOL CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 
 TCHAR szAppName[] = TEXT("Record1");
 
@@ -45,7 +46,7 @@ void ReverseMemory(BYTE* pBuffer, int iLength)
 	}
 }
 
-BOOL CALLBACK DlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK DlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static BOOL         bRecording, bPlaying, bReverse, bPaused,
 		bEnding, bTerminating;

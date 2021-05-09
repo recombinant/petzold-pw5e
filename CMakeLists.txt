@@ -617,25 +617,52 @@ add_executable(Metafile WIN32 "Chapter 18 Metafiles/MetaFile/Metafile.c")
 
 # ================================================================== Chapter 19
 
-add_executable(MDIDemo WIN32 "Chapter 19 The Multiple-Document Interface/MDIDemo/MDIDemo.c")
+add_executable(MDIDemo WIN32 "Chapter 19 The Multiple-Document Interface/MDIDemo/MDIDemo.c"
+        "Chapter 19 The Multiple-Document Interface/MDIDemo/Resource.h"
+        "Chapter 19 The Multiple-Document Interface/MDIDemo/MDIDemo.rc")
 
 # ================================================================== Chapter 20
 
 add_executable(BigJob1 WIN32 "Chapter 20 Multitasking and Multithreading/BigJob1/BigJob1.c")
 add_executable(BigJob2 WIN32 "Chapter 20 Multitasking and Multithreading/BigJob2/BigJob2.c")
-
 add_executable(Multi1 WIN32 "Chapter 20 Multitasking and Multithreading/Multi1/Multi1.c")
 add_executable(Multi2 WIN32 "Chapter 20 Multitasking and Multithreading/Multi2/Multi2.c")
+add_executable(RndRctMT WIN32 "Chapter 20 Multitasking and Multithreading/RndRectMT/RndRctMT.c")
 
 # ================================================================== Chapter 21
 
-add_executable(RndRctMT WIN32 "Chapter 20 Multitasking and Multithreading/RndRectMT/RndRctMT.c")
-add_executable(EdrTest WIN32 "Chapter 21 Dynamic-Link Libraries/EdrTest/EdrTest.c"
-        "Chapter 21 Dynamic-Link Libraries/EdrTest/EdrLib.c")
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+add_library(EdrLib SHARED)
+if (WIN32)
+  target_sources(EdrLib PRIVATE "Chapter 21 Dynamic-Link Libraries/EdrTest/EdrLib.c"
+          "Chapter 21 Dynamic-Link Libraries/EdrTest/EdrLib.h")
+#   target_link_libraries()
+endif()
+
+add_executable(EdrTest WIN32 "Chapter 21 Dynamic-Link Libraries/EdrTest/EdrTest.c")
+target_link_libraries(EdrTest EdrLib)
+
+#add_subdirectory("Chapter 21 Dynamic-Link Libraries/EdrTest")
+
 add_executable(ShowBit WIN32 "Chapter 21 Dynamic-Link Libraries/ShowBit/ShowBit.c"
-        "Chapter 21 Dynamic-Link Libraries/ShowBit/BitLib.c")
+        "Chapter 21 Dynamic-Link Libraries/ShowBit/BitLib.c"
+        "Chapter 21 Dynamic-Link Libraries/ShowBit/Resource.h"
+        "Chapter 21 Dynamic-Link Libraries/ShowBit/BitLib.rc"
+        "Chapter 21 Dynamic-Link Libraries/ShowBit/Bitmap1.bmp"
+        "Chapter 21 Dynamic-Link Libraries/ShowBit/Bitmap2.bmp"
+        "Chapter 21 Dynamic-Link Libraries/ShowBit/Bitmap3.bmp"
+        "Chapter 21 Dynamic-Link Libraries/ShowBit/Bitmap4.bmp"
+        "Chapter 21 Dynamic-Link Libraries/ShowBit/Bitmap5.bmp"
+        "Chapter 21 Dynamic-Link Libraries/ShowBit/Bitmap6.bmp"
+        "Chapter 21 Dynamic-Link Libraries/ShowBit/Bitmap7.bmp"
+        "Chapter 21 Dynamic-Link Libraries/ShowBit/Bitmap8.bmp"
+        "Chapter 21 Dynamic-Link Libraries/ShowBit/Bitmap9.bmp")
+
 add_executable(StrProg WIN32 "Chapter 21 Dynamic-Link Libraries/StrProg/StrProg.c"
-        "Chapter 21 Dynamic-Link Libraries/StrProg/StrLib.c")
+        "Chapter 21 Dynamic-Link Libraries/StrProg/StrLib.c"
+        "Chapter 21 Dynamic-Link Libraries/StrProg/StrLib.h"
+        "Chapter 21 Dynamic-Link Libraries/StrProg/Resource.h"
+        "Chapter 21 Dynamic-Link Libraries/StrProg/StrProg.rc")
 
 # ================================================================== Chapter 22
 

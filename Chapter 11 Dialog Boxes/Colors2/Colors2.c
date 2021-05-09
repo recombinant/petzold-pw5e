@@ -8,7 +8,7 @@
 #include <tchar.h>
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-BOOL    CALLBACK ColorScrDlg(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK ColorScrDlg(HWND, UINT, WPARAM, LPARAM);
 
 HWND hDlgModeless;
 
@@ -83,7 +83,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
-BOOL CALLBACK ColorScrDlg(HWND hDlg, UINT message,
+INT_PTR CALLBACK ColorScrDlg(HWND hDlg, UINT message,
 	WPARAM wParam, LPARAM lParam)
 {
 	static int iColor[3];

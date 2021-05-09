@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <commdlg.h>
 #include <tchar.h>            // for _tcsstr (strstr for Unicode & non-Unicode)
+#include <malloc.h>
 
 #define MAX_STRING_LEN   256
 
@@ -67,7 +68,6 @@ BOOL PopFindFindText(HWND hwndEdit, int* piSearchOffset, LPFINDREPLACE pfr)
 	// Search the document for the find string
 
 	pstrPos = _tcsstr(pstrDoc + *piSearchOffset, pfr->lpstrFindWhat);
-	free(pstrDoc);
 
 	// Return an error code if the string cannot be found
 
@@ -83,6 +83,8 @@ BOOL PopFindFindText(HWND hwndEdit, int* piSearchOffset, LPFINDREPLACE pfr)
 
 	SendMessage(hwndEdit, EM_SETSEL, iPos, *piSearchOffset);
 	SendMessage(hwndEdit, EM_SCROLLCARET, 0, 0);
+
+	free(pstrDoc);
 
 	return TRUE;
 }

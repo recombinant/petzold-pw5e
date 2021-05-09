@@ -26,7 +26,7 @@ int WINAPI _tWinMain(
 	UNREFERENCED_PARAMETER(pCmdLine);
 	UNREFERENCED_PARAMETER(nShowCmd);
 
-	if (-1 == DialogBox(hInstance, szAppName, NULL, (DLGPROC)DlgProc))
+	if (-1 == DialogBox(hInstance, szAppName, NULL, DlgProc))
 	{
 		MessageBox(NULL, TEXT("This program requires Windows NT!"),
 			szAppName, MB_ICONERROR);
