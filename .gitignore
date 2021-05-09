@@ -45,6 +45,8 @@ Programming Windows
 
 cmake-build-debug/
 cmake-build-release/
+out/build/
+out/install/
 .vs/
 .idea/
 CMakeSettings.json

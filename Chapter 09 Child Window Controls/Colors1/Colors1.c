@@ -126,7 +126,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				hwnd, (HMENU)(i + 2 * N),
 				hInstance, NULL);
 
-			SetWindowSubclass(hwnd, ScrollProc, (UINT_PTR)i, 0);
+			SetWindowSubclass(hwndScroll[i], ScrollProc, (UINT_PTR)i, 0);
 
 			hBrush[i] = CreateSolidBrush(crPrim[i]);
 		}
