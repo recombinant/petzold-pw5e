@@ -29,7 +29,7 @@ button[] =
 	{BS_OWNERDRAW,       TEXT("OWNERDRAW"})
 };
 
-#define NUM _countof(sizeof button)
+#define NUM _countof(button)
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
