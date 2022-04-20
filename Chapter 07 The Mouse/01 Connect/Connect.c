@@ -76,7 +76,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_MOUSEMOVE:
-		if (wParam & MK_LBUTTON && iCount < 1000)
+		if (wParam & MK_LBUTTON && iCount < MAXPOINTS)
 		{
 			pt[iCount].x = LOWORD(lParam);
 			pt[iCount++].y = HIWORD(lParam);
